@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: geraibumdes-web
+    ports:
+      # Mapping port lokal 3041 ke port 3000 di dalam container
+      - "3041:3000"
+    # Membaca variabel environment dari .env.local untuk koneksi MongoDB
+    env_file:
+      - .env.local
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    restart: unless-stopped
