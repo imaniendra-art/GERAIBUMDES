@@ -1,0 +1,72 @@
+[
+  {
+    "provinceCode": "73",
+    "provinceName": "SULAWESI SELATAN",
+    "regencyCode": "73.14",
+    "regencyName": "KAB. SIDENRENG RAPPANG",
+    "districtCode": "73.14.04",
+    "districtName": "MARITENGNGAE",
+    "villageCode": "73.14.04.1001",
+    "villageName": "PANGKAJENE"
+  },
+  {
+    "provinceCode": "73",
+    "provinceName": "SULAWESI SELATAN",
+    "regencyCode": "73.14",
+    "regencyName": "KAB. SIDENRENG RAPPANG",
+    "districtCode": "73.14.04",
+    "districtName": "MARITENGNGAE",
+    "villageCode": "73.14.04.2005",
+    "villageName": "TANETE"
+  },
+  {
+    "provinceCode": "73",
+    "provinceName": "SULAWESI SELATAN",
+    "regencyCode": "73.06",
+    "regencyName": "KAB. GOWA",
+    "districtCode": "73.06.08",
+    "districtName": "PALLANGGA",
+    "villageCode": "73.06.08.2001",
+    "villageName": "TAENG"
+  },
+  {
+    "provinceCode": "73",
+    "provinceName": "SULAWESI SELATAN",
+    "regencyCode": "73.09",
+    "regencyName": "KAB. MAROS",
+    "districtCode": "73.09.11",
+    "districtName": "MONCONGLOE",
+    "villageCode": "73.09.11.2001",
+    "villageName": "MONCONGLOE"
+  },
+  {
+    "provinceCode": "73",
+    "provinceName": "SULAWESI SELATAN",
+    "regencyCode": "73.15",
+    "regencyName": "KAB. PINRANG",
+    "districtCode": "73.15.02",
+    "districtName": "PATAMPANUA",
+    "villageCode": "73.15.02.2001",
+    "villageName": "MATTIRO ADE"
+  },
+  {
+    "provinceCode": "72",
+    "provinceName": "SULAWESI TENGAH",
+    "regencyCode": "72.08",
+    "regencyName": "KAB. PARIGI MOUTONG",
+    "districtCode": "72.08.01",
+    "districtName": "PARIGI",
+    "villageCode": "72.08.01.2001",
+    "villageName": "SUMBER SARI"
+  },
+  {
+    "provinceCode": "63",
+    "provinceName": "KALIMANTAN SELATAN",
+    "regencyCode": "63.02",
+    "regencyName": "KAB. KOTABARU",
+    "districtCode": "63.02.01",
+    "districtName": "PULAU LAUT SIGAM",
+    "villageCode": "63.02.01.2001",
+    "villageName": "HILIR MUARA"
+  }
+]

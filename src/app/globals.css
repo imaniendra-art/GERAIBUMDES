@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-surface-bg text-text-main antialiased font-sans;
+  }
+}
+
+@layer components {
+  /* Utility classes if needed later */
+}
