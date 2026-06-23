@@ -8,6 +8,7 @@ import Order from "@/models/Order";
 export default async function Navbar() {
   const session = await getSession();
   let unreadCount = 0;
+  let storeSlug = null;
 
   if (session && session.role === "BUMDES_ADMIN") {
     try {
@@ -16,6 +17,7 @@ export default async function Navbar() {
       if (profile) {
         const store = await Store.findOne({ bumdesId: profile._id });
         if (store) {
+          storeSlug = store.slug;
           unreadCount = await Order.countDocuments({
             sellerStoreId: store._id,
             status: "PENDING"
@@ -27,5 +29,5 @@ export default async function Navbar() {
     }
   }
 
-  return <NavbarClient session={session} unreadCount={unreadCount} />;
+  return <NavbarClient session={session} unreadCount={unreadCount} storeSlug={storeSlug} />;
 }

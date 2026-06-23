@@ -8,6 +8,19 @@ import { Store, Building, MapPin, Landmark, Phone, ImageIcon, Save, ArrowLeft, L
 import Link from "next/link";
 import { LocationSelector } from "@/components/ui/LocationSelector";
 
+const BUSINESS_TYPE_OPTIONS = [
+  "Pertanian & Perkebunan",
+  "Peternakan & Perikanan",
+  "Budidaya (Flora/Fauna)",
+  "Perdagangan & Pasar Desa",
+  "Pariwisata & Ekonomi Kreatif",
+  "Jasa & Penyewaan",
+  "Manufaktur & Kerajinan",
+  "Pengelolaan Air Bersih & Lingkungan",
+  "Keuangan & Simpan Pinjam",
+  "Lainnya"
+];
+
 export default function StoreEditForm({ initialData }: { initialData: any }) {
   const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
@@ -17,7 +30,7 @@ export default function StoreEditForm({ initialData }: { initialData: any }) {
   const inputClass = "w-full bg-surface border border-border rounded-md px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm";
   const labelClass = "block text-sm font-medium text-text-main mb-1.5";
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     if (name.startsWith("bank_")) {
       const field = name.split("_")[1];
@@ -85,6 +98,18 @@ export default function StoreEditForm({ initialData }: { initialData: any }) {
       setError(err.message);
       setIsSaving(false);
     }
+  };
+
+  const selectedBusinessTypes = formData.businessType ? formData.businessType.split(",").map((s: string) => s.trim()).filter(Boolean) : [];
+
+  const handleBusinessTypeToggle = (option: string) => {
+    let newSelection = [...selectedBusinessTypes];
+    if (newSelection.includes(option)) {
+      newSelection = newSelection.filter((item: string) => item !== option);
+    } else {
+      newSelection.push(option);
+    }
+    setFormData((prev: any) => ({ ...prev, businessType: newSelection.join(", ") }));
   };
 
   return (
@@ -230,8 +255,20 @@ export default function StoreEditForm({ initialData }: { initialData: any }) {
 
             <div className="space-y-4 pt-2">
               <div>
-                <label className={labelClass}>Fokus Usaha</label>
-                <input type="text" name="businessType" value={formData.businessType} onChange={handleChange} className={inputClass} />
+                <label className={labelClass}>Fokus Usaha (Bisa pilih lebih dari satu)</label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mt-2">
+                  {BUSINESS_TYPE_OPTIONS.map((option) => (
+                    <label key={option} className={`flex items-center p-3 border rounded-lg cursor-pointer transition-all ${selectedBusinessTypes.includes(option) ? 'border-primary bg-primary/5 shadow-sm' : 'border-border bg-surface hover:bg-surface-bg'}`}>
+                      <input
+                        type="checkbox"
+                        checked={selectedBusinessTypes.includes(option)}
+                        onChange={() => handleBusinessTypeToggle(option)}
+                        className="w-4 h-4 text-primary bg-surface border-border rounded focus:ring-primary/20 cursor-pointer"
+                      />
+                      <span className="ml-3 text-sm text-text-main font-medium">{option}</span>
+                    </label>
+                  ))}
+                </div>
               </div>
               <div>
                 <label className={labelClass}>Jam Operasional (Opsional)</label>

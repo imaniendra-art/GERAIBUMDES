@@ -1,4 +1,4 @@
-import { Store, ArrowRight, ShieldCheck, TrendingUp, Users, ArrowRightCircle, PackageOpen } from "lucide-react";
+import { ArrowRight, ShoppingBag, Store, TrendingUp, CheckCircle, Search, ShieldCheck, MapPin, ArrowRightCircle, PackageOpen, Users } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";

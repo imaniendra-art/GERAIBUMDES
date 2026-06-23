@@ -13,9 +13,10 @@ interface NavbarClientProps {
     email: string;
   } | null;
   unreadCount?: number;
+  storeSlug?: string | null;
 }
 
-export default function NavbarClient({ session, unreadCount = 0 }: NavbarClientProps) {
+export default function NavbarClient({ session, unreadCount = 0, storeSlug }: NavbarClientProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
@@ -110,10 +111,16 @@ export default function NavbarClient({ session, unreadCount = 0 }: NavbarClientP
                     </span>
                   </Link>
                   <Link 
-                    href={session.role === "SUPER_ADMIN" ? "/admin" : "/dashboard"} 
-                    className="h-8 w-8 bg-secondary rounded-full flex items-center justify-center text-secondary-dark font-bold hover:scale-105 transition-transform"
+                    href={session.role === "SUPER_ADMIN" ? "/admin" : (storeSlug ? `/bumdes/${storeSlug}` : "/dashboard")} 
+                    className="h-8 w-8 bg-secondary rounded-full flex items-center justify-center text-secondary-dark font-bold hover:scale-105 transition-transform group relative"
+                    aria-label="Profil Publik BUMDes"
                   >
                     <User className="h-5 w-5" />
+                    {session.role === "BUMDES_ADMIN" && storeSlug && (
+                      <span className="absolute top-10 right-0 w-max bg-surface text-text-main text-xs font-bold px-2 py-1 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                        Lihat Profil Publik
+                      </span>
+                    )}
                   </Link>
                 </div>
               </>

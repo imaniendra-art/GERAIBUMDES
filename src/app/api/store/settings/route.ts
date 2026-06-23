@@ -84,8 +84,16 @@ export async function PUT(req: NextRequest) {
     await store.save();
 
     // Pastikan konsistensi koleksi data
+    let profileUpdated = false;
     if (profile.name !== body.name) {
       profile.name = body.name;
+      profileUpdated = true;
+    }
+    if (body.businessType !== undefined && profile.businessType !== body.businessType) {
+      profile.businessType = body.businessType;
+      profileUpdated = true;
+    }
+    if (profileUpdated) {
       await profile.save();
     }
 
@@ -94,6 +102,9 @@ export async function PUT(req: NextRequest) {
     revalidatePath("/admin/akun");
     revalidatePath("/dashboard/toko/edit");
     revalidatePath("/dashboard");
+    if (store.slug) {
+      revalidatePath(`/bumdes/${store.slug}`);
+    }
 
     return NextResponse.json({ success: true, store });
   } catch (error: any) {

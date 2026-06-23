@@ -6,7 +6,7 @@ import Category from "@/models/Category";
 import { notFound } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/Card";
 import Link from "next/link";
-import { Package, Store as StoreIcon, MapPin, Search, Phone, Clock, FileCheck } from "lucide-react";
+import { Package, Store as StoreIcon, MapPin, Search, Phone, Clock, FileCheck, ShieldCheck, Target } from "lucide-react";
 import { ProductCard } from "@/components/ui/ProductCard";
 
 const formatWhatsAppNumber = (phone: string) => {
@@ -30,7 +30,7 @@ export default async function StoreProfilePage({
   await dbConnect();
 
   const store = await Store.findOne({ slug: resolvedParams.slug, status: "ACTIVE" })
-    .populate({ path: "bumdesId", model: BumdesProfile, select: "village district cityOrRegency province description businessType" })
+    .populate({ path: "bumdesId", model: BumdesProfile, select: "village district regency province description businessType" })
     .lean();
 
   if (!store) {
@@ -73,102 +73,125 @@ export default async function StoreProfilePage({
             <div className="px-4 sm:px-8 pt-16 sm:pt-20 pb-8">
               <div className="mb-6 pb-6 border-b border-border">
                 <h1 className="text-2xl sm:text-3xl font-bold text-text-main">{store.name}</h1>
-                {store.nib && (
-                  <div className="flex items-center mt-2 mb-1">
-                    <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-blue-50/50 border border-blue-100 text-blue-700 text-xs font-medium">
-                      <FileCheck className="h-3.5 w-3.5 mr-1.5 flex-shrink-0" />
-                      NIB: {store.nib}
-                    </span>
-                  </div>
-                )}
-                {store.googleMapsUrl ? (
-                  <a href={store.googleMapsUrl} target="_blank" rel="noopener noreferrer" className="flex items-center text-text-muted mt-1.5 text-sm hover:text-blue-600 hover:underline transition-colors group w-fit">
-                    <MapPin className="h-4 w-4 mr-1 flex-shrink-0 group-hover:text-blue-600" /> 
-                    <span className="line-clamp-1">{store.bumdesId?.village}, {store.bumdesId?.district}, {store.bumdesId?.cityOrRegency}, {store.bumdesId?.province}</span>
-                    <span className="ml-2 text-xs text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200 whitespace-nowrap">Lihat Peta</span>
-                  </a>
-                ) : (
-                  <p className="flex items-center text-text-muted mt-1.5 text-sm">
-                    <MapPin className="h-4 w-4 mr-1 flex-shrink-0" /> 
-                    <span className="line-clamp-1">{store.bumdesId?.village}, {store.bumdesId?.district}, {store.bumdesId?.cityOrRegency}, {store.bumdesId?.province}</span>
-                  </p>
-                )}
+                {(() => {
+                  const locationParts = [
+                    store.bumdesId?.village,
+                    store.bumdesId?.district,
+                    store.bumdesId?.regency,
+                    store.bumdesId?.province
+                  ].filter(part => part && part !== "-");
+                  const locationText = locationParts.length > 0 ? locationParts.join(", ") : "Alamat belum dilengkapi";
+                  
+                  return store.googleMapsUrl ? (
+                    <a href={store.googleMapsUrl} target="_blank" rel="noopener noreferrer" className="flex items-center text-text-muted mt-1.5 text-sm hover:text-blue-600 hover:underline transition-colors group w-fit">
+                      <MapPin className="h-4 w-4 mr-1 flex-shrink-0 group-hover:text-blue-600" /> 
+                      <span className="line-clamp-1">{locationText}</span>
+                      <span className="ml-2 text-xs text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200 whitespace-nowrap">Lihat Peta</span>
+                    </a>
+                  ) : (
+                    <p className="flex items-center text-text-muted mt-1.5 text-sm">
+                      <MapPin className="h-4 w-4 mr-1 flex-shrink-0" /> 
+                      <span className="line-clamp-1">{locationText}</span>
+                    </p>
+                  );
+                })()}
               </div>
 
               <div className="flex flex-col md:flex-row gap-8">
                 <div className="md:w-2/3 text-text-main">
                   <h3 className="font-bold text-lg mb-2">Tentang BUMDes</h3>
                   <p className="text-gray-700 leading-relaxed text-justify whitespace-pre-wrap">{store.description || store.bumdesId?.description || "BUMDes ini belum menambahkan deskripsi toko."}</p>
-                </div>
-              <div className="md:w-1/3 bg-surface-bg p-4 rounded-lg border border-border h-fit">
-                <div className="flex justify-between items-center mb-2 pb-2 border-b border-border">
-                  <span className="text-text-muted text-sm">Status Toko</span>
-                  <span className="bg-success/20 text-success-dark px-2 py-0.5 rounded text-xs font-bold">TERVERIFIKASI</span>
-                </div>
-                <div className="flex justify-between items-center mb-2 pb-2 border-b border-border">
-                  <span className="text-text-muted text-sm">Fokus Usaha</span>
-                  <span className="font-medium text-sm text-text-main text-right">{store.bumdesId?.businessType || "-"}</span>
-                </div>
-                <div className="flex justify-between items-center mb-2 pb-2 border-b border-border">
-                  <span className="text-text-muted text-sm">Total Produk</span>
-                  <span className="font-medium text-sm text-text-main">{products.length} Produk Aktif</span>
-                </div>
+                  
+                  {store.nib && (
+                    <div className="mt-6 border-t border-border pt-4">
+                      <h3 className="text-sm font-semibold text-gray-500 mb-2">Legalitas & Izin Usaha</h3>
+                      <div className="flex items-center text-gray-700">
+                        <FileCheck className="w-4 h-4 mr-2 text-green-600 flex-shrink-0" />
+                        <span className="text-sm">NIB: {store.nib}</span>
+                      </div>
+                    </div>
+                  )}
 
-                {(store.directorName || store.villageHeadName) && (
-                  <div className="mt-4 pt-4 border-t border-border/50 space-y-3">
-                    <h4 className="font-bold text-sm mb-2 text-text-main">Struktur Kepengurusan</h4>
-                    {store.directorName && (
-                      <div className="flex flex-col mb-2">
-                        <span className="text-text-muted text-xs">👨‍💼 Direktur</span>
-                        <span className="font-medium text-sm text-text-main">{store.directorName}</span>
-                      </div>
-                    )}
-                    {store.villageHeadName && (
-                      <div className="flex flex-col">
-                        <span className="text-text-muted text-xs">🏛️ Kepala Desa / Penasihat</span>
-                        <span className="font-medium text-sm text-text-main">{store.villageHeadName}</span>
-                      </div>
-                    )}
-                  </div>
-                )}
-                
-                {(store.whatsappNumber || store.phoneNumber || store.operationalHours || store.address) && (
-                  <div className="mt-4 pt-4 border-t border-border/50 space-y-3">
-                    <h4 className="font-bold text-sm mb-2 text-text-main">Info Kontak & Operasional</h4>
-                    
-                    {(store.whatsappNumber || store.phoneNumber) && (
-                      <div className="flex items-start text-sm group">
-                        <Phone className="h-4 w-4 mr-2 text-text-muted mt-0.5 flex-shrink-0 group-hover:text-green-600 transition-colors" />
-                        <a 
-                          href={`https://wa.me/${formatWhatsAppNumber((store.whatsappNumber || store.phoneNumber) as string)}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-text-main hover:text-green-600 hover:underline transition-colors cursor-pointer"
-                        >
-                          {store.whatsappNumber || store.phoneNumber}
-                        </a>
-                      </div>
-                    )}
-                    
-                    {store.operationalHours && (
-                      <div className="flex items-start text-sm">
-                        <Clock className="h-4 w-4 mr-2 text-text-muted mt-0.5 flex-shrink-0" />
-                        <span className="text-text-main whitespace-pre-wrap">{store.operationalHours}</span>
-                      </div>
-                    )}
-
-                    {store.address && (
-                      <div className="flex items-start text-sm">
-                        <MapPin className="h-4 w-4 mr-2 text-text-muted mt-0.5 flex-shrink-0" />
-                        {store.googleMapsUrl ? (
-                          <a href={store.googleMapsUrl} target="_blank" rel="noopener noreferrer" className="text-text-main hover:text-blue-600 hover:underline transition-colors">
-                            <span className="whitespace-pre-wrap">{store.address}</span>
-                          </a>
-                        ) : (
-                          <span className="text-text-main whitespace-pre-wrap">{store.address}</span>
+                  {(store.directorName || store.villageHeadName) && (
+                    <div className="mt-6 border-t border-border pt-4">
+                      <h3 className="text-sm font-semibold text-gray-500 mb-3">Struktur Kepengurusan</h3>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {store.directorName && (
+                          <div className="flex flex-col">
+                            <span className="text-gray-500 text-xs mb-1">👨‍💼 Direktur</span>
+                            <span className="font-medium text-gray-800">{store.directorName}</span>
+                          </div>
+                        )}
+                        {store.villageHeadName && (
+                          <div className="flex flex-col">
+                            <span className="text-gray-500 text-xs mb-1">🏛️ Kepala Desa / Penasihat</span>
+                            <span className="font-medium text-gray-800">{store.villageHeadName}</span>
+                          </div>
                         )}
                       </div>
-                    )}
+                    </div>
+                  )}
+                </div>
+              <div className="md:w-1/3 bg-white border border-gray-100 shadow-sm p-6 rounded-2xl h-fit">
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center pb-4 border-b border-gray-50">
+                    <span className="text-gray-500 text-sm flex items-center">
+                      <ShieldCheck className="w-4 h-4 mr-2 text-gray-400" /> Status Toko
+                    </span>
+                    <span className="bg-green-50 border border-green-100 text-green-700 px-3 py-1 rounded-full text-[10px] font-bold tracking-wider">TERVERIFIKASI</span>
+                  </div>
+                  <div className="flex justify-between items-start pb-4 border-b border-gray-50">
+                    <span className="text-gray-500 text-sm flex items-center mt-0.5 whitespace-nowrap">
+                      <Target className="w-4 h-4 mr-2 text-gray-400 flex-shrink-0" /> Fokus Usaha
+                    </span>
+                    <span className="font-semibold text-sm text-gray-800 text-right ml-4 leading-relaxed">{store.bumdesId?.businessType || "-"}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-500 text-sm flex items-center">
+                      <Package className="w-4 h-4 mr-2 text-gray-400" /> Total Produk
+                    </span>
+                    <span className="font-semibold text-sm text-gray-800">{products.length} Aktif</span>
+                  </div>
+                </div>
+                
+                {(store.whatsappNumber || store.phoneNumber || store.operationalHours || store.address) && (
+                  <div className="mt-6 pt-5 border-t border-gray-100">
+                    <h4 className="font-bold text-sm mb-4 text-gray-800">Info Kontak & Operasional</h4>
+                    <div className="space-y-4">
+                      {(store.whatsappNumber || store.phoneNumber) && (
+                        <div className="flex items-start text-sm group">
+                          <Phone className="h-4 w-4 mr-3 text-gray-400 mt-0.5 flex-shrink-0 group-hover:text-green-600 transition-colors" />
+                          <a 
+                            href={`https://wa.me/${formatWhatsAppNumber((store.whatsappNumber || store.phoneNumber) as string)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-gray-700 font-medium hover:text-green-600 hover:underline transition-colors"
+                          >
+                            {store.whatsappNumber || store.phoneNumber}
+                          </a>
+                        </div>
+                      )}
+                      
+                      {store.operationalHours && (
+                        <div className="flex items-start text-sm">
+                          <Clock className="h-4 w-4 mr-3 text-gray-400 mt-0.5 flex-shrink-0" />
+                          <span className="text-gray-700">{store.operationalHours}</span>
+                        </div>
+                      )}
+
+                      {store.address && (
+                        <div className="flex items-start text-sm">
+                          <MapPin className="h-4 w-4 mr-3 text-gray-400 mt-0.5 flex-shrink-0" />
+                          {store.googleMapsUrl ? (
+                            <a href={store.googleMapsUrl} target="_blank" rel="noopener noreferrer" className="text-gray-700 hover:text-blue-600 hover:underline transition-colors">
+                              <span className="whitespace-pre-wrap leading-relaxed">{store.address}</span>
+                            </a>
+                          ) : (
+                            <span className="text-gray-700 leading-relaxed whitespace-pre-wrap">{store.address}</span>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
               </div>
