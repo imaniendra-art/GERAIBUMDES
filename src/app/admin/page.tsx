@@ -4,8 +4,10 @@ import BumdesProfile from "@/models/BumdesProfile";
 import Store from "@/models/Store";
 import Product from "@/models/Product";
 import Order from "@/models/Order";
+import AdminLog from "@/models/AdminLog";
+import User from "@/models/User";
 import Link from "next/link";
-import { Users, Store as StoreIcon, Package, CheckCircle, ShoppingBag, Banknote, FileText, LogOut } from "lucide-react";
+import { Users, Store as StoreIcon, Package, CheckCircle, ShoppingBag, Banknote, FileText, LogOut, Activity } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
 export default async function AdminDashboardPage() {
@@ -28,6 +30,12 @@ export default async function AdminDashboardPage() {
   const orders = await Order.find({ status: "COMPLETED" });
   const totalGmv = orders.reduce((sum, o) => sum + (o.total || 0), 0);
 
+  const recentLogs = await AdminLog.find({})
+    .sort({ createdAt: -1 })
+    .limit(10)
+    .populate({ path: "adminId", model: User, select: "name email" })
+    .lean();
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
@@ -43,7 +51,7 @@ export default async function AdminDashboardPage() {
       <div className="md:hidden grid grid-cols-2 gap-3 mb-8">
         <Link href="/admin/bumdes" className="flex flex-col items-center justify-center bg-surface p-4 rounded-lg border border-border shadow-sm hover:bg-surface-bg transition-colors">
           <StoreIcon className="h-6 w-6 text-primary mb-2" />
-          <span className="text-xs font-bold text-center">Verifikasi Toko</span>
+          <span className="text-xs font-bold text-center">Verifikasi BUMDes</span>
         </Link>
         <Link href="/admin/produk" className="flex flex-col items-center justify-center bg-surface p-4 rounded-lg border border-border shadow-sm hover:bg-surface-bg transition-colors">
           <Package className="h-6 w-6 text-primary mb-2" />
@@ -150,6 +158,60 @@ export default async function AdminDashboardPage() {
             <p className="mt-4 text-sm opacity-80 flex items-center">
               <CheckCircle className="h-4 w-4 mr-2" /> Dihitung dari {completedOrders} pesanan selesai.
             </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="mt-8 mb-8">
+        <h2 className="text-xl font-bold text-text-main mb-4 flex items-center gap-2">
+          <Activity className="h-5 w-5 text-primary" /> Aktivitas Terakhir Admin
+        </h2>
+        <Card className="border border-border">
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead className="text-xs text-text-muted uppercase bg-surface-bg border-b border-border">
+                  <tr>
+                    <th className="px-6 py-4 font-medium">Waktu</th>
+                    <th className="px-6 py-4 font-medium">Admin</th>
+                    <th className="px-6 py-4 font-medium">Aksi</th>
+                    <th className="px-6 py-4 font-medium">Target</th>
+                    <th className="px-6 py-4 font-medium">Detail</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {recentLogs.map((log: any) => (
+                    <tr key={log._id.toString()} className="hover:bg-surface-bg/50 transition-colors">
+                      <td className="px-6 py-4 whitespace-nowrap text-text-muted">
+                        {new Date(log.createdAt).toLocaleString("id-ID")}
+                      </td>
+                      <td className="px-6 py-4 font-medium text-text-main">
+                        {log.adminId?.name || log.adminId?.email || "Admin"}
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`px-2 py-1 rounded text-[10px] font-bold ${
+                          log.action === 'LOGIN' ? 'bg-info/10 text-info' :
+                          log.action.includes('VERIFY') ? 'bg-success/10 text-success' :
+                          log.action.includes('REJECT') || log.action.includes('DELETE') ? 'bg-danger/10 text-danger' :
+                          'bg-surface-bg border border-border text-text-muted'
+                        }`}>
+                          {log.action}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-text-main">{log.target || "-"}</td>
+                      <td className="px-6 py-4 text-text-muted">{log.details || "-"}</td>
+                    </tr>
+                  ))}
+                  {recentLogs.length === 0 && (
+                    <tr>
+                      <td colSpan={5} className="px-6 py-8 text-center text-text-muted">
+                        Belum ada aktivitas admin yang tercatat.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </CardContent>
         </Card>
       </div>

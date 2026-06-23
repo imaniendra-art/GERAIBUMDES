@@ -1,17 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const searchParams = useSearchParams();
+  const isRegistered = searchParams.get("registered") === "true";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,6 +64,11 @@ export default function LoginPage() {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <Card>
           <CardContent className="py-8 px-4 sm:px-10">
+            {isRegistered && (
+              <div className="mb-4 bg-green-100 border border-green-300 text-green-800 px-4 py-3 rounded relative" role="alert">
+                <span className="block sm:inline text-sm font-medium">Pendaftaran berhasil! Akun BUMDes Anda sedang dalam tahap validasi oleh Admin. Silakan tunggu konfirmasi sebelum dapat login.</span>
+              </div>
+            )}
             {error && (
               <div className="mb-4 bg-danger/10 border border-danger/20 text-danger px-4 py-3 rounded relative" role="alert">
                 <span className="block sm:inline text-sm">{error}</span>
@@ -112,5 +119,13 @@ export default function LoginPage() {
         </Card>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="flex-1 bg-surface-bg flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">Loading...</div>}>
+      <LoginContent />
+    </Suspense>
   );
 }

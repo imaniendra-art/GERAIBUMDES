@@ -56,6 +56,28 @@ export function LocationSelector({
     villageCode: initialVillageCode || "",
   });
 
+  // Sync props to state if they change (fixes hydration issues)
+  useEffect(() => {
+    setSelected(prev => {
+      const newSelected = {
+        provinceCode: initialProvinceCode || "",
+        regencyCode: initialRegencyCode || "",
+        districtCode: initialDistrictCode || "",
+        villageCode: initialVillageCode || "",
+      };
+      
+      if (
+        prev.provinceCode === newSelected.provinceCode &&
+        prev.regencyCode === newSelected.regencyCode &&
+        prev.districtCode === newSelected.districtCode &&
+        prev.villageCode === newSelected.villageCode
+      ) {
+        return prev;
+      }
+      return newSelected;
+    });
+  }, [initialProvinceCode, initialRegencyCode, initialDistrictCode, initialVillageCode]);
+
   useEffect(() => {
     fetchOptions("province").then(data => {
       setProvinces(data);

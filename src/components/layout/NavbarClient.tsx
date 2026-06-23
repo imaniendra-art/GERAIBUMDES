@@ -81,40 +81,42 @@ export default function NavbarClient({ session, unreadCount = 0 }: NavbarClientP
 
           {/* Right Section Desktop */}
           <div className="hidden md:flex items-center space-x-4">
-            {session && session.role === "BUMDES_ADMIN" && (
-              <Link href="/dashboard/pesanan" className="relative p-2 text-surface hover:text-secondary transition-colors" aria-label="Notifikasi">
-                <Bell className="h-6 w-6" />
-                {unreadCount > 0 && (
-                  <span className="absolute top-0 right-0 h-4 w-4 bg-error text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-                    {unreadCount > 99 ? '99+' : unreadCount}
-                  </span>
-                )}
-              </Link>
-            )}
-            
-            <Link href="/keranjang" className="relative p-2 text-surface hover:text-secondary transition-colors" aria-label="Keranjang">
-              <ShoppingCart className="h-6 w-6" />
-            </Link>
-
             {session ? (
-              <div className="flex items-center space-x-4 ml-2">
-                <Link 
-                  href={session.role === "SUPER_ADMIN" ? "/admin" : "/dashboard"} 
-                  className="p-2 text-surface hover:text-secondary transition-colors relative group"
-                  aria-label="Dashboard"
-                >
-                  <LayoutDashboard className="h-6 w-6" />
-                  <span className="absolute top-10 right-0 w-max bg-surface text-text-main text-xs font-bold px-2 py-1 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
-                    Dashboard
-                  </span>
+              <>
+                {session.role === "BUMDES_ADMIN" && (
+                  <Link href="/dashboard/pesanan" className="relative p-2 text-surface hover:text-secondary transition-colors" aria-label="Notifikasi">
+                    <Bell className="h-6 w-6" />
+                    {unreadCount > 0 && (
+                      <span className="absolute top-0 right-0 h-4 w-4 bg-error text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                        {unreadCount > 99 ? '99+' : unreadCount}
+                      </span>
+                    )}
+                  </Link>
+                )}
+                
+                <Link href="/keranjang" className="relative p-2 text-surface hover:text-secondary transition-colors" aria-label="Keranjang">
+                  <ShoppingCart className="h-6 w-6" />
                 </Link>
-                <Link 
-                  href={session.role === "SUPER_ADMIN" || session.role === "PLATFORM_ADMIN" ? "/admin/akun" : "/dashboard/toko/edit"} 
-                  className="h-8 w-8 bg-secondary rounded-full flex items-center justify-center text-secondary-dark font-bold hover:scale-105 transition-transform"
-                >
-                  <User className="h-5 w-5" />
-                </Link>
-              </div>
+
+                <div className="flex items-center space-x-4 ml-2">
+                  <Link 
+                    href={session.role === "SUPER_ADMIN" ? "/admin" : "/dashboard"} 
+                    className="p-2 text-surface hover:text-secondary transition-colors relative group"
+                    aria-label="Dashboard"
+                  >
+                    <LayoutDashboard className="h-6 w-6" />
+                    <span className="absolute top-10 right-0 w-max bg-surface text-text-main text-xs font-bold px-2 py-1 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                      Dashboard
+                    </span>
+                  </Link>
+                  <Link 
+                    href={session.role === "SUPER_ADMIN" ? "/admin" : "/dashboard"} 
+                    className="h-8 w-8 bg-secondary rounded-full flex items-center justify-center text-secondary-dark font-bold hover:scale-105 transition-transform"
+                  >
+                    <User className="h-5 w-5" />
+                  </Link>
+                </div>
+              </>
             ) : (
               <div className="flex items-center space-x-3 ml-2">
                 <Link 
@@ -135,19 +137,23 @@ export default function NavbarClient({ session, unreadCount = 0 }: NavbarClientP
 
           {/* Mobile Menu Buttons */}
           <div className="md:hidden flex items-center space-x-1 justify-end">
-            {session && session.role === "BUMDES_ADMIN" && (
-              <Link href="/dashboard/pesanan" className="relative p-2 text-surface hover:text-secondary transition-colors">
-                <Bell className="h-5 w-5" />
-                {unreadCount > 0 && (
-                  <span className="absolute top-0 right-0 h-3.5 w-3.5 bg-error text-white text-[9px] font-bold rounded-full flex items-center justify-center">
-                    {unreadCount > 99 ? '99+' : unreadCount}
-                  </span>
+            {session && (
+              <>
+                {session.role === "BUMDES_ADMIN" && (
+                  <Link href="/dashboard/pesanan" className="relative p-2 text-surface hover:text-secondary transition-colors">
+                    <Bell className="h-5 w-5" />
+                    {unreadCount > 0 && (
+                      <span className="absolute top-0 right-0 h-3.5 w-3.5 bg-error text-white text-[9px] font-bold rounded-full flex items-center justify-center">
+                        {unreadCount > 99 ? '99+' : unreadCount}
+                      </span>
+                    )}
+                  </Link>
                 )}
-              </Link>
+                <Link href="/keranjang" className="p-2 text-surface hover:text-secondary transition-colors">
+                  <ShoppingCart className="h-5 w-5" />
+                </Link>
+              </>
             )}
-            <Link href="/keranjang" className="p-2 text-surface hover:text-secondary transition-colors">
-              <ShoppingCart className="h-5 w-5" />
-            </Link>
             <button onClick={toggleMobileMenu} className="text-surface p-2 focus:outline-none">
               {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>

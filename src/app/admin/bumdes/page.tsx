@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { formatDate } from "@/lib/utils/formatters";
 import { getBumdesBadgeVariant, getBumdesStatusLabel } from "@/lib/utils/status";
+import { BumdesActionButtons } from "@/components/admin/BumdesActionButtons";
 
 export default async function AdminBumdesList() {
   await dbConnect();
@@ -45,9 +46,7 @@ export default async function AdminBumdesList() {
                     {formatDate(profile.createdAt)}
                   </td>
                   <td className="px-6 py-4">
-                    <Link href={`/admin/bumdes/${profile._id}`}>
-                      <Button variant="outline" size="sm">Detail</Button>
-                    </Link>
+                    <BumdesActionButtons bumdesId={profile._id.toString()} bumdesName={profile.name} />
                   </td>
                 </tr>
               ))}

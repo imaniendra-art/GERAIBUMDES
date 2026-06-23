@@ -37,7 +37,10 @@ export default function StoreEditForm({ initialData }: { initialData: any }) {
       regency: loc.regencyName,
       district: loc.districtName,
       village: loc.villageName,
-      // Store the codes in store model if needed or at least keep names consistent
+      provinceCode: loc.provinceCode,
+      regencyCode: loc.regencyCode,
+      districtCode: loc.districtCode,
+      villageCode: loc.villageCode,
     }));
   };
 
@@ -75,8 +78,8 @@ export default function StoreEditForm({ initialData }: { initialData: any }) {
           </span>
         </Link>
         <div>
-          <h1 className="text-2xl font-bold text-text-main">Edit Profil Toko</h1>
-          <p className="text-text-muted">Perbarui informasi dan rekening pembayaran toko BUMDes Anda.</p>
+          <h1 className="text-2xl font-bold text-text-main">Edit Profil BUMDes</h1>
+          <p className="text-text-muted">Perbarui informasi dan rekening pembayaran BUMDes Anda.</p>
         </div>
       </div>
 
@@ -98,12 +101,12 @@ export default function StoreEditForm({ initialData }: { initialData: any }) {
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <label className={labelClass}>Nama Toko *</label>
+              <label className={labelClass}>Nama BUMDes *</label>
               <input type="text" name="name" required value={formData.name} onChange={handleChange} className={inputClass} />
             </div>
             <div>
-              <label className={labelClass}>Deskripsi Toko</label>
-              <textarea name="description" rows={4} value={formData.description} onChange={handleChange} className={inputClass} placeholder="Ceritakan keunggulan produk dan toko BUMDes Anda..."></textarea>
+              <label className={labelClass}>Deskripsi BUMDes</label>
+              <textarea name="description" rows={4} value={formData.description} onChange={handleChange} className={inputClass} placeholder="Ceritakan keunggulan produk dan BUMDes Anda..."></textarea>
             </div>
             
             <div className="space-y-4 pt-2">
@@ -166,7 +169,10 @@ export default function StoreEditForm({ initialData }: { initialData: any }) {
             <LocationSelector
               onLocationChange={handleLocationChange}
               layout="horizontal"
-              initialProvinceCode="" // We can't know initial code unless we store it, but for now it forces them to re-select or we can just let it be empty and they only use it if they want to change
+              initialProvinceCode={formData.provinceCode || ""}
+              initialRegencyCode={formData.regencyCode || ""}
+              initialDistrictCode={formData.districtCode || ""}
+              initialVillageCode={formData.villageCode || ""}
             />
             {/* Fallback display for current location if they don't want to change it */}
             <div className="text-xs text-text-muted mt-2">

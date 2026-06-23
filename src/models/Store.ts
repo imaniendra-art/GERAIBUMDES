@@ -11,9 +11,13 @@ export interface IStore extends Document {
   whatsappNumber?: string;
   address?: string;
   village?: string;
+  villageCode?: string;
   district?: string;
+  districtCode?: string;
   regency?: string;
+  regencyCode?: string;
   province?: string;
+  provinceCode?: string;
   businessType?: string;
   operationalHours?: string;
   paymentInstructions?: string;
@@ -40,9 +44,13 @@ const StoreSchema: Schema = new Schema(
     whatsappNumber: { type: String },
     address: { type: String },
     village: { type: String },
+    villageCode: { type: String },
     district: { type: String },
+    districtCode: { type: String },
     regency: { type: String },
+    regencyCode: { type: String },
     province: { type: String },
+    provinceCode: { type: String },
     businessType: { type: String },
     operationalHours: { type: String },
     paymentInstructions: { type: String },

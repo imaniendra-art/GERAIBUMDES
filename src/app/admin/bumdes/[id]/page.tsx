@@ -7,6 +7,7 @@ import BumdesProfile from "@/models/BumdesProfile";
 import Store from "@/models/Store";
 import User from "@/models/User";
 import { getSession } from "@/lib/auth";
+import { logAdminActivity } from "@/lib/adminLogger";
 
 export default async function AdminBumdesDetail({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
@@ -31,6 +32,14 @@ export default async function AdminBumdesDetail({ params }: { params: Promise<{ 
       verifiedBy: session.userId,
     });
     await Store.findOneAndUpdate({ bumdesId: resolvedParams.id }, { status: "ACTIVE" });
+    
+    await logAdminActivity(
+      session.userId,
+      "VERIFY_BUMDES",
+      profile.name as string,
+      `BUMDes ${profile.name} diverifikasi`
+    );
+    
     redirect("/admin/bumdes");
   }
 
@@ -48,6 +57,14 @@ export default async function AdminBumdesDetail({ params }: { params: Promise<{ 
       rejectionReason: reason || "Tidak memenuhi kualifikasi.",
     });
     await Store.findOneAndUpdate({ bumdesId: resolvedParams.id }, { status: "INACTIVE" });
+    
+    await logAdminActivity(
+      session.userId,
+      "REJECT_BUMDES",
+      profile.name as string,
+      `BUMDes ${profile.name} ditolak. Alasan: ${reason || "Tidak memenuhi kualifikasi."}`
+    );
+    
     redirect("/admin/bumdes");
   }
 

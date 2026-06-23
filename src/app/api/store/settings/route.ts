@@ -54,9 +54,13 @@ export async function PUT(req: NextRequest) {
     if (body.whatsappNumber !== undefined) store.whatsappNumber = body.whatsappNumber;
     if (body.address !== undefined) store.address = body.address;
     if (body.village !== undefined) store.village = body.village;
+    if (body.villageCode !== undefined) store.villageCode = body.villageCode;
     if (body.district !== undefined) store.district = body.district;
+    if (body.districtCode !== undefined) store.districtCode = body.districtCode;
     if (body.regency !== undefined) store.regency = body.regency;
+    if (body.regencyCode !== undefined) store.regencyCode = body.regencyCode;
     if (body.province !== undefined) store.province = body.province;
+    if (body.provinceCode !== undefined) store.provinceCode = body.provinceCode;
     if (body.businessType !== undefined) store.businessType = body.businessType;
     if (body.operationalHours !== undefined) store.operationalHours = body.operationalHours;
     if (body.paymentInstructions !== undefined) store.paymentInstructions = body.paymentInstructions;

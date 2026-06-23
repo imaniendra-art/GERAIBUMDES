@@ -4,6 +4,7 @@ import dbConnect from "@/lib/db";
 import User from "@/models/User";
 import BumdesProfile from "@/models/BumdesProfile";
 import { createSession } from "@/lib/auth";
+import { logAdminActivity } from "@/lib/adminLogger";
 
 export async function POST(req: Request) {
   try {
@@ -44,6 +45,15 @@ export async function POST(req: Request) {
 
     // Set JWT HTTPOnly Cookie
     await createSession(user._id.toString(), user.role, user.email);
+
+    if (user.role === "SUPER_ADMIN" || user.role === "PLATFORM_ADMIN") {
+      await logAdminActivity(
+        user._id.toString(),
+        "LOGIN",
+        user.email,
+        "Admin berhasil masuk ke sistem"
+      );
+    }
 
     return NextResponse.json({ message: "Login berhasil", role: user.role });
   } catch (error) {
