@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-dotenv.config({ path: ".env.local" });
+dotenv.config({ path: ".env" });
 import mongoose from "mongoose";
 import Region from "../src/models/Region";
 
@@ -58,12 +58,24 @@ async function seedKalsel() {
           }
         }
         
-        // Manual Injection for Baharu Utara
+        // Manual Injection for Pulau Laut Sigam Villages
         if (district.name.toUpperCase() === "PULAU LAUT SIGAM") {
-          const baharuExists = villages.some((v: any) => v.name.toUpperCase() === "BAHARU UTARA");
-          if (!baharuExists) {
-            console.log("Injecting BAHARU UTARA manually...");
-            villages.push({ id: `${district.id}2001`, name: "BAHARU UTARA" });
+          const manualVillages = [
+            { id: `${district.id}2001`, name: "BAHARU UTARA" },
+            { id: `${district.id}2002`, name: "SEBATUNG" },
+            { id: `${district.id}2003`, name: "GEDAMBAAN" },
+            { id: `${district.id}2004`, name: "BATUAH" },
+            { id: `${district.id}2005`, name: "SARANGTIUNG" },
+            { id: `${district.id}2006`, name: "TIRAWAN" },
+            { id: `${district.id}2007`, name: "HILIR MUARA" }
+          ];
+
+          for (const mv of manualVillages) {
+            const exists = villages.some((v: any) => v.name.toUpperCase() === mv.name);
+            if (!exists) {
+              console.log(`Injecting ${mv.name} manually...`);
+              villages.push(mv);
+            }
           }
         }
         

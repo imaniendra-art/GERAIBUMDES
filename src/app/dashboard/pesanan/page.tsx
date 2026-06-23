@@ -67,7 +67,7 @@ export default async function PenjualPesananPage({
           </div>
           <div>
             <h4 className="font-bold text-lg mb-1">⚠️ Data Rekening Belum Lengkap!</h4>
-            <p className="text-sm font-medium">Lengkapi data rekening toko agar pembeli dapat melakukan pembayaran manual dengan lancar.</p>
+            <p className="text-sm font-medium">Lengkapi data rekening BUMDes agar pembeli dapat melakukan pembayaran manual dengan lancar.</p>
             <Link href="/dashboard/toko/edit" className="text-sm font-extrabold bg-white text-black border-2 border-black px-4 py-2 rounded mt-3 inline-block hover:bg-gray-100 transition-colors shadow-sm">
               Lengkapi Rekening Sekarang
             </Link>

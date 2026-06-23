@@ -20,7 +20,7 @@ export default function EditProdukPage({ params }: { params: Promise<{ id: strin
     categoryId: "",
     description: "",
     retailPrice: "",
-    unit: "kg",
+    unit: "Kg",
     minOrder: "1",
     stock: "0",
     locationText: "",
@@ -37,7 +37,7 @@ export default function EditProdukPage({ params }: { params: Promise<{ id: strin
       .then(data => setCategories(data))
       .catch(err => console.error(err));
 
-    fetch(`/api/products/${params.id}`)
+    fetch(`/api/products/${resolvedParams.id}`)
       .then(res => res.json())
       .then(data => {
         setFormData({
@@ -45,7 +45,7 @@ export default function EditProdukPage({ params }: { params: Promise<{ id: strin
           categoryId: data.categoryId || "",
           description: data.description || "",
           retailPrice: data.retailPrice || "",
-          unit: data.unit || "kg",
+          unit: data.unit || "Kg",
           minOrder: data.minOrder || "1",
           stock: data.stock || "0",
           locationText: data.locationText || "",
@@ -57,11 +57,34 @@ export default function EditProdukPage({ params }: { params: Promise<{ id: strin
         });
       })
       .catch(() => setError("Gagal memuat produk."));
-  }, [params.id]);
+  }, [resolvedParams.id]);
+
+  const toTitleCase = (str: string) => {
+    return str.replace(
+      /\w\S*/g,
+      (text) => text.charAt(0).toUpperCase() + text.substring(1).toLowerCase()
+    );
+  };
+
+  const toSentenceCase = (str: string) => {
+    if (!str) return str;
+    return str.replace(/(^\s*\w|[.!?]\s*\w)/g, (c) => c.toUpperCase());
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    const value = e.target.type === "checkbox" ? (e.target as HTMLInputElement).checked : e.target.value;
+    let value: string | boolean = e.target.type === "checkbox" ? (e.target as HTMLInputElement).checked : e.target.value;
+    
+    if ((e.target.name === "name" || e.target.name === "locationText") && typeof value === "string") {
+      value = toTitleCase(value);
+    }
+    
     setFormData({ ...formData, [e.target.name]: value });
+  };
+
+  const handleBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
+    if (e.target.name === "description") {
+      setFormData({ ...formData, description: toSentenceCase(e.target.value) });
+    }
   };
 
   const handleTierChange = (index: number, field: string, value: string) => {
@@ -195,7 +218,7 @@ export default function EditProdukPage({ params }: { params: Promise<{ id: strin
 
               <div className="col-span-1 md:col-span-2">
                 <label className="block text-sm font-medium mb-1">Deskripsi Produk *</label>
-                <textarea name="description" required rows={4} value={formData.description} onChange={handleChange} className="w-full px-3 py-2 border rounded bg-surface" />
+                <textarea name="description" required rows={4} value={formData.description} onChange={handleChange} onBlur={handleBlur} className="w-full px-3 py-2 border rounded bg-surface" />
               </div>
             </div>
 
@@ -212,12 +235,23 @@ export default function EditProdukPage({ params }: { params: Promise<{ id: strin
               <div>
                 <label className="block text-sm font-medium mb-1">Satuan *</label>
                 <select name="unit" required value={formData.unit} onChange={handleChange} className="w-full px-3 py-2 border rounded bg-surface">
-                  <option value="kg">Kilogram (kg)</option>
-                  <option value="gram">Gram</option>
-                  <option value="liter">Liter</option>
-                  <option value="pcs">Pcs / Buah</option>
-                  <option value="karung">Karung</option>
-                  <option value="kardus">Kardus / Dus</option>
+                  <option value="Kg">Kg</option>
+                  <option value="Gram">Gram</option>
+                  <option value="Liter">Liter</option>
+                  <option value="Pcs / Buah">Pcs / Buah</option>
+                  <option value="Bungkus / Pack">Bungkus / Pack</option>
+                  <option value="Kotak / Dus">Kotak / Dus</option>
+                  <option value="Lusin">Lusin</option>
+                  <option value="Rak">Rak</option>
+                  <option value="Ikat">Ikat</option>
+                  <option value="Karung / Sak">Karung / Sak</option>
+                  <option value="Ekor">Ekor</option>
+                  <option value="Tandan">Tandan</option>
+                  <option value="Sikat">Sikat</option>
+                  <option value="Batang">Batang</option>
+                  <option value="Pertemuan">Pertemuan</option>
+                  <option value="Paket">Paket</option>
+                  <option value="Set">Set</option>
                 </select>
               </div>
               <div>

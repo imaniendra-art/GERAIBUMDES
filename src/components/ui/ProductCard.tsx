@@ -51,7 +51,7 @@ export function ProductCard({ product }: ProductCardProps) {
         </Link>
         
         {product.storeId && (
-          <Link href={`/toko/${product.storeId.slug}`} className="block group/store mb-1">
+          <Link href={`/bumdes/${product.storeId.slug}`} className="block group/store mb-1">
             <div className="text-sm text-text-muted flex items-center group-hover/store:text-primary transition-colors">
               <StoreIcon className="h-3 w-3 mr-1 flex-shrink-0" />
               <span className="truncate">{product.storeId.name}</span>

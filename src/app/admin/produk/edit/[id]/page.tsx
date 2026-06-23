@@ -1,26 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import { Plus, Trash2, ChevronLeft } from "lucide-react";
+import { getProductStatusLabel, getProductBadgeVariant } from "@/lib/utils/status";
+import { Badge } from "@/components/ui/Badge";
 
-export default function TambahProdukPage() {
+export default function EditProdukPage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = use(params);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [categories, setCategories] = useState<{_id: string, name: string}[]>([]);
-
-  useEffect(() => {
-    // Fetch categories on load
-    fetch("/api/categories")
-      .then(res => res.json())
-      .then(data => setCategories(data))
-      .catch(err => console.error(err));
-  }, []);
-
   const [formData, setFormData] = useState({
     name: "",
     categoryId: "",
@@ -33,8 +27,37 @@ export default function TambahProdukPage() {
     shippingNotes: "",
     imageUrl: "",
     isWholesaleAvailable: false,
-    wholesalePriceTiers: [{ minQty: 10, maxQty: "", price: "" }]
+    wholesalePriceTiers: [{ minQty: 10, maxQty: "", price: "" }],
+    status: ""
   });
+
+  useEffect(() => {
+    fetch("/api/categories")
+      .then(res => res.json())
+      .then(data => setCategories(data))
+      .catch(err => console.error(err));
+
+    fetch(`/api/products/${resolvedParams.id}`)
+      .then(res => res.json())
+      .then(data => {
+        setFormData({
+          name: data.name || "",
+          categoryId: data.categoryId || "",
+          description: data.description || "",
+          retailPrice: data.retailPrice || "",
+          unit: data.unit || "Kg",
+          minOrder: data.minOrder || "1",
+          stock: data.stock || "0",
+          locationText: data.locationText || "",
+          shippingNotes: data.shippingNotes || "",
+          imageUrl: data.images?.[0] || "",
+          isWholesaleAvailable: data.isWholesaleAvailable || false,
+          wholesalePriceTiers: data.wholesalePriceTiers?.length ? data.wholesalePriceTiers : [{ minQty: 10, maxQty: "", price: "" }],
+          status: data.status || ""
+        });
+      })
+      .catch(() => setError("Gagal memuat produk."));
+  }, [resolvedParams.id]);
 
   const toTitleCase = (str: string) => {
     return str.replace(
@@ -105,8 +128,8 @@ export default function TambahProdukPage() {
           : []
       };
 
-      const res = await fetch("/api/products", {
-        method: "POST",
+      const res = await fetch(`/api/products/${resolvedParams.id}`, {
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
@@ -116,7 +139,7 @@ export default function TambahProdukPage() {
       if (!res.ok) {
         setError(data.error || "Gagal menyimpan produk.");
       } else {
-        router.push("/dashboard/produk");
+        router.push("/admin/produk");
         router.refresh();
       }
     } catch {
@@ -129,15 +152,15 @@ export default function TambahProdukPage() {
   return (
     <div className="w-full px-4 sm:px-8 lg:px-24 py-8">
       <div className="mb-6">
-        <Link href="/dashboard/produk">
+        <Link href="/admin/produk">
           <span className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors border border-border hover:bg-surface-bg hover:text-text-main h-10 py-2 px-4 bg-surface text-text-main">
-            <ChevronLeft className="h-4 w-4 mr-2" /> Kembali ke Produk
+            <ChevronLeft className="h-4 w-4 mr-2" /> Kembali ke Produk BUMDes
           </span>
         </Link>
       </div>
 
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-text-main">Tambah Produk Baru</h1>
+        <h1 className="text-2xl font-bold text-text-main">Edit Produk</h1>
       </div>
 
       {error && (
@@ -149,18 +172,39 @@ export default function TambahProdukPage() {
       <form onSubmit={handleSubmit}>
         <Card className="mb-6">
           <CardContent className="p-6 space-y-6">
+            
+            <div className="bg-surface-bg p-4 rounded border border-border flex justify-between items-center">
+              <div>
+                <p className="text-sm text-text-muted mb-1">Status Saat Ini:</p>
+                <Badge variant={getProductBadgeVariant(formData.status || "WAITING_APPROVAL")}>
+                  {getProductStatusLabel(formData.status || "WAITING_APPROVAL")}
+                </Badge>
+              </div>
+              <div>
+                <select name="status" value={formData.status} onChange={handleChange} className="px-3 py-2 border rounded text-sm bg-surface">
+                  <option value={formData.status}>{formData.status}</option>
+                  {["ACTIVE", "WAITING_APPROVAL", "REJECTED"].includes(formData.status) && <option value="INACTIVE">Ubah jadi INACTIVE (Sembunyikan)</option>}
+                  {formData.status === "INACTIVE" && <option value="ACTIVE">Aktifkan Kembali</option>}
+                  <option value="DRAFT">Jadikan DRAFT</option>
+                </select>
+              </div>
+            </div>
+
             <h3 className="text-lg font-bold border-b pb-2">Informasi Dasar</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="col-span-1 md:col-span-2">
                 <label className="block text-sm font-medium mb-1">Nama Produk *</label>
-                <input name="name" required value={formData.name} onChange={handleChange} className="w-full px-3 py-2 border rounded bg-surface" placeholder="Contoh: Beras Premium Sidrap" />
+                <input name="name" required value={formData.name} onChange={handleChange} className="w-full px-3 py-2 border rounded bg-surface" />
               </div>
               
               <div>
                 <label className="block text-sm font-medium mb-1">Kategori *</label>
                 <select name="categoryId" required value={formData.categoryId} onChange={handleChange} className="w-full px-3 py-2 border rounded bg-surface">
                   <option value="">Pilih Kategori</option>
+                  {formData.categoryId && !categories.some(c => c._id === formData.categoryId) && (
+                    <option value={formData.categoryId}>(Kategori Tidak Aktif)</option>
+                  )}
                   {categories.map(c => (
                     <option key={c._id} value={c._id}>{c.name}</option>
                   ))}
@@ -169,7 +213,7 @@ export default function TambahProdukPage() {
 
               <div>
                 <label className="block text-sm font-medium mb-1">URL Gambar (Opsional)</label>
-                <input name="imageUrl" value={formData.imageUrl} onChange={handleChange} className="w-full px-3 py-2 border rounded bg-surface" placeholder="https://example.com/image.jpg" />
+                <input name="imageUrl" value={formData.imageUrl} onChange={handleChange} className="w-full px-3 py-2 border rounded bg-surface" />
               </div>
 
               <div className="col-span-1 md:col-span-2">
@@ -216,7 +260,7 @@ export default function TambahProdukPage() {
               </div>
               <div className="col-span-1 md:col-span-2">
                 <label className="block text-sm font-medium mb-1">Lokasi Produk (Teks) *</label>
-                <input name="locationText" required value={formData.locationText} onChange={handleChange} className="w-full px-3 py-2 border rounded bg-surface" placeholder="Contoh: Gudang BUMDes Sidrap" />
+                <input name="locationText" required value={formData.locationText} onChange={handleChange} className="w-full px-3 py-2 border rounded bg-surface" />
               </div>
             </div>
 
@@ -229,7 +273,7 @@ export default function TambahProdukPage() {
 
               {formData.isWholesaleAvailable && (
                 <div className="bg-surface-bg p-4 rounded-md border border-border">
-                  <p className="text-xs text-text-muted mb-4">Tambahkan hingga 5 tingkatan harga grosir. Kosongkan &quot;Max Qty&quot; untuk tier tertinggi (contoh: 50+ pcs).</p>
+                  <p className="text-xs text-text-muted mb-4">Tambahkan hingga 5 tingkatan harga grosir. Kosongkan &quot;Max Qty&quot; untuk tier tertinggi.</p>
                   
                   {formData.wholesalePriceTiers.map((tier, index) => (
                     <div key={index} className="flex flex-wrap md:flex-nowrap gap-3 items-end mb-3 pb-3 border-b border-border last:border-0">
@@ -263,10 +307,9 @@ export default function TambahProdukPage() {
             </div>
 
             <div className="pt-6">
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Menyimpan..." : "Simpan Produk & Ajukan Verifikasi"}
+              <Button type="submit" className="w-full" disabled={loading || !formData.name}>
+                {loading ? "Menyimpan..." : "Simpan Perubahan"}
               </Button>
-              <p className="text-xs text-center text-text-muted mt-3">Produk baru harus disetujui oleh Admin sebelum tampil di Marketplace.</p>
             </div>
           </CardContent>
         </Card>

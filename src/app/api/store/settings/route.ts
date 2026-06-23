@@ -26,6 +26,8 @@ export async function PUT(req: NextRequest) {
     }
 
     const body = await req.json();
+    console.log("BODY DARI CLIENT:", body);
+    console.log("Google Maps URL dari client:", body.googleMapsUrl);
 
     // Basic Validation
     if (!body.name || body.name.trim() === "") {
@@ -53,6 +55,10 @@ export async function PUT(req: NextRequest) {
     if (body.phoneNumber !== undefined) store.phoneNumber = body.phoneNumber;
     if (body.whatsappNumber !== undefined) store.whatsappNumber = body.whatsappNumber;
     if (body.address !== undefined) store.address = body.address;
+    if (body.googleMapsUrl !== undefined) store.googleMapsUrl = body.googleMapsUrl;
+    if (body.directorName !== undefined) store.directorName = body.directorName;
+    if (body.villageHeadName !== undefined) store.villageHeadName = body.villageHeadName;
+    if (body.nib !== undefined) store.nib = body.nib;
     if (body.village !== undefined) store.village = body.village;
     if (body.villageCode !== undefined) store.villageCode = body.villageCode;
     if (body.district !== undefined) store.district = body.district;
@@ -76,6 +82,18 @@ export async function PUT(req: NextRequest) {
     }
 
     await store.save();
+
+    // Pastikan konsistensi koleksi data
+    if (profile.name !== body.name) {
+      profile.name = body.name;
+      await profile.save();
+    }
+
+    const { revalidatePath } = await import("next/cache");
+    revalidatePath("/admin/bumdes");
+    revalidatePath("/admin/akun");
+    revalidatePath("/dashboard/toko/edit");
+    revalidatePath("/dashboard");
 
     return NextResponse.json({ success: true, store });
   } catch (error: any) {

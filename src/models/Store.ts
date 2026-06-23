@@ -10,6 +10,10 @@ export interface IStore extends Document {
   phoneNumber?: string;
   whatsappNumber?: string;
   address?: string;
+  googleMapsUrl?: string;
+  directorName?: string;
+  villageHeadName?: string;
+  nib?: string;
   village?: string;
   villageCode?: string;
   district?: string;
@@ -43,6 +47,10 @@ const StoreSchema: Schema = new Schema(
     phoneNumber: { type: String },
     whatsappNumber: { type: String },
     address: { type: String },
+    googleMapsUrl: { type: String },
+    directorName: { type: String },
+    villageHeadName: { type: String },
+    nib: { type: String },
     village: { type: String },
     villageCode: { type: String },
     district: { type: String },

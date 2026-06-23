@@ -86,7 +86,7 @@ export default async function DashboardPage() {
               <Clock className="h-16 w-16 text-warning mx-auto mb-4" />
               <h2 className="text-2xl font-bold mb-2">Menunggu Verifikasi Admin</h2>
               <p className="text-text-muted mb-6">
-                Data pendaftaran BUMDes Anda ({profile.name}) sedang ditinjau oleh tim kami. Anda akan dapat menggunakan fitur toko BUMDes setelah diverifikasi.
+                Data pendaftaran BUMDes Anda ({profile.name}) sedang ditinjau oleh tim kami. Anda akan dapat menggunakan fitur BUMDes setelah diverifikasi.
               </p>
               <form action="/api/auth/logout" method="POST">
                 <Button type="submit" variant="outline">Keluar</Button>
@@ -169,7 +169,7 @@ export default async function DashboardPage() {
               <LayoutDashboard className="h-5 w-5 mr-3" /> MENU UTAMA
             </Link>
             <Link href="/dashboard/toko/edit" className="flex items-center hover:bg-surface/10 px-3 py-2.5 rounded-md text-sm font-medium transition-colors">
-              <Settings className="h-5 w-5 mr-3" /> Profil Toko
+              <Settings className="h-5 w-5 mr-3" /> Profil BUMDes
             </Link>
             <Link href="/dashboard/produk" className="flex items-center hover:bg-surface/10 px-3 py-2.5 rounded-md text-sm font-medium transition-colors">
               <Package className="h-5 w-5 mr-3" /> Produk Saya
@@ -200,7 +200,7 @@ export default async function DashboardPage() {
         {/* Main Content */}
         <main className="flex-1 p-4 sm:p-8">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-8 gap-4">
-            <h1 className="text-2xl font-bold text-text-main">Ringkasan Toko</h1>
+            <h1 className="text-2xl font-bold text-text-main">Ringkasan BUMDes</h1>
             <div className="flex gap-2">
               <Link href="/dashboard/laporan/penjualan" className="w-full sm:w-auto">
                 <Button variant="outline" className="w-full">Lihat Laporan</Button>
@@ -215,7 +215,7 @@ export default async function DashboardPage() {
           <div className="md:hidden grid grid-cols-2 gap-3 mb-8">
             <Link href="/dashboard/toko/edit" className="flex flex-col items-center justify-center bg-surface p-4 rounded-lg border border-border shadow-sm hover:bg-surface-bg transition-colors">
               <Settings className="h-6 w-6 text-primary mb-2" />
-              <span className="text-xs font-bold text-center">Profil Toko</span>
+              <span className="text-xs font-bold text-center">Profil BUMDes</span>
             </Link>
             <Link href="/dashboard/produk" className="flex flex-col items-center justify-center bg-surface p-4 rounded-lg border border-border shadow-sm hover:bg-surface-bg transition-colors">
               <Package className="h-6 w-6 text-primary mb-2" />
@@ -248,7 +248,7 @@ export default async function DashboardPage() {
               </div>
               <div>
                 <h4 className="font-bold text-lg mb-1">⚠️ Data Rekening Belum Lengkap!</h4>
-                <p className="text-sm font-medium">Lengkapi data rekening toko agar pembeli dapat melakukan pembayaran manual dengan lancar.</p>
+                <p className="text-sm font-medium">Lengkapi data rekening BUMDes agar pembeli dapat melakukan pembayaran manual dengan lancar.</p>
                 <Link href="/dashboard/toko/edit" className="text-sm font-extrabold bg-white text-black border-2 border-black px-4 py-2 rounded mt-3 inline-block hover:bg-gray-100 transition-colors shadow-sm">
                   Lengkapi Rekening Sekarang
                 </Link>

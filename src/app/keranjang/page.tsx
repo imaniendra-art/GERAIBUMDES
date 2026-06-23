@@ -81,7 +81,7 @@ export default function KeranjangPage() {
               <Card key={group.storeId} className="overflow-hidden border-border">
                 {/* Store Header */}
                 <div className="bg-surface-bg border-b border-border p-4 flex justify-between items-center">
-                  <Link href={`/toko/${group.storeSlug}`} className="flex items-center text-text-main hover:text-primary transition-colors">
+                  <Link href={`/bumdes/${group.storeSlug}`} className="flex items-center text-text-main hover:text-primary transition-colors">
                     <StoreIcon className="h-5 w-5 mr-2 text-primary" />
                     <span className="font-bold">{group.storeName}</span>
                   </Link>

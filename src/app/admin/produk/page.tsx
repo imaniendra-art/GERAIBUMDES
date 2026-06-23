@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { formatCurrency } from "@/lib/utils/formatters";
 import { getProductBadgeVariant, getProductStatusLabel } from "@/lib/utils/status";
+import { ProductActionButtons } from "@/components/products/ProductActionButtons";
 
 export default async function AdminProductsList({
   searchParams,
@@ -76,9 +77,12 @@ export default async function AdminProductsList({
                     </Badge>
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <Link href={`/admin/produk/${product._id}`}>
-                      <Button variant="outline" size="sm">Tinjau</Button>
-                    </Link>
+                    <ProductActionButtons 
+                      productId={product._id.toString()} 
+                      productName={product.name} 
+                      editUrl={`/admin/produk/edit/${product._id}`} 
+                      viewUrl={`/admin/produk/${product._id}`}
+                    />
                   </td>
                 </tr>
               ))}

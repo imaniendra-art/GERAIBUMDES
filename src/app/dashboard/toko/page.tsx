@@ -29,13 +29,13 @@ export default async function DashboardTokoPage() {
     <div className="w-full px-4 sm:px-8 lg:px-24 py-8 space-y-8">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-text-main">Profil Toko BUMDes</h1>
-          <p className="text-text-muted">Kelola informasi toko dan rekening pembayaran manual.</p>
+          <h1 className="text-2xl font-bold text-text-main">Profil BUMDes</h1>
+          <p className="text-text-muted">Kelola informasi BUMDes dan rekening pembayaran manual.</p>
         </div>
         <Link href="/dashboard/toko/edit">
           <Button className="flex items-center">
             <Edit className="h-4 w-4 mr-2" />
-            Edit Profil Toko
+            Edit Profil BUMDes
           </Button>
         </Link>
       </div>
@@ -45,7 +45,7 @@ export default async function DashboardTokoPage() {
           <AlertCircle className="h-5 w-5 mr-3 flex-shrink-0 mt-0.5" />
           <div>
             <h4 className="font-bold mb-1">Rekening Pembayaran Belum Diatur</h4>
-            <p className="text-sm">Pembeli tidak akan dapat melihat instruksi pembayaran saat melakukan checkout pesanan. Segera lengkapi data rekening toko Anda.</p>
+            <p className="text-sm">Pembeli tidak akan dapat melihat instruksi pembayaran saat melakukan checkout pesanan. Segera lengkapi data rekening BUMDes Anda.</p>
             <Link href="/dashboard/toko/edit" className="text-sm font-semibold underline mt-2 inline-block">
               Lengkapi Sekarang
             </Link>
@@ -80,7 +80,7 @@ export default async function DashboardTokoPage() {
                 </div>
                 
                 <div className="mb-6">
-                  <h3 className="text-sm font-semibold text-text-muted mb-2 uppercase tracking-wider">Deskripsi Toko</h3>
+                  <h3 className="text-sm font-semibold text-text-muted mb-2 uppercase tracking-wider">Deskripsi BUMDes</h3>
                   <p className="text-text-main whitespace-pre-wrap">{store.description || "Belum ada deskripsi."}</p>
                 </div>
               </div>
@@ -153,7 +153,7 @@ export default async function DashboardTokoPage() {
               ) : (
                 <div className="text-center py-6">
                   <Landmark className="h-12 w-12 text-border mx-auto mb-3" />
-                  <p className="text-sm text-text-muted mb-4">Anda belum mengatur rekening pembayaran manual untuk toko ini.</p>
+                  <p className="text-sm text-text-muted mb-4">Anda belum mengatur rekening pembayaran manual untuk BUMDes ini.</p>
                   <Link href="/dashboard/toko/edit">
                     <Button variant="outline" size="sm" className="w-full">Atur Rekening</Button>
                   </Link>

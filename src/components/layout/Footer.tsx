@@ -16,7 +16,7 @@ export default function Footer() {
             <ul className="space-y-2">
               <li><Link href="/" className="hover:text-secondary transition-colors">Beranda</Link></li>
               <li><Link href="/produk" className="hover:text-secondary transition-colors">Semua Produk</Link></li>
-              <li><Link href="/toko" className="hover:text-secondary transition-colors">Toko BUMDes</Link></li>
+              <li><Link href="/bumdes" className="hover:text-secondary transition-colors">Direktori BUMDes</Link></li>
               <li><Link href="/register" className="hover:text-secondary transition-colors text-secondary">Daftarkan BUMDes</Link></li>
             </ul>
           </div>

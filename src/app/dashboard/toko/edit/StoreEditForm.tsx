@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader } from "@/components/ui/Card";
-import { Store, Building, MapPin, Landmark, Phone, ImageIcon, Save, ArrowLeft, Loader2 } from "lucide-react";
+import { Store, Building, MapPin, Landmark, Phone, ImageIcon, Save, ArrowLeft, Loader2, Users, FileCheck } from "lucide-react";
 import Link from "next/link";
 import { LocationSelector } from "@/components/ui/LocationSelector";
 
@@ -50,10 +50,27 @@ export default function StoreEditForm({ initialData }: { initialData: any }) {
     setError(null);
 
     try {
+      const payload = { ...formData };
+      
+      // Mencegah penimpaan data wilayah dengan string kosong
+      if (!payload.provinceCode || !payload.regencyCode || !payload.districtCode || !payload.villageCode) {
+        delete payload.province;
+        delete payload.regency;
+        delete payload.district;
+        delete payload.village;
+        delete payload.provinceCode;
+        delete payload.regencyCode;
+        delete payload.districtCode;
+        delete payload.villageCode;
+      }
+
+      console.log("PAYLOAD SEBELUM FETCH:", payload);
+      console.log("Google Maps URL dalam payload:", payload.googleMapsUrl);
+
       const res = await fetch("/api/store/settings", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
@@ -61,8 +78,9 @@ export default function StoreEditForm({ initialData }: { initialData: any }) {
         throw new Error(data.error || "Gagal menyimpan pengaturan");
       }
 
-      router.push("/dashboard");
+      alert("Profil BUMDes berhasil disimpan!");
       router.refresh();
+      router.push("/dashboard");
     } catch (err: any) {
       setError(err.message);
       setIsSaving(false);
@@ -108,8 +126,34 @@ export default function StoreEditForm({ initialData }: { initialData: any }) {
               <label className={labelClass}>Deskripsi BUMDes</label>
               <textarea name="description" rows={4} value={formData.description} onChange={handleChange} className={inputClass} placeholder="Ceritakan keunggulan produk dan BUMDes Anda..."></textarea>
             </div>
+
+            <div className="pt-2 pb-1 border-t border-border mt-4">
+              <h4 className="font-semibold text-sm text-text-main flex items-center mb-4">
+                <Users className="h-4 w-4 mr-2 text-primary" /> Struktur Kepengurusan
+              </h4>
+              <div className="space-y-4">
+                <div>
+                  <label className={labelClass}>Nama Direktur BUMDes (Opsional)</label>
+                  <input type="text" name="directorName" value={formData.directorName} onChange={handleChange} className={inputClass} placeholder="Nama Lengkap Direktur" />
+                </div>
+                <div>
+                  <label className={labelClass}>Nama Kepala Desa / Penasihat (Opsional)</label>
+                  <input type="text" name="villageHeadName" value={formData.villageHeadName} onChange={handleChange} className={inputClass} placeholder="Nama Lengkap Kepala Desa / Pembina" />
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-2 pb-1 border-t border-border mt-4">
+              <h4 className="font-semibold text-sm text-text-main flex items-center mb-4">
+                <FileCheck className="h-4 w-4 mr-2 text-primary" /> Legalitas & Perizinan
+              </h4>
+              <div>
+                <label className={labelClass}>NIB (Nomor Induk Berusaha) (Opsional)</label>
+                <input type="text" name="nib" value={formData.nib} onChange={handleChange} className={inputClass} placeholder="Masukkan 13 digit Nomor Induk Berusaha (NIB)" />
+              </div>
+            </div>
             
-            <div className="space-y-4 pt-2">
+            <div className="space-y-4 pt-2 border-t border-border mt-4">
               <div>
                 <label className={labelClass}>URL Logo (Opsional)</label>
                 <div className="flex space-x-2">
@@ -165,6 +209,11 @@ export default function StoreEditForm({ initialData }: { initialData: any }) {
               <label className={labelClass}>Alamat Lengkap Operasional</label>
               <textarea name="address" rows={3} value={formData.address} onChange={handleChange} className={inputClass} placeholder="Jalan, RT/RW..."></textarea>
             </div>
+            
+            <div>
+              <label className={labelClass}>Link Google Maps (Opsional)</label>
+              <input type="text" name="googleMapsUrl" value={formData.googleMapsUrl} onChange={handleChange} className={inputClass} placeholder="Misal: https://maps.app.goo.gl/..." />
+            </div>
 
             <LocationSelector
               onLocationChange={handleLocationChange}
@@ -191,6 +240,7 @@ export default function StoreEditForm({ initialData }: { initialData: any }) {
             </div>
           </CardContent>
         </Card>
+
 
         {/* Rekening Pembayaran */}
         <Card className="border-secondary/30 shadow-sm">

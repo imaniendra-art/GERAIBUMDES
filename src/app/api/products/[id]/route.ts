@@ -76,3 +76,34 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
     return NextResponse.json({ error: "Gagal memuat produk" }, { status: 500 });
   }
 }
+
+export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    const resolvedParams = await params;
+    const session = await getSession();
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    await dbConnect();
+    
+    if (session.role === "BUMDES_ADMIN") {
+      const product = await Product.findOneAndDelete({ _id: resolvedParams.id, createdBy: session.userId });
+      if (!product) {
+        return NextResponse.json({ error: "Produk tidak ditemukan atau bukan milik Anda." }, { status: 404 });
+      }
+    } else if (session.role === "SUPER_ADMIN" || session.role === "PLATFORM_ADMIN") {
+      const product = await Product.findByIdAndDelete(resolvedParams.id);
+      if (!product) {
+        return NextResponse.json({ error: "Produk tidak ditemukan." }, { status: 404 });
+      }
+    } else {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    return NextResponse.json({ message: "Produk berhasil dihapus" });
+  } catch (error: unknown) {
+    console.error("Delete Product Error:", error);
+    return NextResponse.json({ error: "Terjadi kesalahan sistem." }, { status: 500 });
+  }
+}

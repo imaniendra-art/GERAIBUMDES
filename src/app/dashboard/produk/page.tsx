@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { formatCurrency } from "@/lib/utils/formatters";
 import { getProductStatusLabel, getProductBadgeVariant } from "@/lib/utils/status";
+import { ProductActionButtons } from "@/components/products/ProductActionButtons";
 
 export default async function BUMDesProductsPage() {
   const session = await getSession();
@@ -100,9 +101,11 @@ export default async function BUMDesProductsPage() {
                     </Badge>
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <Link href={`/dashboard/produk/${product._id}/edit`}>
-                      <Button variant="outline" size="sm">Edit</Button>
-                    </Link>
+                    <ProductActionButtons 
+                      productId={product._id.toString()} 
+                      productName={product.name} 
+                      editUrl={`/dashboard/produk/${product._id}/edit`} 
+                    />
                   </td>
                 </tr>
               ))}

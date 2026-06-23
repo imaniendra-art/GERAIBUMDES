@@ -51,10 +51,10 @@ export default async function Home() {
         <div className="w-full px-4 sm:px-8 lg:px-24 relative z-10">
           <div className="max-w-4xl">
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-6">
-              Pasar Digital <span className="whitespace-nowrap">Antar-BUMDes</span>
+              Platform Bisnis Digital <span className="whitespace-nowrap">Antar-BUMDes</span>
             </h1>
             <p className="text-xl sm:text-2xl text-surface/90 mb-10 max-w-2xl leading-relaxed">
-              Menghubungkan BUMDes penyedia produk dengan BUMDes yang membutuhkan pasokan, agar kebutuhan usaha antar-daerah dapat saling terpenuhi.
+              Menghubungkan BUMDes penyedia komoditas, layanan jasa, dan potensi pariwisata dengan mitra strategis untuk saling memenuhi kebutuhan bisnis dan menggerakkan ekonomi antar-daerah.
             </p>
             <div className="flex flex-col sm:flex-row flex-wrap gap-4">
               <Link href="/produk" className="w-full sm:w-auto">
@@ -67,7 +67,7 @@ export default async function Home() {
                   Lihat Produk
                 </Button>
               </Link>
-              <Link href="/toko" className="w-full sm:w-auto">
+              <Link href="/bumdes" className="w-full sm:w-auto">
                 <Button variant="outline" size="lg" className="w-full bg-surface/10 text-surface border-surface hover:bg-surface/20">
                   Lihat Toko BUMDes
                 </Button>
@@ -197,7 +197,7 @@ export default async function Home() {
             <h2 className="text-2xl font-bold text-text-main mb-2">BUMDes Terverifikasi</h2>
             <p className="text-text-muted">Jejaring penyedia pasokan resmi di ekosistem geraibumdes.com.</p>
           </div>
-          <Link href="/toko" className="hidden sm:flex items-center text-primary font-semibold hover:text-primary-dark whitespace-nowrap ml-4">
+          <Link href="/bumdes" className="hidden sm:flex items-center text-primary font-semibold hover:text-primary-dark whitespace-nowrap ml-4">
             Lihat Semua BUMDes <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
         </div>
@@ -221,7 +221,7 @@ export default async function Home() {
         )}
         
         <div className="mt-8 text-center sm:hidden px-4">
-          <Link href="/toko">
+          <Link href="/bumdes">
             <Button variant="outline" className="w-full">Lihat Semua BUMDes</Button>
           </Link>
         </div>

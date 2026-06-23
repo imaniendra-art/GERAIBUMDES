@@ -47,7 +47,11 @@ const ProductSchema: Schema = new Schema(
     description: { type: String, required: true },
     retailPrice: { type: Number, required: true },
     minOrder: { type: Number, default: 1 },
-    unit: { type: String, required: true },
+    unit: { 
+      type: String, 
+      required: true,
+      enum: ["Kg", "Gram", "Liter", "Pcs / Buah", "Bungkus / Pack", "Kotak / Dus", "Lusin", "Rak", "Ikat", "Karung / Sak", "Ekor", "Tandan", "Sikat", "Batang", "Pertemuan", "Paket", "Set"]
+    },
     stock: { type: Number, required: true, default: 0 },
     images: [{ type: String }],
     isWholesaleAvailable: { type: Boolean, default: false },

@@ -71,7 +71,7 @@ export default function NavbarClient({ session, unreadCount = 0 }: NavbarClientP
                 Produk
               </Link>
               <Link 
-                href="/toko" 
+                href="/bumdes" 
                 className="h-12 px-5 rounded-md flex items-center justify-center border border-surface/30 bg-surface/10 hover:bg-surface/20 transition-colors text-sm font-semibold whitespace-nowrap"
               >
                 BUMDes
@@ -191,7 +191,7 @@ export default function NavbarClient({ session, unreadCount = 0 }: NavbarClientP
             <Link href="/produk" className="block px-3 py-2 rounded-md text-base font-medium text-surface hover:bg-primary" onClick={toggleMobileMenu}>
               Produk
             </Link>
-            <Link href="/toko" className="block px-3 py-2 rounded-md text-base font-medium text-surface hover:bg-primary" onClick={toggleMobileMenu}>
+            <Link href="/bumdes" className="block px-3 py-2 rounded-md text-base font-medium text-surface hover:bg-primary" onClick={toggleMobileMenu}>
               BUMDes
             </Link>
             <Link href="/#cara-kerja" className="block px-3 py-2 rounded-md text-base font-medium text-surface hover:bg-primary" onClick={toggleMobileMenu}>

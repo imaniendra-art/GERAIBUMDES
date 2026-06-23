@@ -47,7 +47,7 @@ export default function CheckoutForm({ storeId, user }: CheckoutFormProps) {
     return (
       <div className="text-center py-20 bg-surface rounded-lg border border-border">
         <h2 className="text-xl font-bold mb-2">Item Tidak Ditemukan</h2>
-        <p className="text-text-muted mb-6">Keranjang Anda untuk toko ini kosong.</p>
+        <p className="text-text-muted mb-6">Keranjang Anda untuk BUMDes ini kosong.</p>
         <Button onClick={() => router.push("/keranjang")}>Kembali ke Keranjang</Button>
       </div>
     );

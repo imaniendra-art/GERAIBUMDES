@@ -99,7 +99,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
               {/* Store & CTA */}
               <div className="mt-auto pt-6 border-t border-border flex flex-col xl:flex-row gap-6 xl:items-center justify-between">
-                <Link href={`/toko/${product.storeId?.slug}`} className="flex items-center w-full xl:w-auto hover:bg-surface-bg p-2 rounded-lg transition-colors -ml-2">
+                <Link href={`/bumdes/${product.storeId?.slug}`} className="flex items-center w-full xl:w-auto hover:bg-surface-bg p-2 rounded-lg transition-colors -ml-2">
                   <div className="h-10 w-10 bg-primary/10 rounded-full flex items-center justify-center text-primary mr-3">
                     <StoreIcon className="h-5 w-5" />
                   </div>

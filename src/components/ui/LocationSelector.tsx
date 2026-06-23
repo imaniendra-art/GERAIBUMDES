@@ -188,7 +188,6 @@ export function LocationSelector({
             value={selected.provinceCode}
             onChange={(e) => handleChange("province", e.target.value)}
             disabled={loading.province || provinces.length === 0}
-            required
           >
             <option value="">Pilih Provinsi</option>
             {provinces.map(p => (
@@ -207,7 +206,6 @@ export function LocationSelector({
             value={selected.regencyCode}
             onChange={(e) => handleChange("regency", e.target.value)}
             disabled={!selected.provinceCode || loading.regency || regencies.length === 0}
-            required
           >
             <option value="">Pilih Kabupaten/Kota</option>
             {regencies.map(r => (
@@ -226,7 +224,6 @@ export function LocationSelector({
             value={selected.districtCode}
             onChange={(e) => handleChange("district", e.target.value)}
             disabled={!selected.regencyCode || loading.district || districts.length === 0}
-            required
           >
             <option value="">Pilih Kecamatan</option>
             {districts.map(d => (
@@ -245,7 +242,6 @@ export function LocationSelector({
             value={selected.villageCode}
             onChange={(e) => handleChange("village", e.target.value)}
             disabled={!selected.districtCode || loading.village || villages.length === 0}
-            required
           >
             <option value="">Pilih Desa/Kelurahan</option>
             {villages.map(v => (

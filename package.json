@@ -6,7 +6,8 @@
     "dev": "next dev -p 3041",
     "build": "next build",
     "start": "next start -p 3040",
-    "lint": "next lint"
+    "lint": "next lint",
+    "seed:sulteng": "npx tsx scripts/seed-sulteng.ts"
   },
   "dependencies": {
     "@types/bcryptjs": "^2.4.6",
