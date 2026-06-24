@@ -91,11 +91,13 @@ export default function StoreEditForm({ initialData }: { initialData: any }) {
         throw new Error(data.error || "Gagal menyimpan pengaturan");
       }
 
-      alert("Profil BUMDes berhasil disimpan!");
+      alert("Profil BUMDes berhasil diperbarui!");
       router.refresh();
       router.push("/dashboard");
     } catch (err: any) {
+      console.error("Save error:", err);
       setError(err.message);
+      alert("Gagal: " + err.message);
       setIsSaving(false);
     }
   };
@@ -159,11 +161,11 @@ export default function StoreEditForm({ initialData }: { initialData: any }) {
               <div className="space-y-4">
                 <div>
                   <label className={labelClass}>Nama Direktur BUMDes (Opsional)</label>
-                  <input type="text" name="directorName" value={formData.directorName} onChange={handleChange} className={inputClass} placeholder="Nama Lengkap Direktur" />
+                  <input type="text" name="directorName" value={formData.directorName || ""} onChange={handleChange} className={inputClass} placeholder="Nama Lengkap Direktur" />
                 </div>
                 <div>
                   <label className={labelClass}>Nama Kepala Desa / Penasihat (Opsional)</label>
-                  <input type="text" name="villageHeadName" value={formData.villageHeadName} onChange={handleChange} className={inputClass} placeholder="Nama Lengkap Kepala Desa / Pembina" />
+                  <input type="text" name="villageHeadName" value={formData.villageHeadName || ""} onChange={handleChange} className={inputClass} placeholder="Nama Lengkap Kepala Desa / Pembina" />
                 </div>
               </div>
             </div>
@@ -174,7 +176,7 @@ export default function StoreEditForm({ initialData }: { initialData: any }) {
               </h4>
               <div>
                 <label className={labelClass}>NIB (Nomor Induk Berusaha) (Opsional)</label>
-                <input type="text" name="nib" value={formData.nib} onChange={handleChange} className={inputClass} placeholder="Masukkan 13 digit Nomor Induk Berusaha (NIB)" />
+                <input type="text" name="nib" value={formData.nib || ""} onChange={handleChange} className={inputClass} placeholder="Masukkan 13 digit Nomor Induk Berusaha (NIB)" />
               </div>
             </div>
             

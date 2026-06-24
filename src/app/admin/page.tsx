@@ -163,9 +163,16 @@ export default async function AdminDashboardPage() {
       </div>
 
       <div className="mt-8 mb-8">
-        <h2 className="text-xl font-bold text-text-main mb-4 flex items-center gap-2">
-          <Activity className="h-5 w-5 text-primary" /> Aktivitas Terakhir Admin
-        </h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-bold text-text-main flex items-center gap-2">
+            <Activity className="h-5 w-5 text-primary" /> Aktivitas Terakhir Admin
+          </h2>
+          <Link href="/admin/laporan/aktivitas">
+            <Button variant="outline" size="sm" className="text-xs">
+              Lihat Semua Log
+            </Button>
+          </Link>
+        </div>
         <Card className="border border-border">
           <CardContent className="p-0">
             <div className="overflow-x-auto">

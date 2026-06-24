@@ -95,7 +95,9 @@ export default async function AdminAccountsPage({ searchParams }: { searchParams
                     {user.email}
                   </td>
                   <td className="px-6 py-4">
-                    {user.phoneNumber}
+                    {activeTab === 'bumdes' && bumdesMap.get(user._id.toString())?.contactNumber 
+                      ? bumdesMap.get(user._id.toString()).contactNumber 
+                      : (user.phoneNumber || "-")}
                   </td>
                   {activeTab === 'bumdes' && (
                     <>

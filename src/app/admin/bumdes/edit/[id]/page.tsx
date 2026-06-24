@@ -5,7 +5,7 @@ import BumdesProfile from "@/models/BumdesProfile";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
-import { updateBumdesProfile } from "../../actions";
+import AdminBumdesEditForm from "./AdminBumdesEditForm";
 
 export default async function AdminEditBumdesPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await getSession();
@@ -32,6 +32,9 @@ export default async function AdminEditBumdesPage({ params }: { params: Promise<
     );
   }
 
+  // Convert lean document to plain object, handle ObjectId parsing
+  const plainProfile = JSON.parse(JSON.stringify(profile));
+
   return (
     <div className="w-full max-w-3xl mx-auto py-8 px-4">
       <div className="flex justify-between items-center mb-6">
@@ -46,69 +49,7 @@ export default async function AdminEditBumdesPage({ params }: { params: Promise<
 
       <Card>
         <CardContent className="p-6">
-          <form action={updateBumdesProfile.bind(null, bumdesId)} className="space-y-6">
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-text-main mb-1">
-                Nama BUMDes
-              </label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                defaultValue={profile.name}
-                required
-                className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-primary focus:border-primary bg-surface text-text-main"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="directorName" className="block text-sm font-medium text-text-main mb-1">
-                Nama Direktur/Ketua
-              </label>
-              <input
-                id="directorName"
-                name="directorName"
-                type="text"
-                defaultValue={profile.directorName}
-                required
-                className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-primary focus:border-primary bg-surface text-text-main"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="contactNumber" className="block text-sm font-medium text-text-main mb-1">
-                Nomor Telepon/WhatsApp
-              </label>
-              <input
-                id="contactNumber"
-                name="contactNumber"
-                type="text"
-                defaultValue={profile.contactNumber}
-                required
-                className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-primary focus:border-primary bg-surface text-text-main"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="description" className="block text-sm font-medium text-text-main mb-1">
-                Deskripsi Singkat
-              </label>
-              <textarea
-                id="description"
-                name="description"
-                defaultValue={profile.description}
-                required
-                rows={4}
-                className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-primary focus:border-primary bg-surface text-text-main"
-              />
-            </div>
-
-            <div className="pt-4 border-t border-border flex justify-end">
-              <Button type="submit" className="bg-primary hover:bg-primary-dark">
-                Simpan Perubahan
-              </Button>
-            </div>
-          </form>
+          <AdminBumdesEditForm bumdesId={bumdesId} profile={plainProfile} />
         </CardContent>
       </Card>
     </div>

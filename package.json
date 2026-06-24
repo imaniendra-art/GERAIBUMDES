@@ -9,7 +9,13 @@
     "lint": "next lint",
     "seed:sulteng": "npx tsx scripts/seed-sulteng.ts",
     "import:bumdes": "npx tsx scripts/import-bumdes.ts",
-    "import:products": "npx tsx scripts/import-products.ts"
+    "import:products": "npx tsx scripts/import-products.ts",
+    "import:products-sipatokkong": "npx tsx scripts/import-products-sipatokkong.ts",
+    "import:products-buae": "npx tsx scripts/import-products-buae.ts",
+    "import:products-compong": "npx tsx scripts/import-products-compong.ts",
+    "import:staycation-compong": "npx tsx scripts/import-staycation-compong.ts",
+    "import:products-laemanta": "npx tsx scripts/import-products-laemanta.ts",
+    "import:products-gangga": "npx tsx scripts/import-products-gangga.ts"
   },
   "dependencies": {
     "@types/bcryptjs": "^2.4.6",

@@ -75,10 +75,10 @@ export default async function StoreProfilePage({
                 <h1 className="text-2xl sm:text-3xl font-bold text-text-main">{store.name}</h1>
                 {(() => {
                   const locationParts = [
-                    store.bumdesId?.village,
-                    store.bumdesId?.district,
-                    store.bumdesId?.regency,
-                    store.bumdesId?.province
+                    store.village || store.bumdesId?.village,
+                    store.district || store.bumdesId?.district,
+                    store.regency || store.bumdesId?.regency,
+                    store.province || store.bumdesId?.province
                   ].filter(part => part && part !== "-");
                   const locationText = locationParts.length > 0 ? locationParts.join(", ") : "Alamat belum dilengkapi";
                   

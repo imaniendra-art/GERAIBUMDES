@@ -111,14 +111,19 @@ export default function NavbarClient({ session, unreadCount = 0, storeSlug }: Na
                     </span>
                   </Link>
                   <Link 
-                    href={session.role === "SUPER_ADMIN" ? "/admin" : (storeSlug ? `/bumdes/${storeSlug}` : "/dashboard")} 
+                    href={session.role === "SUPER_ADMIN" ? "/admin/akun" : (storeSlug ? `/bumdes/${storeSlug}` : "/dashboard")} 
                     className="h-8 w-8 bg-secondary rounded-full flex items-center justify-center text-secondary-dark font-bold hover:scale-105 transition-transform group relative"
-                    aria-label="Profil Publik BUMDes"
+                    aria-label={session.role === "SUPER_ADMIN" ? "Manajemen Akun" : "Profil Publik BUMDes"}
                   >
                     <User className="h-5 w-5" />
                     {session.role === "BUMDES_ADMIN" && storeSlug && (
                       <span className="absolute top-10 right-0 w-max bg-surface text-text-main text-xs font-bold px-2 py-1 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
                         Lihat Profil Publik
+                      </span>
+                    )}
+                    {session.role === "SUPER_ADMIN" && (
+                      <span className="absolute top-10 right-0 w-max bg-surface text-text-main text-xs font-bold px-2 py-1 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                        Manajemen Akun
                       </span>
                     )}
                   </Link>

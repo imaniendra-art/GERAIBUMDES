@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { resetUserPassword, deleteUserAccount } from "./actions";
 import { Button } from "@/components/ui/Button";
 import { RefreshCw, Key, Trash2, Loader2 } from "lucide-react";
@@ -60,6 +61,16 @@ export function AccountActions({ userId, userName }: { userId: string, userName:
   return (
     <div className="flex flex-col items-end gap-2">
       <div className="flex gap-2">
+        <Link href={`/admin/akun/edit/${userId}`}>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            disabled={isResetting || isDeleting}
+            className="text-xs py-1 h-8"
+          >
+            Edit
+          </Button>
+        </Link>
         <Button 
           variant="outline" 
           size="sm" 

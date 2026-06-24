@@ -49,9 +49,9 @@ export default async function AdminBumdesList() {
             <tbody>
               {profiles.map((profile) => {
                 const user = profile.userId as any;
-                const pengelolaName = user?.name || "-";
-                const pengelolaPhone = user?.phoneNumber || "-";
-                const waUrl = formatWhatsAppUrl(user?.phoneNumber);
+                const pengelolaName = profile.directorName || user?.name || "-";
+                const pengelolaPhone = profile.contactNumber || user?.phoneNumber || "-";
+                const waUrl = formatWhatsAppUrl(pengelolaPhone !== "-" ? pengelolaPhone : undefined);
 
                 return (
                 <tr key={profile._id.toString()} className="border-b border-border hover:bg-surface-bg/50">

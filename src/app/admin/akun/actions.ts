@@ -136,3 +136,49 @@ export async function addAdminAccount(formData: FormData) {
     return { success: false, error: "Terjadi kesalahan sistem saat menambahkan admin." };
   }
 }
+
+export async function editUserAccount(userId: string, formData: FormData) {
+  const session = await getSession();
+  if (!session || session.role !== "SUPER_ADMIN") {
+    return { success: false, error: "Hanya SUPER_ADMIN yang dapat mengedit akun." };
+  }
+
+  const name = formData.get("name") as string;
+  const email = formData.get("email") as string;
+  const phoneNumber = formData.get("phoneNumber") as string;
+  const role = formData.get("role") as string;
+
+  if (!name || !email || !phoneNumber || !role) {
+    return { success: false, error: "Semua kolom wajib diisi." };
+  }
+
+  try {
+    await dbConnect();
+
+    // Pastikan email belum dipakai user lain
+    const existingUser = await User.findOne({ email, _id: { $ne: userId } });
+    if (existingUser) {
+      return { success: false, error: "Email sudah digunakan oleh pengguna lain." };
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(userId, {
+      name,
+      email,
+      phoneNumber,
+      role
+    }, { new: true });
+
+    if (!updatedUser) {
+      return { success: false, error: "Pengguna tidak ditemukan." };
+    }
+
+    const { logAdminActivity } = await import("@/lib/adminLogger");
+    await logAdminActivity(session.userId, "EDIT_ACCOUNT", email, `Mengubah detail akun: ${name} (${role})`);
+
+    revalidatePath("/admin/akun");
+    return { success: true, message: "Akun berhasil diperbarui." };
+  } catch (error: any) {
+    console.error("Error editing account:", error);
+    return { success: false, error: "Terjadi kesalahan sistem saat memperbarui akun." };
+  }
+}

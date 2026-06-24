@@ -13,6 +13,11 @@ export default function MasterWilayahPage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(15);
+
+
   const [formData, setFormData] = useState({
     provinceCode: "",
     provinceName: "",
@@ -120,7 +125,7 @@ export default function MasterWilayahPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-text-main">Master Wilayah Sederhana</h1>
+          <h1 className="text-2xl font-bold text-text-main">Master Wilayah</h1>
           <p className="text-text-muted">Kelola data wilayah operasional BUMDes.</p>
         </div>
         <Button onClick={() => handleOpenForm()} className="flex items-center">
@@ -160,9 +165,9 @@ export default function MasterWilayahPage() {
                     </td>
                   </tr>
                 ) : (
-                  items.map((item, index) => (
+                  items.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((item, index) => (
                     <tr key={item._id} className="border-b border-border hover:bg-surface-bg/50">
-                      <td className="p-4">{index + 1}</td>
+                      <td className="p-4">{(currentPage - 1) * pageSize + index + 1}</td>
                       <td className="p-4 font-medium text-text-main">{item.provinceName || item.province} <br/><span className="text-xs text-text-muted">{item.provinceCode}</span></td>
                       <td className="p-4 text-text-main">{item.regencyName || item.regency} <br/><span className="text-xs text-text-muted">{item.regencyCode}</span></td>
                       <td className="p-4 text-text-muted">{item.districtName || item.district || "-"} <br/><span className="text-xs text-text-muted">{item.districtCode}</span></td>
@@ -186,6 +191,78 @@ export default function MasterWilayahPage() {
               </tbody>
             </table>
           </div>
+          
+          {/* Pagination Controls */}
+          {!isLoading && items.length > 0 && (
+            <div className="p-4 border-t border-border flex flex-col sm:flex-row justify-between items-center gap-4">
+              <div className="flex items-center text-sm text-text-muted">
+                Tampilkan
+                <select 
+                  className="mx-2 border border-border bg-surface rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-primary"
+                  value={pageSize}
+                  onChange={(e) => {
+                    setPageSize(Number(e.target.value));
+                    setCurrentPage(1);
+                  }}
+                >
+                  {[15, 30, 50, 75, 100].map(size => (
+                    <option key={size} value={size}>{size}</option>
+                  ))}
+                </select>
+                data
+              </div>
+              
+              <div className="flex items-center space-x-1">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                  className="px-2"
+                >
+                  {"<"}
+                </Button>
+                
+                {Array.from({ length: Math.ceil(items.length / pageSize) }).map((_, i) => {
+                  const pageNumber = i + 1;
+                  // Tampilkan maksimal 5 halaman berdekatan
+                  if (
+                    pageNumber === 1 || 
+                    pageNumber === Math.ceil(items.length / pageSize) ||
+                    (pageNumber >= currentPage - 2 && pageNumber <= currentPage + 2)
+                  ) {
+                    return (
+                      <Button 
+                        key={pageNumber}
+                        variant={currentPage === pageNumber ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setCurrentPage(pageNumber)}
+                        className={`w-8 ${currentPage === pageNumber ? 'pointer-events-none' : ''}`}
+                      >
+                        {pageNumber}
+                      </Button>
+                    );
+                  } else if (
+                    pageNumber === currentPage - 3 || 
+                    pageNumber === currentPage + 3
+                  ) {
+                    return <span key={pageNumber} className="px-1 text-text-muted">...</span>;
+                  }
+                  return null;
+                })}
+                
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(items.length / pageSize)))}
+                  disabled={currentPage === Math.ceil(items.length / pageSize)}
+                  className="px-2"
+                >
+                  {">"}
+                </Button>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 
