@@ -11,6 +11,7 @@ export interface IStore extends Document {
   whatsappNumber?: string;
   address?: string;
   googleMapsUrl?: string;
+  villageWebsiteUrl?: string;
   directorName?: string;
   villageHeadName?: string;
   nib?: string;
@@ -48,6 +49,7 @@ const StoreSchema: Schema = new Schema(
     whatsappNumber: { type: String },
     address: { type: String },
     googleMapsUrl: { type: String },
+    villageWebsiteUrl: { type: String },
     directorName: { type: String },
     villageHeadName: { type: String },
     nib: { type: String },

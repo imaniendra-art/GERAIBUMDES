@@ -3,7 +3,7 @@ import { getSession } from "@/lib/auth";
 import dbConnect from "@/lib/db";
 import BumdesProfile from "@/models/BumdesProfile";
 import Link from "next/link";
-import { LayoutDashboard, ShoppingBag, Package, Settings, Users, LogOut, Clock, AlertTriangle } from "lucide-react";
+import { LayoutDashboard, ShoppingBag, Package, Settings, Users, LogOut, Clock, AlertTriangle, UserCog } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { formatCurrency } from "@/lib/utils/formatters";
@@ -171,6 +171,9 @@ export default async function DashboardPage() {
             <Link href="/dashboard/toko/edit" className="flex items-center hover:bg-surface/10 px-3 py-2.5 rounded-md text-sm font-medium transition-colors">
               <Settings className="h-5 w-5 mr-3" /> Profil BUMDes
             </Link>
+            <Link href="/dashboard/pengaturan" className="flex items-center hover:bg-surface/10 px-3 py-2.5 rounded-md text-sm font-medium transition-colors">
+              <UserCog className="h-5 w-5 mr-3" /> Pengaturan Akun
+            </Link>
             <Link href="/dashboard/produk" className="flex items-center hover:bg-surface/10 px-3 py-2.5 rounded-md text-sm font-medium transition-colors">
               <Package className="h-5 w-5 mr-3" /> Produk Saya
             </Link>
@@ -216,6 +219,10 @@ export default async function DashboardPage() {
             <Link href="/dashboard/toko/edit" className="flex flex-col items-center justify-center bg-surface p-4 rounded-lg border border-border shadow-sm hover:bg-surface-bg transition-colors">
               <Settings className="h-6 w-6 text-primary mb-2" />
               <span className="text-xs font-bold text-center">Profil BUMDes</span>
+            </Link>
+            <Link href="/dashboard/pengaturan" className="flex flex-col items-center justify-center bg-surface p-4 rounded-lg border border-border shadow-sm hover:bg-surface-bg transition-colors">
+              <UserCog className="h-6 w-6 text-primary mb-2" />
+              <span className="text-xs font-bold text-center">Pengaturan Akun</span>
             </Link>
             <Link href="/dashboard/produk" className="flex flex-col items-center justify-center bg-surface p-4 rounded-lg border border-border shadow-sm hover:bg-surface-bg transition-colors">
               <Package className="h-6 w-6 text-primary mb-2" />

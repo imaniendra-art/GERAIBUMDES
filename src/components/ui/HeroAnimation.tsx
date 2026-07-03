@@ -1,10 +1,11 @@
 "use client";
 
+// @ts-ignore
 import Lottie from "lottie-react";
 import { useEffect, useState } from "react";
 
 export function HeroAnimation() {
-  const [animationData, setAnimationData] = useState(null);
+  const [animationData, setAnimationData] = useState<any>(null);
 
   useEffect(() => {
     fetch("https://lottie.host/1c8f4951-60a6-4a41-86cc-72eb962821b0/7Wv9Qh8R3O.json")

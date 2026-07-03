@@ -3,7 +3,8 @@ import dbConnect from "@/lib/db";
 import Category from "@/models/Category";
 import { getSession } from "@/lib/auth";
 
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT(req: Request, context: { params: Promise<{ id: string }> }) {
+  const params = await context.params;
   try {
     const session = await getSession();
     if (!session || (session.role !== "SUPER_ADMIN" && session.role !== "PLATFORM_ADMIN")) {
@@ -30,7 +31,8 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
   }
 }
 
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(req: Request, context: { params: Promise<{ id: string }> }) {
+  const params = await context.params;
   try {
     const session = await getSession();
     if (!session || (session.role !== "SUPER_ADMIN" && session.role !== "PLATFORM_ADMIN")) {

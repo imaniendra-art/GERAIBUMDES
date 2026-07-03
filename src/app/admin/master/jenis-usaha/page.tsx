@@ -135,9 +135,9 @@ export default function MasterJenisUsahaPage() {
                   <tr>
                     <td colSpan={6} className="p-0">
                       <EmptyState 
-                        title="Tidak Ada Jenis Usaha" 
-                        description="Belum ada data jenis usaha." 
-                        icon="database" 
+                        title="Belum Ada Jenis Usaha" 
+                        description="Tambahkan master jenis usaha baru." 
+                        icon="folder" 
                         className="border-0 rounded-none bg-transparent py-12"
                       />
                     </td>

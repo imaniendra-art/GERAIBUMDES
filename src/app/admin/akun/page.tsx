@@ -49,6 +49,13 @@ export default async function AdminAccountsPage({ searchParams }: { searchParams
             </button>
           </Link>
         )}
+        {activeTab === 'bumdes' && (
+          <Link href="/admin/akun/tambah-bumdes">
+            <button className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
+              + Tambah Akun BUMDes
+            </button>
+          </Link>
+        )}
       </div>
 
       <div className="flex space-x-4 mb-6 border-b border-border">

@@ -6,7 +6,7 @@ import Category from "@/models/Category";
 import { notFound } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/Card";
 import Link from "next/link";
-import { Package, Store as StoreIcon, MapPin, Search, Phone, Clock, FileCheck, ShieldCheck, Target } from "lucide-react";
+import { Package, Store as StoreIcon, MapPin, Search, Phone, Clock, FileCheck, ShieldCheck, Target, Globe } from "lucide-react";
 import { ProductCard } from "@/components/ui/ProductCard";
 
 const formatWhatsAppNumber = (phone: string) => {
@@ -154,7 +154,7 @@ export default async function StoreProfilePage({
                   </div>
                 </div>
                 
-                {(store.whatsappNumber || store.phoneNumber || store.operationalHours || store.address) && (
+                {(store.whatsappNumber || store.phoneNumber || store.operationalHours || store.address || store.villageWebsiteUrl) && (
                   <div className="mt-6 pt-5 border-t border-gray-100">
                     <h4 className="font-bold text-sm mb-4 text-gray-800">Info Kontak & Operasional</h4>
                     <div className="space-y-4">
@@ -189,6 +189,15 @@ export default async function StoreProfilePage({
                           ) : (
                             <span className="text-gray-700 leading-relaxed whitespace-pre-wrap">{store.address}</span>
                           )}
+                        </div>
+                      )}
+
+                      {store.villageWebsiteUrl && (
+                        <div className="flex items-start text-sm">
+                          <Globe className="h-4 w-4 mr-3 text-gray-400 mt-0.5 flex-shrink-0" />
+                          <a href={store.villageWebsiteUrl.startsWith('http') ? store.villageWebsiteUrl : `https://${store.villageWebsiteUrl}`} target="_blank" rel="noopener noreferrer" className="text-gray-700 hover:text-blue-600 hover:underline transition-colors break-all">
+                            {store.villageWebsiteUrl}
+                          </a>
                         </div>
                       )}
                     </div>

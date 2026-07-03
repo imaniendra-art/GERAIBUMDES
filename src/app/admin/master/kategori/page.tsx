@@ -135,9 +135,9 @@ export default function MasterKategoriPage() {
                   <tr>
                     <td colSpan={6} className="p-0">
                       <EmptyState 
-                        title="Tidak Ada Kategori" 
-                        description="Belum ada data kategori." 
-                        icon="database" 
+                        title="Belum Ada Kategori" 
+                        description="Tambahkan master kategori produk baru." 
+                        icon="folder" 
                         className="border-0 rounded-none bg-transparent py-12"
                       />
                     </td>

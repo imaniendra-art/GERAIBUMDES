@@ -157,9 +157,9 @@ export default function MasterWilayahPage() {
                   <tr>
                     <td colSpan={7} className="p-0">
                       <EmptyState 
-                        title="Tidak Ada Wilayah" 
-                        description="Belum ada data wilayah." 
-                        icon="database" 
+                        title="Belum Ada Wilayah" 
+                        description="Tidak ada data wilayah untuk tingkat ini." 
+                        icon="folder" 
                         className="border-0 rounded-none bg-transparent py-12"
                       />
                     </td>
@@ -234,7 +234,7 @@ export default function MasterWilayahPage() {
                     return (
                       <Button 
                         key={pageNumber}
-                        variant={currentPage === pageNumber ? "default" : "outline"}
+                        variant={currentPage === pageNumber ? "primary" : "outline"}
                         size="sm"
                         onClick={() => setCurrentPage(pageNumber)}
                         className={`w-8 ${currentPage === pageNumber ? 'pointer-events-none' : ''}`}
@@ -329,7 +329,7 @@ export default function MasterWilayahPage() {
               </div>
               <div className="pt-4 flex justify-end space-x-3">
                 <Button type="button" variant="outline" onClick={handleCloseForm}>Batal</Button>
-                <Button type="submit">Simpan</Button>
+                <Button type="submit" variant="primary" size="sm">Simpan</Button>
               </div>
             </form>
           </div>

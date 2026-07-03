@@ -39,6 +39,7 @@ export default async function EditTokoServerPage() {
     whatsappNumber: store.whatsappNumber || "",
     address: store.address || "",
     googleMapsUrl: store.googleMapsUrl || "",
+    villageWebsiteUrl: store.villageWebsiteUrl || "",
     directorName: store.directorName || "",
     villageHeadName: store.villageHeadName || "",
     nib: store.nib || "",

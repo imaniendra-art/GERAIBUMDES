@@ -15,7 +15,7 @@ async function downloadRegions() {
   console.log("Memulai pengunduhan data wilayah Indonesia dari Emsifa API...");
   
   try {
-    const finalData = [];
+    const finalData: any[] = [];
     
     // 1. Ambil data Provinsi
     console.log("Mengambil data Provinsi...");

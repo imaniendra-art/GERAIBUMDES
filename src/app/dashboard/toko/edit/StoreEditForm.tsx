@@ -239,7 +239,11 @@ export default function StoreEditForm({ initialData }: { initialData: any }) {
             
             <div>
               <label className={labelClass}>Link Google Maps (Opsional)</label>
-              <input type="text" name="googleMapsUrl" value={formData.googleMapsUrl} onChange={handleChange} className={inputClass} placeholder="Misal: https://maps.app.goo.gl/..." />
+              <input type="text" name="googleMapsUrl" value={formData.googleMapsUrl || ""} onChange={handleChange} className={inputClass} placeholder="Misal: https://maps.app.goo.gl/..." />
+            </div>
+            <div>
+              <label className={labelClass}>Link Website Desa (Opsional)</label>
+              <input type="url" name="villageWebsiteUrl" value={formData.villageWebsiteUrl || ""} onChange={handleChange} className={inputClass} placeholder="Misal: https://desa-anda.id" />
             </div>
 
             <LocationSelector

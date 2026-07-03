@@ -86,7 +86,7 @@ export default async function AdminBumdesList() {
                     <EmptyState 
                       title="Tidak Ada BUMDes" 
                       description="Belum ada pendaftaran BUMDes." 
-                      icon="store" 
+                      icon="folder" 
                       className="border-0 rounded-none bg-transparent py-12"
                     />
                   </td>

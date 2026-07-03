@@ -63,19 +63,19 @@ export default async function AdminActivityLogsPage({ searchParams }: { searchPa
 
       <div className="flex flex-wrap gap-2 mb-6">
         <Link href="/admin/laporan/aktivitas?period=1-minggu">
-          <Button variant={period === "1-minggu" ? "default" : "outline"} size="sm">1 Minggu</Button>
+          <Button variant={period === "1-minggu" ? "primary" : "outline"} size="sm">1 Minggu</Button>
         </Link>
         <Link href="/admin/laporan/aktivitas?period=1-bulan">
-          <Button variant={period === "1-bulan" ? "default" : "outline"} size="sm">1 Bulan</Button>
+          <Button variant={period === "1-bulan" ? "primary" : "outline"} size="sm">1 Bulan</Button>
         </Link>
         <Link href="/admin/laporan/aktivitas?period=1-semester">
-          <Button variant={period === "1-semester" ? "default" : "outline"} size="sm">1 Semester</Button>
+          <Button variant={period === "1-semester" ? "primary" : "outline"} size="sm">1 Semester</Button>
         </Link>
         <Link href="/admin/laporan/aktivitas?period=1-windu">
-          <Button variant={period === "1-windu" ? "default" : "outline"} size="sm">1 Windu</Button>
+          <Button variant={period === "1-windu" ? "primary" : "outline"} size="sm">1 Windu</Button>
         </Link>
         <Link href="/admin/laporan/aktivitas?period=semua">
-          <Button variant={period === "semua" ? "default" : "outline"} size="sm">Semua</Button>
+          <Button variant={period === "semua" ? "primary" : "outline"} size="sm">Semua</Button>
         </Link>
       </div>
 

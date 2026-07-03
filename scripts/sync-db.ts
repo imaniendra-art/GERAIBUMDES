@@ -13,8 +13,8 @@ async function main() {
       // clean up old commas from the broken state if they exist
       const cleanedBusinessType = store.businessType
         .split(",")
-        .map(s => s.trim())
-        .filter(s => s && s !== "Budidaya" && s !== "Pertanian" && s !== "Peternakan")
+        .map((s: string) => s.trim())
+        .filter((s: string) => s && s !== "Budidaya" && s !== "Pertanian" && s !== "Peternakan")
         .join(", ");
 
       await BumdesProfile.updateOne({ _id: store.bumdesId }, { $set: { businessType: cleanedBusinessType } });
