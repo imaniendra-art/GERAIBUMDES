@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { resetUserPassword, deleteUserAccount } from "./actions";
 import { Button } from "@/components/ui/Button";
-import { RefreshCw, Key, Trash2, Loader2 } from "lucide-react";
+import { RefreshCw, Key, Trash2, Loader2, Edit } from "lucide-react";
 
 export function AccountActions({ userId, userName }: { userId: string, userName: string }) {
   const [isResetting, setIsResetting] = useState(false);
@@ -64,31 +64,33 @@ export function AccountActions({ userId, userName }: { userId: string, userName:
         <Link href={`/admin/akun/edit/${userId}`}>
           <Button 
             variant="outline" 
-            size="sm" 
+            size="icon" 
             disabled={isResetting || isDeleting}
-            className="text-xs py-1 h-8"
+            className="h-8 w-8"
+            title="Edit"
           >
-            Edit
+            <Edit className="h-4 w-4" />
           </Button>
         </Link>
         <Button 
           variant="outline" 
-          size="sm" 
+          size="icon" 
           onClick={handleReset} 
           disabled={isResetting || isDeleting}
-          className="text-xs py-1 h-8"
+          className="h-8 w-8"
+          title="Reset Password (12345678)"
         >
-          {isResetting ? <RefreshCw className="h-3 w-3 mr-2 animate-spin" /> : <Key className="h-3 w-3 mr-2" />}
-          Reset Pass (12345678)
+          {isResetting ? <RefreshCw className="h-4 w-4 animate-spin" /> : <Key className="h-4 w-4" />}
         </Button>
         <Button 
           variant="outline" 
-          size="sm" 
+          size="icon" 
           onClick={handleDelete} 
           disabled={isResetting || isDeleting}
-          className="text-xs py-1 h-8 text-danger border-danger hover:bg-danger/10"
+          className="h-8 w-8 text-danger border-danger hover:bg-danger/10"
+          title="Hapus"
         >
-          {isDeleting ? <Loader2 className="h-3 w-3 animate-spin" /> : <Trash2 className="h-3 w-3" />}
+          {isDeleting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
         </Button>
       </div>
       {message && (

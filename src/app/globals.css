@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    font-size: 90%; /* Scale down the whole app layout to mimic 90% zoom */
+  }
+  
   body {
     @apply bg-surface-bg text-text-main antialiased font-sans;
   }

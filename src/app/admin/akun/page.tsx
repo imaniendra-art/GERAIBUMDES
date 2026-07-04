@@ -36,7 +36,7 @@ export default async function AdminAccountsPage({ searchParams }: { searchParams
   }
 
   return (
-    <div className="w-full px-4 sm:px-8 lg:px-12 py-8">
+    <div className="w-full">
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-2xl font-bold text-text-main">Manajemen Akun</h1>
@@ -75,67 +75,45 @@ export default async function AdminAccountsPage({ searchParams }: { searchParams
 
       <div className="bg-surface border border-border rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-sm text-left">
+          <table className="w-full text-sm text-left whitespace-nowrap">
             <thead className="text-xs text-text-muted uppercase bg-surface-bg border-b border-border">
               <tr>
-                <th className="px-6 py-4 font-medium">Nama Pengguna</th>
-                <th className="px-6 py-4 font-medium">Email</th>
-                <th className="px-6 py-4 font-medium">No. Telepon</th>
+                <th className="px-4 py-3 font-medium">Nama Pengguna</th>
+                <th className="px-4 py-3 font-medium">Email</th>
+                <th className="px-4 py-3 font-medium">No. Telepon</th>
                 {activeTab === 'bumdes' && (
-                  <>
-                    <th className="px-6 py-4 font-medium">Nama BUMDes</th>
-                    <th className="px-6 py-4 font-medium">Nama Desa</th>
-                    <th className="px-6 py-4 font-medium">Provinsi</th>
-                  </>
+                  <th className="px-4 py-3 font-medium">Nama BUMDes</th>
                 )}
-                <th className="px-6 py-4 font-medium">Peran</th>
-                <th className="px-6 py-4 font-medium text-right">Aksi</th>
+                <th className="px-4 py-3 font-medium text-right">Aksi</th>
               </tr>
             </thead>
             <tbody>
               {displayedUsers.map((user) => (
                 <tr key={user._id.toString()} className="border-b border-border hover:bg-surface-bg/50 transition-colors">
-                  <td className="px-6 py-4 font-medium text-text-main">
+                  <td className="px-4 py-3 font-medium text-text-main">
                     {user.name}
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 py-3">
                     {user.email}
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 py-3">
                     {activeTab === 'bumdes' && bumdesMap.get(user._id.toString())?.contactNumber 
                       ? bumdesMap.get(user._id.toString()).contactNumber 
                       : (user.phoneNumber || "-")}
                   </td>
                   {activeTab === 'bumdes' && (
-                    <>
-                      <td className="px-6 py-4 font-medium text-text-main">
-                        {bumdesMap.get(user._id.toString())?.name || <span className="text-text-muted italic">- Belum isi profil -</span>}
-                      </td>
-                      <td className="px-6 py-4">
-                        {bumdesMap.get(user._id.toString())?.village || "-"}
-                      </td>
-                      <td className="px-6 py-4">
-                        {bumdesMap.get(user._id.toString())?.province || "-"}
-                      </td>
-                    </>
+                    <td className="px-4 py-3 font-medium text-text-main">
+                      {bumdesMap.get(user._id.toString())?.name || <span className="text-text-muted italic">- Belum isi profil -</span>}
+                    </td>
                   )}
-                  <td className="px-6 py-4">
-                    <span className={`px-2 py-1 rounded text-[10px] font-bold ${
-                      user.role === 'PLATFORM_ADMIN' ? 'bg-primary/10 text-primary-dark' :
-                      user.role === 'BUMDES_ADMIN' ? 'bg-secondary/20 text-secondary-dark' :
-                      'bg-surface-bg border border-border text-text-muted'
-                    }`}>
-                      {user.role}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-right">
+                  <td className="px-4 py-3 text-right">
                     <AccountActions userId={user._id.toString()} userName={user.name} />
                   </td>
                 </tr>
               ))}
               {displayedUsers.length === 0 && (
                 <tr>
-                  <td colSpan={activeTab === 'bumdes' ? 8 : 5} className="px-6 py-8 text-center text-text-muted">
+                  <td colSpan={activeTab === 'bumdes' ? 5 : 4} className="px-6 py-8 text-center text-text-muted">
                     Tidak ada data pengguna yang ditemukan.
                   </td>
                 </tr>
