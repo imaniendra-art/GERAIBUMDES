@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Package, Store as StoreIcon } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { Badge } from "@/components/ui/Badge";
 import { formatCurrency } from "@/lib/utils/formatters";
 
 interface ProductCardProps {
@@ -21,17 +22,17 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   return (
-    <div className="bg-surface rounded-xl shadow-sm border border-border group hover:shadow-md transition-shadow duration-200 flex flex-col h-full overflow-hidden">
-      <Link href={`/produk/${product.slug}`} className="block relative">
-        <div className="h-48 bg-border/50 relative flex justify-center items-center">
+    <div className="bg-surface rounded-2xl shadow-natural border border-border group hover-lift flex flex-col h-full overflow-hidden">
+      <Link href={`/produk/${product.slug}`} className="block relative overflow-hidden">
+        <div className="aspect-square bg-surface-bg relative flex justify-center items-center">
           {product.images && product.images.length > 0 ? (
-            <img src={product.images[0]} alt={product.name} className="object-cover w-full h-full" />
+            <img src={product.images[0]} alt={product.name} className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500" />
           ) : (
-            <Package className="h-12 w-12 text-text-muted/50" />
+            <Package className="h-12 w-12 text-border" />
           )}
           {product.isWholesaleAvailable && (
-            <div className="absolute top-2 left-2 bg-cta text-white text-xs font-bold px-2 py-1 rounded-full shadow-sm">
-              Grosir
+            <div className="absolute top-3 left-3">
+              <Badge variant="warning">Grosir</Badge>
             </div>
           )}
         </div>
@@ -63,21 +64,19 @@ export function ProductCard({ product }: ProductCardProps) {
           <div className="text-xs text-text-muted mb-3 line-clamp-1">{product.locationText}</div>
         )}
         
-        <div className="mt-auto pt-3 border-t border-border">
-          <div className="font-bold text-cta text-lg">
+        <div className="mt-auto pt-4">
+          <div className="font-bold text-text-main text-lg">
             {formatCurrency(product.retailPrice)}<span className="text-sm font-normal text-text-muted">/{product.unit}</span>
           </div>
-          <div className="mt-1">
-            <span className="text-xs font-medium text-primary bg-primary/10 px-2.5 py-1 rounded-full inline-block">
-              Min. Order: {product.minOrder} {product.unit}
-            </span>
+          <div className="mt-2">
+            <Badge variant="success">Min. Order: {product.minOrder} {product.unit}</Badge>
           </div>
         </div>
       </div>
       
-      <div className="px-4 pb-4">
+      <div className="px-5 pb-5 mt-auto">
         <Link href={`/produk/${product.slug}`} className="block">
-          <Button variant="primary" className="w-full text-sm h-10">Lihat Produk</Button>
+          <Button variant="outline" className="w-full text-sm h-11">Lihat Detail</Button>
         </Link>
       </div>
     </div>

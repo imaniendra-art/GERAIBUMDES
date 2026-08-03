@@ -3,15 +3,15 @@ import { Mail, Phone, MapPin } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="bg-surface border-t border-border mt-auto pt-16 pb-8">
+    <footer className="bg-surface border-t border-border mt-auto pt-20 pb-10">
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12 mb-12">
-          <div className="lg:col-span-2">
-            <h3 className="text-2xl font-bold text-primary mb-4 flex items-center gap-2">
-              <img src="/images/logo.png" alt="Logo" className="w-8 h-8 object-contain" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-16 mb-16">
+          <div className="lg:col-span-2 pr-0 lg:pr-12">
+            <h3 className="text-2xl font-bold text-primary mb-6 flex items-center gap-3">
+              <img src="/images/logo.png" alt="Logo" className="w-10 h-10 object-contain" />
               GeraiBUMDes
             </h3>
-            <p className="text-text-muted mb-6 leading-relaxed max-w-sm">
+            <p className="text-text-muted mb-6 leading-relaxed max-w-sm text-[15px]">
               GeraiBUMDes menghubungkan potensi desa di seluruh Indonesia. Platform marketplace BUMDes untuk masa depan desa yang mandiri dan profesional.
             </p>
           </div>

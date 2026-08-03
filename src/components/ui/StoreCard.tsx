@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Store as StoreIcon, ShieldCheck, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { Badge } from "@/components/ui/Badge";
 
 interface StoreCardProps {
   store: {
@@ -24,12 +25,12 @@ export function StoreCard({ store, activeProductCount }: StoreCardProps) {
   const shortLocation = locationParts.slice(0, 2).join(", "); // e.g. "Desa Sukamaju, Kec. Maju"
 
   return (
-    <div className="bg-surface rounded-lg shadow-sm border border-border group hover:shadow-md transition-shadow flex flex-col h-full overflow-hidden">
-      <div className="h-24 md:h-32 relative">
+    <div className="bg-surface rounded-2xl shadow-natural border border-border group hover-lift flex flex-col h-full overflow-hidden">
+      <div className="h-28 md:h-36 relative">
         {store.bannerUrl ? (
-          <img src={store.bannerUrl} alt={`${store.name} Banner`} className="w-full h-full object-cover" />
+          <img src={store.bannerUrl} alt={`${store.name} Banner`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
         ) : (
-          <div className="w-full h-full bg-gradient-to-r from-green-100 to-green-200"></div>
+          <div className="w-full h-full bg-gradient-to-tr from-primary/10 to-secondary/10 group-hover:scale-105 transition-transform duration-500"></div>
         )}
         <div className="absolute -bottom-8 left-4">
           <div className="h-16 w-16 bg-surface rounded-full border-4 border-surface shadow-sm flex items-center justify-center overflow-hidden">
@@ -78,15 +79,15 @@ export function StoreCard({ store, activeProductCount }: StoreCardProps) {
         )}
 
         {typeof activeProductCount === "number" && (
-          <div className="mt-3 text-xs font-medium text-text-main bg-surface-bg inline-block px-2 py-1 rounded w-fit">
-            {activeProductCount} Produk Aktif
+          <div className="mt-4">
+            <Badge variant="neutral">{activeProductCount} Produk Aktif</Badge>
           </div>
         )}
       </div>
       
-      <div className="px-4 pb-4 mt-2">
+      <div className="px-5 pb-5 mt-2">
         <Link href={`/bumdes/${store.slug}`} className="block">
-          <Button variant="outline" className="w-full text-sm h-9">Kunjungi BUMDes</Button>
+          <Button variant="outline" className="w-full text-sm h-11">Kunjungi BUMDes</Button>
         </Link>
       </div>
     </div>

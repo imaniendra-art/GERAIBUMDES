@@ -48,10 +48,13 @@ export default async function Home() {
       `}</style>
       
       {/* Hero Section */}
-      <section className="bg-surface-bg text-text-main py-24 sm:py-32 relative overflow-hidden border-b border-border">
-        <div className="w-full px-4 sm:px-8 lg:px-24 relative z-10 flex flex-col lg:flex-row items-center gap-12">
-          <div className="max-w-3xl flex-1">
-            <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight mb-8 text-primary leading-[1.1]">
+      <section className="bg-surface-bg text-text-main min-h-[85vh] flex items-center relative overflow-hidden border-b border-border py-24">
+        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col lg:flex-row items-center gap-16">
+          <div className="max-w-3xl flex-1 animate-fade-in">
+            <div className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary font-bold text-sm mb-6 border border-primary/20">
+              🚀 Platform B2B BUMDes #1 di Indonesia
+            </div>
+            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[80px] font-bold tracking-tight mb-8 text-primary leading-[1.05]">
               Pasar Digital <br className="hidden sm:block" /> <span className="text-text-main">BUMDes Nasional</span>
             </h1>
             <p className="text-xl sm:text-2xl text-text-muted mb-12 max-w-2xl leading-relaxed">
@@ -65,29 +68,46 @@ export default async function Home() {
               </Link>
               {!session && (
                 <Link href="/register" className="w-full sm:w-auto">
-                  <Button variant="outline" size="lg" className="w-full px-8">
+                  <Button variant="outline" size="lg" className="w-full px-8 h-14 text-lg">
                     Daftarkan BUMDes
                   </Button>
                 </Link>
               )}
             </div>
             
-            <div className="mt-12 flex items-center gap-6 text-sm font-medium text-text-muted">
-              <div className="flex items-center gap-2"><CheckCircle className="w-5 h-5 text-success" /> BUMDes Terverifikasi</div>
-              <div className="flex items-center gap-2"><CheckCircle className="w-5 h-5 text-success" /> Transaksi Aman</div>
-              <div className="flex items-center gap-2"><CheckCircle className="w-5 h-5 text-success" /> Harga Grosir B2B</div>
+            <div className="mt-14 pt-8 border-t border-border flex flex-wrap items-center gap-8 sm:gap-12">
+              <div>
+                <div className="text-3xl font-black text-text-main">500+</div>
+                <div className="text-sm font-medium text-text-muted mt-1">BUMDes Bergabung</div>
+              </div>
+              <div className="w-px h-12 bg-border hidden sm:block"></div>
+              <div>
+                <div className="text-3xl font-black text-text-main">10rb+</div>
+                <div className="text-sm font-medium text-text-muted mt-1">Produk Unggulan</div>
+              </div>
+              <div className="w-px h-12 bg-border hidden sm:block"></div>
+              <div>
+                <div className="text-3xl font-black text-text-main">100%</div>
+                <div className="text-sm font-medium text-text-muted mt-1">Transaksi Aman</div>
+              </div>
             </div>
           </div>
           
-          <div className="flex-1 hidden lg:block relative w-full h-full min-h-[400px]">
+          <div className="flex-1 hidden lg:block relative w-full h-full min-h-[500px]">
              {/* Decorative Elements for Hero */}
-             <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-secondary/10 rounded-[3rem] transform rotate-3"></div>
-             <div className="absolute inset-4 bg-white rounded-[2.5rem] shadow-xl overflow-hidden flex items-center justify-center border border-border">
-                <div className="text-center p-8">
-                  <Store className="w-24 h-24 text-primary mx-auto mb-6 opacity-20" />
-                  <h3 className="text-2xl font-bold text-primary mb-2">Ekonomi Desa</h3>
-                  <p className="text-text-muted">Tumbuh Bersama GeraiBUMDes</p>
+             <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-secondary/10 rounded-[3rem] transform rotate-3 animate-float"></div>
+             <div className="absolute inset-4 bg-white rounded-[2.5rem] shadow-natural overflow-hidden flex items-center justify-center border border-border">
+                <div className="text-center p-12 relative z-10">
+                  <div className="w-32 h-32 bg-primary/5 rounded-full flex items-center justify-center mx-auto mb-8">
+                    <Store className="w-16 h-16 text-primary" />
+                  </div>
+                  <h3 className="text-3xl font-bold text-primary mb-3">Ekonomi Desa</h3>
+                  <p className="text-lg text-text-muted font-medium">Tumbuh Bersama GeraiBUMDes</p>
                 </div>
+                
+                {/* Abstract corner decorations */}
+                <div className="absolute -top-16 -right-16 w-48 h-48 bg-secondary/10 rounded-full blur-2xl"></div>
+                <div className="absolute -bottom-16 -left-16 w-48 h-48 bg-primary/10 rounded-full blur-2xl"></div>
              </div>
           </div>
         </div>
@@ -278,7 +298,7 @@ export default async function Home() {
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Link href="/register">
-              <Button variant="primary" size="lg" className="w-full sm:w-auto font-bold px-10 h-14 text-lg">
+              <Button variant="secondary" size="lg" className="w-full sm:w-auto font-bold px-10 h-14 text-lg bg-white text-primary hover:bg-surface-bg border-none">
                 Gabung Menjadi Mitra
               </Button>
             </Link>

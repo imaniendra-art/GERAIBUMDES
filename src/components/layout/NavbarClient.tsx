@@ -34,7 +34,7 @@ export default function NavbarClient({ session, unreadCount = 0, storeSlug }: Na
   };
 
   return (
-    <nav className="bg-surface text-text-main sticky top-0 z-50 shadow-sm border-b border-border">
+    <nav className="glass-nav text-text-main sticky top-0 z-50 transition-all duration-300">
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between py-3 min-h-[80px] items-center">
           {/* Logo & Brand */}
