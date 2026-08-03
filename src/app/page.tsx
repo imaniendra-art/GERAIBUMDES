@@ -46,94 +46,132 @@ export default async function Home() {
           animation-play-state: paused;
         }
       `}</style>
+      
       {/* Hero Section */}
-      <section className="bg-primary text-surface py-20 relative overflow-hidden">
-        <div className="w-full px-4 sm:px-8 lg:px-24 relative z-10">
-          <div className="max-w-4xl">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-6">
-              Platform Bisnis Digital <span className="whitespace-nowrap">Antar-BUMDes</span>
+      <section className="bg-surface-bg text-text-main py-24 sm:py-32 relative overflow-hidden border-b border-border">
+        <div className="w-full px-4 sm:px-8 lg:px-24 relative z-10 flex flex-col lg:flex-row items-center gap-12">
+          <div className="max-w-3xl flex-1">
+            <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight mb-8 text-primary leading-[1.1]">
+              Pasar Digital <br className="hidden sm:block" /> <span className="text-text-main">BUMDes Nasional</span>
             </h1>
-            <p className="text-xl sm:text-2xl text-surface/90 mb-10 max-w-2xl leading-relaxed">
-              Menghubungkan BUMDes penyedia komoditas, layanan jasa, dan potensi pariwisata dengan mitra strategis untuk saling memenuhi kebutuhan bisnis dan menggerakkan ekonomi antar-daerah.
+            <p className="text-xl sm:text-2xl text-text-muted mb-12 max-w-2xl leading-relaxed">
+              Jelajahi komoditas unggulan dari BUMDes seluruh Indonesia. Platform marketplace terpercaya untuk transaksi bisnis antar-daerah yang aman dan saling menguntungkan.
             </p>
             <div className="flex flex-col sm:flex-row flex-wrap gap-4">
               <Link href="/produk" className="w-full sm:w-auto">
-                <Button variant="secondary" size="lg" className="w-full font-bold px-8">
-                  Mulai Belanja
-                </Button>
-              </Link>
-              <Link href="/produk" className="w-full sm:w-auto">
-                <Button variant="outline" size="lg" className="w-full bg-surface/10 text-surface border-surface hover:bg-surface/20">
-                  Lihat Produk
-                </Button>
-              </Link>
-              <Link href="/bumdes" className="w-full sm:w-auto">
-                <Button variant="outline" size="lg" className="w-full bg-surface/10 text-surface border-surface hover:bg-surface/20">
-                  Lihat Toko BUMDes
+                <Button variant="primary" size="lg" className="w-full font-bold px-10">
+                  Jelajahi Produk
                 </Button>
               </Link>
               {!session && (
                 <Link href="/register" className="w-full sm:w-auto">
-                  <Button variant="outline" size="lg" className="w-full bg-surface/10 text-surface border-surface hover:bg-surface/20">
+                  <Button variant="outline" size="lg" className="w-full px-8">
                     Daftarkan BUMDes
                   </Button>
                 </Link>
               )}
             </div>
+            
+            <div className="mt-12 flex items-center gap-6 text-sm font-medium text-text-muted">
+              <div className="flex items-center gap-2"><CheckCircle className="w-5 h-5 text-success" /> BUMDes Terverifikasi</div>
+              <div className="flex items-center gap-2"><CheckCircle className="w-5 h-5 text-success" /> Transaksi Aman</div>
+              <div className="flex items-center gap-2"><CheckCircle className="w-5 h-5 text-success" /> Harga Grosir B2B</div>
+            </div>
+          </div>
+          
+          <div className="flex-1 hidden lg:block relative w-full h-full min-h-[400px]">
+             {/* Decorative Elements for Hero */}
+             <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-secondary/10 rounded-[3rem] transform rotate-3"></div>
+             <div className="absolute inset-4 bg-white rounded-[2.5rem] shadow-xl overflow-hidden flex items-center justify-center border border-border">
+                <div className="text-center p-8">
+                  <Store className="w-24 h-24 text-primary mx-auto mb-6 opacity-20" />
+                  <h3 className="text-2xl font-bold text-primary mb-2">Ekonomi Desa</h3>
+                  <p className="text-text-muted">Tumbuh Bersama GeraiBUMDes</p>
+                </div>
+             </div>
           </div>
         </div>
-        
-        {/* Abstract shape for decoration */}
-        <div className="absolute right-0 top-0 -translate-y-1/4 translate-x-1/4 opacity-10">
-          <svg width="600" height="600" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-            <path fill="#FFFFFF" d="M45.7,-76.4C58.9,-69.3,69.2,-55.4,76.5,-40.8C83.8,-26.2,88,-11,85.5,3.3C82.9,17.6,73.6,31.1,63.6,43.2C53.6,55.4,42.8,66.3,29.4,72.7C16,79.2,0.1,81.3,-15,79.1C-30.1,76.9,-44.3,70.5,-55.9,60.6C-67.6,50.8,-76.6,37.6,-81.4,23.3C-86.2,9.1,-86.7,-6.2,-81.7,-19.9C-76.8,-33.6,-66.4,-45.8,-53.8,-53.5C-41.2,-61.1,-26.5,-64.3,-12.3,-68.8C1.9,-73.2,16.2,-79.1,32.5,-83.4C45.7,-76.4,45.7,-76.4,45.7,-76.4Z" transform="translate(100 100)" />
-          </svg>
+      </section>
+
+      {/* Featured Products */}
+      <section className="py-24 bg-surface">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+            <div>
+              <h2 className="text-3xl font-bold text-text-main mb-3">Pilihan Terbaik</h2>
+              <p className="text-lg text-text-muted max-w-2xl">Komoditas unggulan langsung dari pengelola BUMDes di berbagai daerah.</p>
+            </div>
+            <Link href="/produk">
+               <Button variant="outline" className="hidden md:flex">Lihat Semua Kategori</Button>
+            </Link>
+          </div>
+          
+          {availableProducts.length > 0 ? (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {availableProducts.map((product) => (
+                  <ProductCard key={product._id.toString()} product={product} />
+                ))}
+              </div>
+              <div className="mt-12 text-center md:hidden">
+                <Link href="/produk">
+                  <Button variant="outline" className="w-full">Lihat Semua Kategori</Button>
+                </Link>
+              </div>
+            </>
+          ) : (
+            <div className="text-center py-24 bg-surface-bg rounded-2xl border border-border border-dashed">
+              <PackageOpen className="h-16 w-16 text-border mx-auto mb-4" />
+              <h3 className="text-xl font-bold text-text-main mb-2">Belum Ada Produk</h3>
+              <p className="text-text-muted">BUMDes terdaftar sedang mempersiapkan katalog produk mereka.</p>
+            </div>
+          )}
         </div>
       </section>
 
       {/* Value Proposition */}
-      <section className="py-16 bg-surface">
-        <div className="w-full px-4 sm:px-8 lg:px-24">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-text-main mb-4">Mengapa Menggunakan geraibumdes.com?</h2>
-            <p className="text-lg text-text-muted max-w-2xl mx-auto">
-              Ekosistem digital yang dirancang khusus agar usaha antar-daerah saling memenuhi.
+      <section className="py-24 bg-surface-bg border-y border-border">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold text-text-main mb-6">Membangun Ekosistem Desa</h2>
+            <p className="text-lg sm:text-xl text-text-muted max-w-3xl mx-auto">
+              Lebih dari sekadar tempat berjualan. Platform digital nasional untuk memperkuat rantai pasok antar-daerah secara terstruktur.
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card className="border-none shadow-sm bg-surface-bg/50">
-              <CardContent className="pt-8 text-center">
-                <div className="mx-auto bg-accent/20 w-16 h-16 rounded-full flex items-center justify-center mb-6">
-                  <ShieldCheck className="h-8 w-8 text-primary" />
+            <Card className="border-none shadow-sm hover:shadow-md transition-shadow bg-surface">
+              <CardContent className="p-10 text-center">
+                <div className="mx-auto bg-primary/10 w-20 h-20 rounded-2xl flex items-center justify-center mb-8">
+                  <ShieldCheck className="h-10 w-10 text-primary" />
                 </div>
-                <h3 className="text-xl font-semibold mb-3">BUMDes Terverifikasi</h3>
+                <h3 className="text-xl font-bold mb-4 text-text-main">Aman & Terverifikasi</h3>
                 <p className="text-text-muted leading-relaxed">
-                  Hanya BUMDes resmi dan terverifikasi yang dapat menjadi penyedia produk di platform ini, menjaga keamanan transaksi B2B.
+                  Setiap BUMDes melewati proses verifikasi ketat. Transaksi bisnis Anda dijamin keabsahannya oleh mitra resmi.
                 </p>
               </CardContent>
             </Card>
             
-            <Card className="border-none shadow-sm bg-surface-bg/50">
-              <CardContent className="pt-8 text-center">
-                <div className="mx-auto bg-secondary/20 w-16 h-16 rounded-full flex items-center justify-center mb-6">
-                  <TrendingUp className="h-8 w-8 text-earth" />
+            <Card className="border-none shadow-sm hover:shadow-md transition-shadow bg-surface">
+              <CardContent className="p-10 text-center">
+                <div className="mx-auto bg-secondary/10 w-20 h-20 rounded-2xl flex items-center justify-center mb-8">
+                  <TrendingUp className="h-10 w-10 text-secondary" />
                 </div>
-                <h3 className="text-xl font-semibold mb-3">Harga Grosir B2B</h3>
+                <h3 className="text-xl font-bold mb-4 text-text-main">Skala B2B Grosir</h3>
                 <p className="text-text-muted leading-relaxed">
-                  Fasilitas penetapan minimal order dan harga grosir bertingkat yang memudahkan BUMDes membeli pasokan untuk dijual kembali.
+                  Penuhi stok BUMDes Anda dengan harga pabrik/petani. Sistem minimal order memastikan harga yang paling kompetitif.
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="border-none shadow-sm bg-surface-bg/50">
-              <CardContent className="pt-8 text-center">
-                <div className="mx-auto bg-primary/20 w-16 h-16 rounded-full flex items-center justify-center mb-6">
-                  <Users className="h-8 w-8 text-primary-dark" />
+            <Card className="border-none shadow-sm hover:shadow-md transition-shadow bg-surface">
+              <CardContent className="p-10 text-center">
+                <div className="mx-auto bg-cta/10 w-20 h-20 rounded-2xl flex items-center justify-center mb-8">
+                  <Users className="h-10 w-10 text-cta" />
                 </div>
-                <h3 className="text-xl font-semibold mb-3">Saling Menguatkan</h3>
+                <h3 className="text-xl font-bold mb-4 text-text-main">Saling Menguatkan</h3>
                 <p className="text-text-muted leading-relaxed">
-                  BUMDes yang kekurangan stok dapat dipasok oleh BUMDes dari desa lain. Jaringan ekonomi desa yang mandiri dan terstruktur.
+                  Surplus komoditas di satu desa akan menutupi defisit di desa lain. Rantai ekonomi lokal yang kuat dan mandiri.
                 </p>
               </CardContent>
             </Card>
@@ -142,48 +180,51 @@ export default async function Home() {
       </section>
 
       {/* Skenario Flow */}
-      <section id="cara-kerja" className="py-16">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold text-text-main mb-4">Cara Kerja Ekosistem</h2>
-            <p className="text-lg text-text-muted max-w-3xl mx-auto leading-relaxed">
-              BUMDes di suatu daerah yang memiliki keunggulan pasokan dapat menawarkan produknya. BUMDes dari daerah lain yang membutuhkan dapat memesan produk tersebut untuk disalurkan ke masyarakat lokal. Keduanya saling terhubung secara terstruktur.
+      <section id="cara-kerja" className="py-24 bg-surface">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-text-main mb-6">Cara Kerja Platform</h2>
+            <p className="text-lg text-text-muted max-w-2xl mx-auto leading-relaxed">
+              Tiga langkah mudah untuk mulai berkolaborasi dengan ribuan BUMDes di seluruh nusantara.
             </p>
           </div>
 
-          <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 mt-12 relative">
+          <div className="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-12 relative">
             
             {/* Step 1 */}
-            <div className="flex flex-col items-center text-center z-10 bg-surface p-6 rounded-xl shadow-sm border border-border w-full md:w-64">
-              <div className="bg-primary/10 text-primary p-4 rounded-full mb-4">
-                <Store className="h-8 w-8" />
+            <div className="flex flex-col items-center text-center z-10 w-full lg:w-72">
+              <div className="bg-primary/5 p-8 rounded-[2rem] mb-6 w-full aspect-square flex flex-col items-center justify-center border border-primary/10 relative">
+                <div className="absolute top-4 left-4 bg-primary text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">1</div>
+                <Store className="h-16 w-16 text-primary mb-4" />
+                <h4 className="font-bold text-xl mb-2">BUMDes Penyedia</h4>
               </div>
-              <h4 className="font-bold text-lg mb-2">BUMDes Penyedia</h4>
-              <p className="text-sm text-text-muted">Menawarkan komoditas unggulan desanya dengan harga grosir.</p>
+              <p className="text-text-muted">Menawarkan komoditas unggulan desanya dengan harga grosir kompetitif.</p>
             </div>
 
-            <ArrowRightCircle className="hidden md:block h-10 w-10 text-border" />
-            <div className="md:hidden h-8 w-[2px] bg-border my-2"></div>
+            <ArrowRight className="hidden lg:block h-12 w-12 text-border flex-shrink-0" />
+            <div className="lg:hidden h-12 w-[2px] bg-border border-dashed"></div>
 
             {/* Step 2 */}
-            <div className="flex flex-col items-center text-center z-10 bg-secondary/10 p-6 rounded-xl shadow-sm border border-secondary/20 w-full md:w-64">
-              <div className="bg-secondary/20 text-secondary-dark p-4 rounded-full mb-4">
-                <ShieldCheck className="h-8 w-8" />
+            <div className="flex flex-col items-center text-center z-10 w-full lg:w-72">
+              <div className="bg-cta/5 p-8 rounded-[2rem] mb-6 w-full aspect-square flex flex-col items-center justify-center border border-cta/10 relative">
+                <div className="absolute top-4 left-4 bg-cta text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">2</div>
+                <ShieldCheck className="h-16 w-16 text-cta mb-4" />
+                <h4 className="font-bold text-xl mb-2 text-text-main">GeraiBUMDes</h4>
               </div>
-              <h4 className="font-bold text-lg mb-2 text-secondary-dark">geraibumdes.com</h4>
-              <p className="text-sm text-text-muted">Platform yang menjembatani transaksi B2B antar-desa secara aman.</p>
+              <p className="text-text-muted">Platform pintar yang menjembatani transaksi B2B antar-desa secara aman.</p>
             </div>
 
-            <ArrowRightCircle className="hidden md:block h-10 w-10 text-border" />
-            <div className="md:hidden h-8 w-[2px] bg-border my-2"></div>
+            <ArrowRight className="hidden lg:block h-12 w-12 text-border flex-shrink-0" />
+            <div className="lg:hidden h-12 w-[2px] bg-border border-dashed"></div>
 
             {/* Step 3 */}
-            <div className="flex flex-col items-center text-center z-10 bg-surface p-6 rounded-xl shadow-sm border border-border w-full md:w-64">
-              <div className="bg-earth/10 text-earth p-4 rounded-full mb-4">
-                <Users className="h-8 w-8" />
+            <div className="flex flex-col items-center text-center z-10 w-full lg:w-72">
+              <div className="bg-secondary/5 p-8 rounded-[2rem] mb-6 w-full aspect-square flex flex-col items-center justify-center border border-secondary/10 relative">
+                <div className="absolute top-4 left-4 bg-secondary text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">3</div>
+                <Users className="h-16 w-16 text-secondary mb-4" />
+                <h4 className="font-bold text-xl mb-2">BUMDes Pembeli</h4>
               </div>
-              <h4 className="font-bold text-lg mb-2">BUMDes Pembeli</h4>
-              <p className="text-sm text-text-muted">Menerima pasokan komoditas untuk disalurkan ke masyarakat lokal.</p>
+              <p className="text-text-muted">Menerima pasokan komoditas untuk disalurkan ke masyarakat lokal.</p>
             </div>
             
           </div>
@@ -191,88 +232,59 @@ export default async function Home() {
       </section>
 
       {/* Verified Stores (Marquee) */}
-      <section className="py-16 bg-surface border-y border-border overflow-hidden relative">
-        <div className="w-full px-4 sm:px-8 lg:px-24 mb-8 relative z-10 flex justify-between items-end">
-          <div>
-            <h2 className="text-2xl font-bold text-text-main mb-2">BUMDes Terverifikasi</h2>
-            <p className="text-text-muted">Jejaring penyedia pasokan resmi di ekosistem geraibumdes.com.</p>
-          </div>
-          <Link href="/bumdes" className="hidden sm:flex items-center text-primary font-semibold hover:text-primary-dark whitespace-nowrap ml-4">
-            Lihat Semua BUMDes <ArrowRight className="ml-2 h-4 w-4" />
-          </Link>
+      <section className="py-24 bg-surface-bg border-t border-border overflow-hidden relative">
+        <div className="w-full px-4 sm:px-8 lg:px-24 mb-12 relative z-10 text-center">
+          <h2 className="text-3xl font-bold text-text-main mb-4">Jejaring BUMDes Terverifikasi</h2>
+          <p className="text-lg text-text-muted">Ribuan desa telah bergabung dalam ekosistem pasokan digital.</p>
         </div>
         
         {stores.length > 0 ? (
           <div className="w-full overflow-hidden">
             <div className="animate-marquee flex gap-6 px-4 py-4">
               {marqueeStores.map((store, index) => (
-                <div key={`${store._id}-${index}`} className="w-72 flex-shrink-0">
+                <div key={`${store._id}-${index}`} className="w-80 flex-shrink-0">
                   <StoreCard store={store} />
                 </div>
               ))}
             </div>
           </div>
         ) : (
-          <div className="w-full text-center py-16 px-4 sm:px-8 lg:px-24 bg-surface rounded-xl border border-border">
+          <div className="max-w-4xl mx-auto text-center py-16 px-4 bg-surface rounded-2xl border border-border border-dashed">
             <Store className="h-16 w-16 text-border mx-auto mb-4" />
-            <h3 className="text-lg font-bold text-text-main mb-2">Belum Ada Toko BUMDes</h3>
-            <p className="text-text-muted">Saat ini belum ada BUMDes yang berstatus verifikasi aktif.</p>
+            <h3 className="text-xl font-bold text-text-main mb-2">Belum Ada Toko</h3>
+            <p className="text-text-muted">Jadilah BUMDes pertama yang berkolaborasi di platform ini.</p>
           </div>
         )}
         
-        <div className="mt-8 text-center sm:hidden px-4">
+        <div className="mt-12 text-center">
           <Link href="/bumdes">
-            <Button variant="outline" className="w-full">Lihat Semua BUMDes</Button>
+            <Button variant="outline" size="lg" className="px-8">Lihat Direktori BUMDes</Button>
           </Link>
         </div>
       </section>
 
-      {/* Featured Products */}
-      <section className="py-16 bg-surface-bg">
-        <div className="w-full px-4 sm:px-8 lg:px-24">
-          <div className="flex justify-between items-end mb-8">
-            <div>
-              <h2 className="text-2xl font-bold text-text-main mb-2">Produk Unggulan BUMDes</h2>
-              <p className="text-text-muted">Temukan pasokan komoditas terbaik dari berbagai desa.</p>
-            </div>
-          </div>
-          
-          {availableProducts.length > 0 ? (
-            <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-                {availableProducts.map((product) => (
-                  <ProductCard key={product._id.toString()} product={product} />
-                ))}
-              </div>
-              <div className="mt-12 text-center">
-                <Link href="/produk">
-                  <Button size="lg" className="px-8 bg-primary hover:bg-primary-dark text-surface font-bold">
-                    Lihat Semua Produk
-                  </Button>
-                </Link>
-              </div>
-            </>
-          ) : (
-            <div className="text-center py-16 bg-surface rounded-xl border border-border">
-              <PackageOpen className="h-16 w-16 text-border mx-auto mb-4" />
-              <h3 className="text-lg font-bold text-text-main mb-2">Belum Ada Produk</h3>
-              <p className="text-text-muted">BUMDes terdaftar sedang mempersiapkan katalog produk mereka.</p>
-            </div>
-          )}
-        </div>
-      </section>
-
       {/* CTA Akhir */}
-      <section className="py-20 bg-primary-dark text-surface text-center">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold mb-6">Siap Mengembangkan Usaha BUMDes Anda?</h2>
-          <p className="text-lg text-surface/80 mb-10 leading-relaxed">
-            Bergabunglah dengan ekosistem B2B antar-BUMDes. Perluas jangkauan pasar untuk komoditas unggulan desa Anda dan temukan pasokan dengan harga grosir terbaik.
+      <section className="py-24 bg-primary text-white text-center relative overflow-hidden">
+        {/* Abstract background blobs */}
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-20 pointer-events-none">
+           <div className="absolute -top-24 -left-24 w-96 h-96 bg-white rounded-full mix-blend-overlay filter blur-3xl"></div>
+           <div className="absolute top-24 -right-24 w-96 h-96 bg-secondary rounded-full mix-blend-overlay filter blur-3xl"></div>
+        </div>
+        
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <h2 className="text-4xl sm:text-5xl font-bold mb-8 leading-tight">Siap Memperluas Pasar <br/> BUMDes Anda?</h2>
+          <p className="text-xl text-white/90 mb-12 leading-relaxed max-w-2xl mx-auto">
+            Bergabunglah sekarang. Temukan pasokan harga grosir atau pasarkan komoditas unggulan desa Anda ke seluruh Indonesia.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Link href="/register">
-              <Button variant="secondary" size="lg" className="w-full sm:w-auto font-bold px-8">
-                Daftarkan BUMDes Sekarang
+              <Button variant="primary" size="lg" className="w-full sm:w-auto font-bold px-10 h-14 text-lg">
+                Gabung Menjadi Mitra
+              </Button>
+            </Link>
+            <Link href="/produk">
+              <Button variant="outline" size="lg" className="w-full sm:w-auto px-10 h-14 text-lg border-white text-white hover:bg-white/10">
+                Mulai Belanja
               </Button>
             </Link>
           </div>

@@ -34,14 +34,14 @@ export default function NavbarClient({ session, unreadCount = 0, storeSlug }: Na
   };
 
   return (
-    <nav className="bg-primary text-surface sticky top-0 z-50 shadow-md">
+    <nav className="bg-surface text-text-main sticky top-0 z-50 shadow-sm border-b border-border">
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between py-4 min-h-[80px] items-center">
+        <div className="flex justify-between py-3 min-h-[80px] items-center">
           {/* Logo & Brand */}
           <div className="flex-shrink-0 flex items-center">
-            <Link href="/" className="text-xl sm:text-2xl font-bold tracking-tight text-surface flex items-center gap-2">
+            <Link href="/" className="text-xl sm:text-2xl font-bold tracking-tight text-primary flex items-center gap-2">
               <Image src="/images/logo.png" alt="Logo GeraiBumdes" width={40} height={40} className="h-8 w-8 sm:h-10 sm:w-10 object-contain" priority />
-              <span className="hidden sm:inline-block">GeraiBumdes.com</span>
+              <span className="hidden sm:inline-block">GeraiBumdes</span>
             </Link>
           </div>
 
@@ -53,27 +53,27 @@ export default function NavbarClient({ session, unreadCount = 0, storeSlug }: Na
                 placeholder="Cari produk..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full h-12 bg-surface border border-border text-text-main rounded-md pl-4 pr-4 focus:outline-none focus:ring-2 focus:ring-secondary placeholder-text-muted"
+                className="w-full h-11 bg-surface-bg border border-border text-text-main rounded-xl pl-4 pr-4 focus:outline-none focus:ring-2 focus:ring-primary placeholder-text-muted transition-all"
               />
               <button 
                 type="submit"
-                className="h-12 px-6 bg-secondary hover:bg-secondary/90 text-secondary-dark rounded-md flex items-center justify-center transition-colors font-medium border border-secondary flex-shrink-0"
+                className="h-11 px-6 bg-primary hover:brightness-95 text-white rounded-xl flex items-center justify-center transition-all font-medium flex-shrink-0 shadow-sm"
                 aria-label="Cari"
               >
                 <Search className="h-5 w-5" />
               </button>
             </form>
             
-            <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="flex items-center gap-1 flex-shrink-0">
               <Link 
                 href="/produk" 
-                className="h-12 px-5 rounded-md flex items-center justify-center border border-surface/30 bg-surface/10 hover:bg-surface/20 transition-colors text-sm font-semibold whitespace-nowrap"
+                className="h-11 px-4 rounded-xl flex items-center justify-center hover:bg-surface-bg transition-colors text-sm font-medium whitespace-nowrap text-text-main"
               >
                 Produk
               </Link>
               <Link 
                 href="/bumdes" 
-                className="h-12 px-5 rounded-md flex items-center justify-center border border-surface/30 bg-surface/10 hover:bg-surface/20 transition-colors text-sm font-semibold whitespace-nowrap"
+                className="h-11 px-4 rounded-xl flex items-center justify-center hover:bg-surface-bg transition-colors text-sm font-medium whitespace-nowrap text-text-main"
               >
                 BUMDes
               </Link>
@@ -81,49 +81,44 @@ export default function NavbarClient({ session, unreadCount = 0, storeSlug }: Na
           </div>
 
           {/* Right Section Desktop */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden md:flex items-center space-x-2">
             {session ? (
               <>
                 {session.role === "BUMDES_ADMIN" && (
-                  <Link href="/dashboard/pesanan" className="relative p-2 text-surface hover:text-secondary transition-colors" aria-label="Notifikasi">
+                  <Link href="/dashboard/pesanan" className="relative p-2 text-text-muted hover:text-primary transition-colors" aria-label="Notifikasi">
                     <Bell className="h-6 w-6" />
                     {unreadCount > 0 && (
-                      <span className="absolute top-0 right-0 h-4 w-4 bg-error text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                      <span className="absolute top-1 right-1 h-4 w-4 bg-error text-white text-[10px] font-bold rounded-full flex items-center justify-center border border-white">
                         {unreadCount > 99 ? '99+' : unreadCount}
                       </span>
                     )}
                   </Link>
                 )}
                 
-                <Link href="/keranjang" className="relative p-2 text-surface hover:text-secondary transition-colors" aria-label="Keranjang">
+                <Link href="/keranjang" className="relative p-2 text-text-muted hover:text-primary transition-colors" aria-label="Keranjang">
                   <ShoppingCart className="h-6 w-6" />
                 </Link>
 
-                <div className="flex items-center space-x-4 ml-2">
+                <div className="flex items-center space-x-3 ml-2 border-l border-border pl-4">
                   <Link 
                     href={session.role === "SUPER_ADMIN" ? "/admin" : "/dashboard"} 
-                    className="p-2 text-surface hover:text-secondary transition-colors relative group"
+                    className="p-2 text-text-muted hover:text-primary transition-colors relative group"
                     aria-label="Dashboard"
                   >
                     <LayoutDashboard className="h-6 w-6" />
-                    <span className="absolute top-10 right-0 w-max bg-surface text-text-main text-xs font-bold px-2 py-1 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span className="absolute top-10 right-0 w-max bg-text-main text-white text-xs font-bold px-2 py-1 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
                       Dashboard
                     </span>
                   </Link>
                   <Link 
                     href={session.role === "SUPER_ADMIN" ? "/admin/akun" : (storeSlug ? `/bumdes/${storeSlug}` : "/dashboard")} 
-                    className="h-8 w-8 bg-secondary rounded-full flex items-center justify-center text-secondary-dark font-bold hover:scale-105 transition-transform group relative"
+                    className="h-9 w-9 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold hover:scale-105 transition-transform group relative"
                     aria-label={session.role === "SUPER_ADMIN" ? "Manajemen Akun" : "Profil Publik BUMDes"}
                   >
                     <User className="h-5 w-5" />
                     {session.role === "BUMDES_ADMIN" && storeSlug && (
-                      <span className="absolute top-10 right-0 w-max bg-surface text-text-main text-xs font-bold px-2 py-1 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span className="absolute top-10 right-0 w-max bg-text-main text-white text-xs font-bold px-2 py-1 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-50">
                         Lihat Profil Publik
-                      </span>
-                    )}
-                    {session.role === "SUPER_ADMIN" && (
-                      <span className="absolute top-10 right-0 w-max bg-surface text-text-main text-xs font-bold px-2 py-1 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
-                        Manajemen Akun
                       </span>
                     )}
                   </Link>
@@ -133,13 +128,13 @@ export default function NavbarClient({ session, unreadCount = 0, storeSlug }: Na
               <div className="flex items-center space-x-3 ml-2">
                 <Link 
                   href="/login" 
-                  className="text-surface/90 hover:text-secondary font-medium transition-colors"
+                  className="text-text-main hover:text-primary font-medium transition-colors px-3 py-2"
                 >
                   Masuk
                 </Link>
                 <Link 
                   href="/register" 
-                  className="bg-secondary text-secondary-dark font-bold px-4 py-2 rounded hover:bg-secondary/90 transition-colors text-sm"
+                  className="bg-cta text-white font-bold px-5 py-2.5 rounded-xl hover:brightness-95 shadow-sm transition-all text-sm"
                 >
                   Daftarkan BUMDes
                 </Link>
@@ -152,21 +147,21 @@ export default function NavbarClient({ session, unreadCount = 0, storeSlug }: Na
             {session && (
               <>
                 {session.role === "BUMDES_ADMIN" && (
-                  <Link href="/dashboard/pesanan" className="relative p-2 text-surface hover:text-secondary transition-colors">
+                  <Link href="/dashboard/pesanan" className="relative p-2 text-text-muted hover:text-primary transition-colors">
                     <Bell className="h-5 w-5" />
                     {unreadCount > 0 && (
-                      <span className="absolute top-0 right-0 h-3.5 w-3.5 bg-error text-white text-[9px] font-bold rounded-full flex items-center justify-center">
+                      <span className="absolute top-1 right-1 h-3.5 w-3.5 bg-error text-white text-[9px] font-bold rounded-full flex items-center justify-center border border-white">
                         {unreadCount > 99 ? '99+' : unreadCount}
                       </span>
                     )}
                   </Link>
                 )}
-                <Link href="/keranjang" className="p-2 text-surface hover:text-secondary transition-colors">
+                <Link href="/keranjang" className="p-2 text-text-muted hover:text-primary transition-colors">
                   <ShoppingCart className="h-5 w-5" />
                 </Link>
               </>
             )}
-            <button onClick={toggleMobileMenu} className="text-surface p-2 focus:outline-none">
+            <button onClick={toggleMobileMenu} className="text-text-main p-2 focus:outline-none hover:text-primary">
               {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           </div>
@@ -180,11 +175,11 @@ export default function NavbarClient({ session, unreadCount = 0, storeSlug }: Na
               placeholder="Cari produk..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full h-10 bg-surface border border-border text-text-main rounded-md pl-3 pr-2 focus:outline-none focus:ring-1 focus:ring-secondary text-sm placeholder-text-muted min-w-0"
+              className="w-full h-11 bg-surface-bg border border-border text-text-main rounded-xl pl-4 pr-2 focus:outline-none focus:ring-2 focus:ring-primary text-sm placeholder-text-muted min-w-0"
             />
             <button 
               type="submit"
-              className="h-10 px-4 bg-secondary hover:bg-secondary/90 text-secondary-dark rounded-md flex items-center justify-center transition-colors border border-secondary flex-shrink-0"
+              className="h-11 px-4 bg-primary hover:brightness-95 text-white rounded-xl flex items-center justify-center transition-colors shadow-sm flex-shrink-0"
               aria-label="Cari"
             >
               <Search className="h-4 w-4" />
@@ -195,32 +190,32 @@ export default function NavbarClient({ session, unreadCount = 0, storeSlug }: Na
 
       {/* Mobile Menu Panel */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-primary-dark border-t border-primary/20">
+        <div className="md:hidden bg-surface border-t border-border shadow-md absolute w-full left-0 z-40">
           <div className="px-4 pt-2 pb-4 space-y-1">
-            <Link href="/" className="block px-3 py-2 rounded-md text-base font-medium text-surface hover:bg-primary" onClick={toggleMobileMenu}>
+            <Link href="/" className="block px-3 py-2.5 rounded-xl text-base font-medium text-text-main hover:bg-surface-bg hover:text-primary" onClick={toggleMobileMenu}>
               Beranda
             </Link>
-            <Link href="/produk" className="block px-3 py-2 rounded-md text-base font-medium text-surface hover:bg-primary" onClick={toggleMobileMenu}>
+            <Link href="/produk" className="block px-3 py-2.5 rounded-xl text-base font-medium text-text-main hover:bg-surface-bg hover:text-primary" onClick={toggleMobileMenu}>
               Produk
             </Link>
-            <Link href="/bumdes" className="block px-3 py-2 rounded-md text-base font-medium text-surface hover:bg-primary" onClick={toggleMobileMenu}>
+            <Link href="/bumdes" className="block px-3 py-2.5 rounded-xl text-base font-medium text-text-main hover:bg-surface-bg hover:text-primary" onClick={toggleMobileMenu}>
               BUMDes
             </Link>
-            <Link href="/#cara-kerja" className="block px-3 py-2 rounded-md text-base font-medium text-surface hover:bg-primary" onClick={toggleMobileMenu}>
+            <Link href="/#cara-kerja" className="block px-3 py-2.5 rounded-xl text-base font-medium text-text-main hover:bg-surface-bg hover:text-primary" onClick={toggleMobileMenu}>
               Cara Kerja
             </Link>
             
-            <div className="border-t border-primary mt-4 pt-4">
+            <div className="border-t border-border mt-4 pt-4">
               {session ? (
-                <Link href={session.role === "SUPER_ADMIN" ? "/admin" : "/dashboard"} className="block px-3 py-2 rounded-md text-base font-bold text-secondary hover:bg-primary" onClick={toggleMobileMenu}>
+                <Link href={session.role === "SUPER_ADMIN" ? "/admin" : "/dashboard"} className="block px-3 py-2.5 rounded-xl text-base font-bold text-primary hover:bg-surface-bg" onClick={toggleMobileMenu}>
                   Dashboard Akun
                 </Link>
               ) : (
-                <div className="flex flex-col space-y-2 mt-2">
-                  <Link href="/login" className="block px-3 py-2 rounded-md text-base font-medium text-surface hover:bg-primary text-center" onClick={toggleMobileMenu}>
+                <div className="flex flex-col space-y-3 mt-2">
+                  <Link href="/login" className="block px-3 py-2.5 rounded-xl text-base font-medium text-text-main hover:bg-surface-bg text-center border border-border" onClick={toggleMobileMenu}>
                     Masuk
                   </Link>
-                  <Link href="/register" className="block px-3 py-2 rounded-md text-base font-bold text-secondary-dark bg-secondary hover:bg-secondary/90 text-center" onClick={toggleMobileMenu}>
+                  <Link href="/register" className="block px-3 py-2.5 rounded-xl text-base font-bold text-white bg-cta hover:brightness-95 text-center shadow-sm" onClick={toggleMobileMenu}>
                     Daftarkan BUMDes
                   </Link>
                 </div>

@@ -21,7 +21,7 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   return (
-    <div className="bg-surface rounded-lg shadow-sm border border-border group hover:shadow-md transition-shadow flex flex-col h-full overflow-hidden">
+    <div className="bg-surface rounded-xl shadow-sm border border-border group hover:shadow-md transition-shadow duration-200 flex flex-col h-full overflow-hidden">
       <Link href={`/produk/${product.slug}`} className="block relative">
         <div className="h-48 bg-border/50 relative flex justify-center items-center">
           {product.images && product.images.length > 0 ? (
@@ -30,7 +30,7 @@ export function ProductCard({ product }: ProductCardProps) {
             <Package className="h-12 w-12 text-text-muted/50" />
           )}
           {product.isWholesaleAvailable && (
-            <div className="absolute top-2 left-2 bg-secondary text-surface text-xs font-bold px-2 py-1 rounded shadow-sm">
+            <div className="absolute top-2 left-2 bg-cta text-white text-xs font-bold px-2 py-1 rounded-full shadow-sm">
               Grosir
             </div>
           )}
@@ -64,11 +64,11 @@ export function ProductCard({ product }: ProductCardProps) {
         )}
         
         <div className="mt-auto pt-3 border-t border-border">
-          <div className="font-bold text-earth text-lg">
+          <div className="font-bold text-cta text-lg">
             {formatCurrency(product.retailPrice)}<span className="text-sm font-normal text-text-muted">/{product.unit}</span>
           </div>
           <div className="mt-1">
-            <span className="text-xs font-medium text-primary-dark bg-primary/10 px-2 py-1 rounded inline-block">
+            <span className="text-xs font-medium text-primary bg-primary/10 px-2.5 py-1 rounded-full inline-block">
               Min. Order: {product.minOrder} {product.unit}
             </span>
           </div>
@@ -77,7 +77,7 @@ export function ProductCard({ product }: ProductCardProps) {
       
       <div className="px-4 pb-4">
         <Link href={`/produk/${product.slug}`} className="block">
-          <Button variant="outline" className="w-full text-sm h-9">Lihat Detail</Button>
+          <Button variant="primary" className="w-full text-sm h-10">Lihat Produk</Button>
         </Link>
       </div>
     </div>

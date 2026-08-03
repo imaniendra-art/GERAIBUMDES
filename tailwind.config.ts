@@ -10,37 +10,37 @@ const config: Config = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: "#3F5F3B",
-          dark: "#2F472C",
+          DEFAULT: "#1F6F4A",
+          dark: "#256F54",
         },
         secondary: {
-          DEFAULT: "#D9A441",
+          DEFAULT: "#E8B931",
         },
-        accent: {
-          DEFAULT: "#A7C957",
-        },
-        earth: {
-          DEFAULT: "#8B5E34",
+        cta: {
+          DEFAULT: "#F28C28",
         },
         surface: {
           DEFAULT: "#FFFFFF",
-          bg: "#FAF7EF",
+          bg: "#F8F9F7",
         },
         text: {
-          main: "#1F2933",
-          muted: "#667085",
+          main: "#222222",
+          muted: "#666666",
         },
         border: {
-          DEFAULT: "#E7E2D6",
+          DEFAULT: "#EAEAEA",
         },
         danger: {
-          DEFAULT: "#DC2626",
+          DEFAULT: "#D32F2F",
         },
         success: {
-          DEFAULT: "#16A34A",
+          DEFAULT: "#2E7D32",
         },
         warning: {
-          DEFAULT: "#F59E0B",
+          DEFAULT: "#F4B400",
+        },
+        info: {
+          DEFAULT: "#1976D2",
         },
       },
       backgroundImage: {

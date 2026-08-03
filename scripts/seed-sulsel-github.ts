@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-dotenv.config({ path: ".env.local" });
+dotenv.config({ path: ".env" });
 import mongoose from "mongoose";
 import Region from "../src/models/Region";
 
@@ -23,9 +23,7 @@ async function seedSulsel() {
     await mongoose.connect(MONGODB_URI);
     console.log("Connected.");
 
-    console.log("Clearing existing Region data...");
-    await Region.deleteMany({});
-    console.log("Region collection cleared.");
+    // Region collection tidak di-clear agar data provinsi lain tidak hilang
 
     console.log("Fetching South Sulawesi (73) data from GitHub...");
     const provinceId = "73";
@@ -60,12 +58,21 @@ async function seedSulsel() {
     }
 
     console.log(`Total regions (villages) to insert: ${regionDocuments.length}`);
-    
+    // Gunakan bulkWrite dengan upsert untuk insert yang aman tanpa menghapus provinsi lain
     const batchSize = 1000;
     for (let i = 0; i < regionDocuments.length; i += batchSize) {
       const batch = regionDocuments.slice(i, i + batchSize);
-      await Region.insertMany(batch);
-      console.log(`Inserted batch ${i / batchSize + 1}`);
+      
+      const operations = batch.map(doc => ({
+        updateOne: {
+          filter: { villageCode: doc.villageCode },
+          update: { $set: doc },
+          upsert: true
+        }
+      }));
+
+      await Region.bulkWrite(operations, { ordered: false });
+      console.log(`Inserted/Updated batch ${Math.floor(i / batchSize) + 1} of ${Math.ceil(regionDocuments.length / batchSize)}`);
     }
 
     console.log("Seeding Sulsel regions completed successfully!");
