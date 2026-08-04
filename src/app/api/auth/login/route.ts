@@ -32,9 +32,6 @@ export async function POST(req: Request) {
         if (profile.verificationStatus === "PENDING_VERIFICATION") {
           return NextResponse.json({ error: "Pendaftaran BUMDes Anda sedang diverifikasi oleh Admin. Mohon menunggu beberapa saat untuk proses pengecekan data." }, { status: 403 });
         }
-        if (profile.verificationStatus === "REJECTED") {
-          return NextResponse.json({ error: `Pendaftaran BUMDes Anda ditolak. ${profile.rejectionReason ? `Alasan: ${profile.rejectionReason}` : 'Silakan hubungi Admin untuk informasi lebih lanjut.'}` }, { status: 403 });
-        }
       }
     }
 

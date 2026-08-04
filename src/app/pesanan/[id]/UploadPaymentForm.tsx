@@ -58,9 +58,9 @@ export default function UploadPaymentForm({ orderId }: { orderId: string }) {
           className="w-full bg-surface border border-border text-text-main rounded-md px-4 py-2 text-sm focus:ring-primary focus:border-primary"
         />
       </div>
-      <Button type="submit" disabled={loading} className="w-full text-sm">
-        {loading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <UploadCloud className="h-4 w-4 mr-2" />} 
-        Unggah Bukti Bayar
+      <Button type="submit" disabled={loading} className="w-full text-sm h-12 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold transition-all shadow-md">
+        {loading ? <Loader2 className="h-5 w-5 mr-2 animate-spin" /> : <UploadCloud className="h-5 w-5 mr-2" />} 
+        Saya Sudah Transfer
       </Button>
     </form>
   );

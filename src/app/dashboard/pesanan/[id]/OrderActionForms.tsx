@@ -197,7 +197,7 @@ export function ShipManualForm({ orderId }: { orderId: string }) {
     return (
       <Button onClick={() => setIsOpen(true)} className="w-full bg-earth hover:bg-earth/90 text-surface">
         <Truck className="h-4 w-4 mr-2" />
-        Kirim Manual
+        Proses Pengiriman
       </Button>
     );
   }
@@ -205,7 +205,7 @@ export function ShipManualForm({ orderId }: { orderId: string }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4 bg-surface-bg border border-border p-4 rounded-md">
       <h4 className="font-bold text-sm mb-2 text-text-main flex items-center">
-        <Truck className="h-4 w-4 mr-2 text-primary" /> Detail Pengiriman Manual
+        <Truck className="h-4 w-4 mr-2 text-primary" /> Detail Pengiriman
       </h4>
       
       <div>

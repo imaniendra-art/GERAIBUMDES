@@ -12,7 +12,7 @@ interface BadgeProps {
 export function Badge({ children, variant = "neutral", className }: BadgeProps) {
   const variantStyles = {
     success: "bg-success/10 text-success",
-    warning: "bg-warning/15 text-warning",
+    warning: "bg-warning/10 text-warning",
     danger: "bg-danger/10 text-danger",
     primary: "bg-primary/10 text-primary",
     neutral: "bg-surface-bg text-text-muted border border-border",
@@ -21,7 +21,7 @@ export function Badge({ children, variant = "neutral", className }: BadgeProps) 
   return (
     <span
       className={cn(
-        "inline-flex items-center justify-center px-3 py-1 rounded-full text-[11px] font-bold tracking-wide whitespace-nowrap",
+        "inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-bold tracking-widest uppercase whitespace-nowrap shadow-sm",
         variantStyles[variant],
         className
       )}

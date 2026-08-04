@@ -53,7 +53,7 @@ export default function NavbarClient({ session, unreadCount = 0, storeSlug }: Na
                 placeholder="Cari produk..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full h-11 bg-surface-bg border border-border text-text-main rounded-xl pl-4 pr-4 focus:outline-none focus:ring-2 focus:ring-primary placeholder-text-muted transition-all"
+                className="w-full h-11 bg-surface-bg border border-border text-text-main rounded-xl pl-4 pr-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 shadow-sm placeholder-text-muted"
               />
               <button 
                 type="submit"
@@ -175,7 +175,7 @@ export default function NavbarClient({ session, unreadCount = 0, storeSlug }: Na
               placeholder="Cari produk..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full h-11 bg-surface-bg border border-border text-text-main rounded-xl pl-4 pr-2 focus:outline-none focus:ring-2 focus:ring-primary text-sm placeholder-text-muted min-w-0"
+              className="w-full h-11 bg-surface-bg border border-border text-text-main rounded-xl pl-4 pr-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 shadow-sm text-sm placeholder-text-muted min-w-0"
             />
             <button 
               type="submit"

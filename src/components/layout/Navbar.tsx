@@ -20,7 +20,7 @@ export default async function Navbar() {
           storeSlug = store.slug;
           unreadCount = await Order.countDocuments({
             sellerStoreId: store._id,
-            status: "PENDING"
+            status: "WAITING_SELLER_CONFIRMATION"
           });
         }
       }

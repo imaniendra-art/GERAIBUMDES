@@ -65,15 +65,15 @@ export default function AddToCartActions({ product, store }: AddToCartProps) {
   };
 
   return (
-    <div className="flex flex-col gap-4 w-full sm:w-auto">
-      <div className="flex items-center justify-between sm:justify-start gap-4">
+    <div className="flex flex-col gap-5 w-full">
+      <div className="flex items-center justify-between gap-4">
         <span className="text-sm text-text-muted font-medium">Kuantitas:</span>
-        <div className="flex items-center border border-border rounded-md bg-surface-bg">
+        <div className="flex items-center border border-border rounded-lg bg-surface-bg overflow-hidden h-10">
           <button 
             type="button"
             onClick={handleDecrease}
             disabled={quantity <= product.minOrder}
-            className="p-2 text-text-muted hover:text-primary disabled:opacity-50"
+            className="w-10 h-full flex items-center justify-center text-text-muted hover:text-primary hover:bg-surface disabled:opacity-50 transition-colors"
           >
             <Minus className="h-4 w-4" />
           </button>
@@ -81,25 +81,31 @@ export default function AddToCartActions({ product, store }: AddToCartProps) {
             type="number" 
             value={quantity}
             onChange={(e) => setQuantity(Math.max(product.minOrder, parseInt(e.target.value) || product.minOrder))}
-            className="w-16 text-center bg-transparent border-none focus:ring-0 text-text-main font-medium p-0"
+            className="w-14 h-full text-center bg-transparent border-none focus:ring-0 text-text-main font-bold p-0 text-sm"
             min={product.minOrder}
           />
           <button 
             type="button"
             onClick={handleIncrease}
-            className="p-2 text-text-muted hover:text-primary"
+            className="w-10 h-full flex items-center justify-center text-text-muted hover:text-primary hover:bg-surface transition-colors"
           >
             <Plus className="h-4 w-4" />
           </button>
         </div>
       </div>
       
-      <div className="flex flex-col sm:flex-row gap-3 w-full">
-        <Button onClick={handleAddToCart} variant="outline" className="flex-1 flex items-center justify-center">
-          <ShoppingCart className="h-4 w-4 mr-2" /> Masukkan Keranjang
-        </Button>
-        <Button onClick={handleBuyNow} className="flex-1">
+      <div className="flex flex-col gap-3 w-full">
+        {/* Primary CTA */}
+        <Button onClick={handleBuyNow} className="w-full h-12 text-sm font-bold rounded-lg shadow-sm">
           Beli Langsung
+        </Button>
+        {/* Secondary CTA */}
+        <Button 
+          onClick={handleAddToCart} 
+          variant="outline" 
+          className="w-full h-12 text-sm font-bold flex items-center justify-center bg-surface border-success text-success hover:bg-success/5 hover:text-success hover:border-success rounded-lg"
+        >
+          <ShoppingCart className="h-4 w-4 mr-2" /> Masukkan Keranjang
         </Button>
       </div>
     </div>

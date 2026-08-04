@@ -25,7 +25,7 @@ export default function MockProfilePage() {
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <h1 className="text-3xl font-bold text-text-main">{store.name}</h1>
-                  <ShieldCheck className="w-6 h-6 text-secondary flex-shrink-0" title="Terverifikasi" />
+                  <ShieldCheck className="w-6 h-6 text-secondary flex-shrink-0" />
                 </div>
                 <div className="text-sm font-semibold text-primary mb-4">{store.businessType}</div>
                 <p className="text-text-muted leading-relaxed max-w-2xl">{store.description}</p>

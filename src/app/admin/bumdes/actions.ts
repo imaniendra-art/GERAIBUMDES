@@ -98,3 +98,75 @@ export async function updateBumdesProfile(bumdesId: string, formData: FormData) 
     return { success: false, error: "Terjadi kesalahan sistem saat memperbarui BUMDes." };
   }
 }
+
+export async function verifyBumdes(bumdesId: string) {
+  const session = await getSession();
+  if (!session || (session.role !== "SUPER_ADMIN" && session.role !== "PLATFORM_ADMIN")) {
+    return { success: false, error: "Unauthorized" };
+  }
+
+  try {
+    await dbConnect();
+    const profile = await BumdesProfile.findByIdAndUpdate(bumdesId, {
+      verificationStatus: "VERIFIED",
+      verifiedAt: new Date(),
+      verifiedBy: session.userId,
+    });
+    
+    if (!profile) return { success: false, error: "BUMDes tidak ditemukan." };
+    
+    await Store.findOneAndUpdate({ bumdesId: bumdesId }, { status: "ACTIVE" });
+    
+    await logAdminActivity(
+      session.userId,
+      "VERIFY_BUMDES",
+      profile.name as string,
+      `BUMDes ${profile.name} diverifikasi`
+    );
+    
+    revalidatePath("/admin/bumdes");
+    revalidatePath(`/admin/bumdes/${bumdesId}`);
+    return { success: true, message: "BUMDes berhasil diverifikasi dan diaktifkan." };
+  } catch (error: any) {
+    console.error("Error verifying BUMDes:", error);
+    return { success: false, error: "Terjadi kesalahan saat memverifikasi BUMDes." };
+  }
+}
+
+export async function rejectBumdes(bumdesId: string, reason: string) {
+  const session = await getSession();
+  if (!session || (session.role !== "SUPER_ADMIN" && session.role !== "PLATFORM_ADMIN")) {
+    return { success: false, error: "Unauthorized" };
+  }
+  
+  if (!reason || reason.trim() === "") {
+    return { success: false, error: "Alasan penolakan wajib diisi." };
+  }
+
+  try {
+    await dbConnect();
+    const profile = await BumdesProfile.findByIdAndUpdate(bumdesId, {
+      verificationStatus: "REJECTED",
+      rejectionReason: reason,
+    });
+    
+    if (!profile) return { success: false, error: "BUMDes tidak ditemukan." };
+    
+    await Store.findOneAndUpdate({ bumdesId: bumdesId }, { status: "INACTIVE" });
+    
+    await logAdminActivity(
+      session.userId,
+      "REJECT_BUMDES",
+      profile.name as string,
+      `BUMDes ${profile.name} ditolak. Alasan: ${reason}`
+    );
+    
+    revalidatePath("/admin/bumdes");
+    revalidatePath(`/admin/bumdes/${bumdesId}`);
+    return { success: true, message: "BUMDes berhasil ditolak." };
+  } catch (error: any) {
+    console.error("Error rejecting BUMDes:", error);
+    return { success: false, error: "Terjadi kesalahan saat menolak BUMDes." };
+  }
+}
+

@@ -35,7 +35,7 @@ export default async function EditAccountPage({ params }: { params: Promise<{ id
   const plainUser = JSON.parse(JSON.stringify(user));
 
   return (
-    <div className="w-full max-w-2xl mx-auto py-8 px-4">
+    <div className="w-full max-w-2xl mx-auto space-y-6">
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold text-text-main">Edit Akun Pengguna</h1>

@@ -6,7 +6,7 @@ import Store from "@/models/Store";
 import BumdesProfile from "@/models/BumdesProfile";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/Card";
-import { Package, ChevronRight, ChevronLeft, Search, Filter } from "lucide-react";
+import { Package, ChevronRight, ChevronLeft, Search, Filter, AlertTriangle, ShoppingBag, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -47,120 +47,136 @@ export default async function PenjualPesananPage({
   const orders = await Order.find(query).sort({ createdAt: -1 });
 
   return (
-    <div className="w-full px-4 sm:px-8 lg:px-24 py-8">
-      <div className="mb-6">
+    <div className="space-y-6">
+      <div className="mb-10">
         <Link href="/dashboard">
-          <span className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors border border-border hover:bg-surface-bg hover:text-text-main h-10 py-2 px-4 bg-surface text-text-main">
-            <ChevronLeft className="h-4 w-4 mr-2" /> Kembali ke Dashboard
-          </span>
+          <Button variant="ghost" className="rounded-xl text-sm font-semibold transition-colors duration-200 h-11 px-4 text-text-muted hover:text-text-main hover:bg-surface-bg">
+            <ArrowLeft className="h-4 w-4 mr-2" /> Kembali ke Dashboard
+          </Button>
         </Link>
       </div>
 
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-        <h1 className="text-2xl font-bold text-text-main">Pesanan Masuk</h1>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-text-main tracking-tight">Pesanan Masuk</h1>
+          <p className="text-text-muted mt-1.5 font-medium">Kelola seluruh pesanan yang masuk ke toko BUMDes Anda.</p>
+        </div>
       </div>
 
       {!store.bankAccount?.bankAccountNumber && (
-        <div className="bg-error/10 border-2 border-error text-error-dark p-5 rounded-lg flex items-start mb-8 shadow-[0_0_15px_rgba(239,68,68,0.5)] animate-[pulse_2s_ease-in-out_infinite]">
-          <div className="bg-error/20 rounded-full p-2 mr-4 flex-shrink-0 mt-0.5">
-            <span className="h-4 w-4 block bg-error rounded-full animate-ping" />
+        <div className="bg-warning/10 border border-warning/20 px-6 py-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between mb-8 shadow-sm h-auto sm:h-[72px] transition-all duration-200">
+          <div className="flex items-center mb-4 sm:mb-0">
+            <div className="bg-warning/20 p-2.5 rounded-xl mr-4 flex-shrink-0">
+              <AlertTriangle className="h-6 w-6 text-warning-dark" />
+            </div>
+            <div>
+              <h4 className="font-bold text-base text-text-main leading-tight">Data Rekening Belum Lengkap</h4>
+              <p className="text-sm text-text-muted mt-0.5">Lengkapi data rekening BUMDes agar pembeli dapat melakukan pembayaran.</p>
+            </div>
           </div>
-          <div>
-            <h4 className="font-bold text-lg mb-1">⚠️ Data Rekening Belum Lengkap!</h4>
-            <p className="text-sm font-medium">Lengkapi data rekening BUMDes agar pembeli dapat melakukan pembayaran manual dengan lancar.</p>
-            <Link href="/dashboard/toko/edit" className="text-sm font-extrabold bg-white text-black border-2 border-black px-4 py-2 rounded mt-3 inline-block hover:bg-gray-100 transition-colors shadow-sm">
-              Lengkapi Rekening Sekarang
-            </Link>
-          </div>
+          <Link href="/dashboard/toko/edit" className="flex-shrink-0 w-full sm:w-auto">
+            <Button variant="outline" className="w-full sm:w-auto border-warning/30 text-warning-dark hover:bg-warning/10 shadow-sm rounded-xl">Lengkapi Sekarang</Button>
+          </Link>
         </div>
       )}
 
-      <Card className="mb-6">
-        <CardContent className="p-4">
-          <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
-            <div className="relative w-full sm:w-64">
-              <input
-                type="text"
-                placeholder="Cari no pesanan..."
-                className="w-full bg-surface border border-border text-text-main rounded-md pl-10 pr-4 py-2 text-sm focus:ring-primary focus:border-primary"
-              />
-              <Search className="absolute left-3 top-2.5 h-4 w-4 text-text-muted" />
+      <div className="mb-8 flex flex-col sm:flex-row gap-4 items-center justify-between bg-surface p-2 sm:p-3 rounded-2xl border border-border shadow-sm hover:shadow-md transition-shadow duration-300">
+        <div className="relative w-full sm:w-72">
+          <input
+            type="text"
+            placeholder="Cari no pesanan..."
+            className="w-full bg-surface-bg border border-border text-text-main rounded-xl pl-11 pr-4 py-2.5 text-sm focus:ring-primary focus:border-primary transition-colors"
+          />
+          <Search className="absolute left-4 top-3 h-[18px] w-[18px] text-text-muted" />
+        </div>
+        
+        <form className="flex w-full sm:w-auto gap-3">
+          <div className="flex items-center w-full sm:w-auto relative">
+            <select 
+              name="status" 
+              defaultValue={statusFilter}
+              className="appearance-none bg-surface-bg border border-border text-text-main rounded-xl pl-10 pr-10 py-2.5 text-sm focus:ring-primary focus:border-primary w-full sm:w-auto transition-colors font-medium cursor-pointer"
+            >
+              <option value="ALL">Semua Status</option>
+              <option value="WAITING_SELLER_CONFIRMATION">Konfirmasi Ongkir</option>
+              <option value="WAITING_PAYMENT">Menunggu Pembayaran</option>
+              <option value="PAYMENT_REVIEW">Review Pembayaran</option>
+              <option value="PROCESSING">Diproses</option>
+              <option value="COMPLETED">Selesai</option>
+            </select>
+            <Filter className="absolute left-3.5 top-3 h-[18px] w-[18px] text-text-muted pointer-events-none" />
+            <div className="absolute right-3.5 top-3.5 pointer-events-none">
+              <svg className="w-3.5 h-3.5 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
             </div>
-            
-            <form className="flex w-full sm:w-auto gap-2">
-              <div className="flex items-center">
-                <Filter className="h-4 w-4 mr-2 text-text-muted hidden sm:block" />
-                <select 
-                  name="status" 
-                  defaultValue={statusFilter}
-                  className="bg-surface border border-border text-text-main rounded-md px-3 py-2 text-sm focus:ring-primary focus:border-primary w-full sm:w-auto"
-                >
-                  <option value="ALL">Semua Status</option>
-                  <option value="WAITING_SELLER_CONFIRMATION">Perlu Konfirmasi Ongkir</option>
-                  <option value="WAITING_PAYMENT">Menunggu Pembayaran</option>
-                  <option value="PAYMENT_REVIEW">Review Pembayaran</option>
-                  <option value="PROCESSING">Diproses</option>
-                  <option value="COMPLETED">Selesai</option>
-                </select>
-              </div>
-              <Button type="submit" variant="outline" size="sm">Filter</Button>
-            </form>
           </div>
-        </CardContent>
-      </Card>
+          <Button type="submit" variant="outline" className="shadow-sm rounded-xl px-5">Terapkan</Button>
+        </form>
+      </div>
 
       {orders.length === 0 ? (
-        <EmptyState 
-          title="Tidak Ada Pesanan" 
-          description="Belum ada pesanan yang sesuai dengan filter saat ini." 
-          icon="package" 
-        />
+        <div className="bg-surface rounded-2xl shadow-sm border border-border flex flex-col items-center justify-center py-12 px-4 min-h-[280px]">
+          <div className="w-24 h-24 bg-surface-bg rounded-3xl flex items-center justify-center mb-6 border border-border shadow-sm hover:scale-105 transition-transform duration-300">
+            <ShoppingBag className="h-12 w-12 text-text-muted" />
+          </div>
+          <h3 className="text-xl font-bold text-text-main mb-2">Belum ada pesanan masuk</h3>
+          <p className="text-text-muted text-center max-w-md">
+            Pesanan akan muncul di sini setelah pembeli melakukan transaksi melalui GeraiBUMDes.
+          </p>
+        </div>
       ) : (
-        <div className="bg-surface rounded-xl border border-border overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left">
-              <thead className="bg-surface-bg text-text-muted uppercase text-xs border-b border-border">
+        <div className="bg-surface rounded-2xl shadow-sm border border-border overflow-hidden transition-shadow duration-300 hover:shadow-md mb-8">
+          <div className="overflow-x-auto p-1 sm:p-2">
+            <table className="w-full text-sm text-left text-text-main">
+              <thead className="text-xs text-text-muted uppercase bg-surface-bg/80 border-b border-border font-semibold">
                 <tr>
-                  <th className="px-6 py-4 font-semibold">Order ID & Tanggal</th>
-                  <th className="px-6 py-4 font-semibold">Pembeli</th>
-                  <th className="px-6 py-4 font-semibold">Total Tagihan</th>
-                  <th className="px-6 py-4 font-semibold">Status Pesanan</th>
-                  <th className="px-6 py-4 font-semibold text-right">Aksi</th>
+                  <th className="px-6 py-4 rounded-tl-xl">Order ID & Tanggal</th>
+                  <th className="px-6 py-4">Pembeli</th>
+                  <th className="px-6 py-4">Total Tagihan</th>
+                  <th className="px-6 py-4">Status Pesanan</th>
+                  <th className="px-6 py-4 text-right rounded-tr-xl">Aksi</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border">
+              <tbody>
                 {orders.map((order) => (
-                  <tr key={order._id.toString()} className="hover:bg-surface-bg/50 transition-colors">
+                  <tr key={order._id.toString()} className="bg-surface border-b border-border/50 hover:bg-surface-bg/50 transition-colors duration-200 group">
                     <td className="px-6 py-4">
-                      <div className="font-bold text-text-main mb-1">{order.orderNumber}</div>
+                      <div className="font-bold text-text-main mb-1 group-hover:text-primary transition-colors">{order.orderNumber}</div>
                       <div className="text-xs text-text-muted">{formatDate(order.createdAt)}</div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="font-medium text-text-main">{order.buyerName}</div>
-                      <div className="text-xs text-text-muted line-clamp-1 max-w-[150px]">{order.buyerAddress}</div>
+                      <div className="font-semibold text-text-main">{order.buyerName}</div>
+                      <div className="text-xs text-text-muted line-clamp-1 max-w-[180px] leading-relaxed mt-0.5">{order.buyerAddress}</div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="font-bold text-earth">{formatCurrency(order.total)}</div>
+                      <div className="font-bold text-earth text-base">{formatCurrency(order.total)}</div>
                       <div className="text-xs text-text-muted mt-1">
-                        <Badge variant={getPaymentStatusBadgeVariant(order.paymentStatus)}>
+                        <Badge variant={getPaymentStatusBadgeVariant(order.paymentStatus)} className="rounded-lg px-2 py-0.5 text-[10px]">
                           {order.paymentStatus === "PAID" ? "Lunas" : "Belum Lunas"}
                         </Badge>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <Badge variant={getOrderStatusBadgeVariant(order.status)}>
+                      <Badge variant={getOrderStatusBadgeVariant(order.status)} className="rounded-lg px-2.5 py-1">
                         {orderStatusLabel(order.status)}
                       </Badge>
                       {order.status === 'WAITING_SELLER_CONFIRMATION' && (
-                        <div className="text-[10px] text-warning mt-1 font-medium animate-pulse">! Butuh Input Ongkir</div>
+                        <div className="text-[10px] text-warning-dark mt-1.5 font-bold animate-pulse flex items-center">
+                          <span className="w-1.5 h-1.5 rounded-full bg-warning-dark mr-1.5"></span>
+                          Butuh Input Ongkir
+                        </div>
                       )}
                       {order.status === 'PAYMENT_REVIEW' && (
-                        <div className="text-[10px] text-primary-dark mt-1 font-medium animate-pulse">! Cek Bukti Bayar</div>
+                        <div className="text-[10px] text-primary-dark mt-1.5 font-bold animate-pulse flex items-center">
+                          <span className="w-1.5 h-1.5 rounded-full bg-primary-dark mr-1.5"></span>
+                          Cek Bukti Bayar
+                        </div>
                       )}
                     </td>
                     <td className="px-6 py-4 text-right">
                       <Link href={`/dashboard/pesanan/${order._id}`}>
-                        <Button variant="outline" size="sm">Detail</Button>
+                        <Button variant="outline" size="sm" className="rounded-xl shadow-sm hover:-translate-y-0.5 transition-all duration-200">
+                          Detail
+                        </Button>
                       </Link>
                     </td>
                   </tr>

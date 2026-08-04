@@ -22,7 +22,7 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   return (
-    <div className="bg-surface rounded-2xl shadow-natural border border-border group hover-lift flex flex-col h-full overflow-hidden">
+    <div className="bg-surface rounded-2xl shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-200 border border-border group flex flex-col h-full overflow-hidden">
       <Link href={`/produk/${product.slug}`} className="block relative overflow-hidden">
         <div className="aspect-square bg-surface-bg relative flex justify-center items-center">
           {product.images && product.images.length > 0 ? (

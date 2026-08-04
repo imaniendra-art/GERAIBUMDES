@@ -150,7 +150,7 @@ export default function EditProdukPage({ params }: { params: Promise<{ id: strin
   };
 
   return (
-    <div className="w-full px-4 sm:px-8 lg:px-24 py-8">
+    <div className="space-y-6">
       <div className="mb-6">
         <Link href="/admin/produk">
           <span className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors border border-border hover:bg-surface-bg hover:text-text-main h-10 py-2 px-4 bg-surface text-text-main">

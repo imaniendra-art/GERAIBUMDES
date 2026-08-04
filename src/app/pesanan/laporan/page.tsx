@@ -5,7 +5,7 @@ import Order from "@/models/Order";
 import Store from "@/models/Store";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/Card";
-import { ChevronLeft, Filter, Download } from "lucide-react";
+import { ArrowLeft, Filter, Download } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -69,18 +69,21 @@ export default async function LaporanPembelianPage({
 
   return (
     <div className="w-full px-4 sm:px-8 lg:px-24 py-8">
-      <div className="mb-6">
+      <div className="mb-10">
         <Link href="/pesanan">
-          <span className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors border border-border hover:bg-surface-bg hover:text-text-main h-10 py-2 px-4 bg-surface text-text-main">
-            <ChevronLeft className="h-4 w-4 mr-2" /> Kembali ke Pesanan Saya
-          </span>
+          <Button variant="ghost" className="rounded-xl text-sm font-semibold transition-colors duration-200 h-11 px-4 text-text-muted hover:text-text-main hover:bg-surface-bg">
+            <ArrowLeft className="h-4 w-4 mr-2" /> Kembali ke Pesanan Saya
+          </Button>
         </Link>
       </div>
 
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-        <h1 className="text-2xl font-bold text-text-main">Laporan Pembelian</h1>
-        <a href={csvUrl} target="_blank" rel="noopener noreferrer">
-          <Button className="flex items-center gap-2">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-4">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-text-main tracking-tight">Laporan Pembelian</h1>
+          <p className="text-text-muted mt-1 font-medium">Ringkasan aktivitas dan pengeluaran Anda di GeraiBUMDes.</p>
+        </div>
+        <a href={csvUrl} target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
+          <Button variant="outline" className="w-full sm:w-auto flex items-center gap-2 border-primary text-primary bg-white hover:bg-primary/5 hover:border-primary transition-colors duration-200 shadow-sm rounded-xl h-11 font-semibold">
             <Download className="h-4 w-4" /> Export CSV
           </Button>
         </a>

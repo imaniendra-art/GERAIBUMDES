@@ -40,7 +40,7 @@ export default async function PenjualPesananDetailPage({ params }: { params: Pro
   }
 
   return (
-    <div className="w-full px-4 sm:px-8 lg:px-24 py-8 print:py-0 print:bg-white">
+    <div className="space-y-6 print:py-0 print:bg-white">
       <div className="mb-8 flex justify-between items-center print:hidden">
         <Link href="/dashboard/pesanan">
           <span className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background border border-border hover:bg-surface-bg hover:text-text-main h-10 py-2 px-4 bg-surface text-text-main">
@@ -54,10 +54,10 @@ export default async function PenjualPesananDetailPage({ params }: { params: Pro
 
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-text-main flex items-center">
-            Order <span className="ml-2 text-lg font-normal text-text-muted">#{order.orderNumber}</span>
+          <h1 className="text-3xl font-bold text-text-main flex items-center">
+            {order.status === "WAITING_SELLER_CONFIRMATION" ? "Pesanan Baru" : "Detail Pesanan"}
           </h1>
-          <p className="text-sm text-text-muted mt-1">{formatDate(order.createdAt)}</p>
+          <p className="text-sm text-text-muted mt-1">Order #{order.orderNumber} • {formatDate(order.createdAt)}</p>
         </div>
         <div className="flex gap-2">
           <span className="bg-primary/10 text-primary-dark px-3 py-1.5 rounded-md text-xs font-bold uppercase border border-primary/20">
@@ -150,18 +150,33 @@ export default async function PenjualPesananDetailPage({ params }: { params: Pro
               
               {order.status === "WAITING_SELLER_CONFIRMATION" && (
                 <>
-                  <div className="text-sm text-text-muted mb-4">
-                    Pesanan baru masuk. Silakan cek stok produk dan tentukan ongkos kirim manual yang harus dibayar pembeli.
+                  <div className="text-sm text-text-main mb-4 space-y-2">
+                    <p className="font-bold text-base mb-3">Langkah yang harus dilakukan:</p>
+                    <div className="flex items-center gap-2 text-success-dark">
+                      <CheckCircle className="w-5 h-5 flex-shrink-0" />
+                      <span className="font-medium">Periksa ketersediaan stok</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-success-dark">
+                      <CheckCircle className="w-5 h-5 flex-shrink-0" />
+                      <span className="font-medium">Tentukan nominal ongkos kirim</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-success-dark">
+                      <CheckCircle className="w-5 h-5 flex-shrink-0" />
+                      <span className="font-medium">Hubungi pembeli melalui WhatsApp</span>
+                    </div>
                   </div>
-                  <SetShippingForm orderId={order._id.toString()} currentSubtotal={order.subtotal} />
+                  <div className="pt-4 border-t border-border mt-4">
+                    <SetShippingForm orderId={order._id.toString()} currentSubtotal={order.subtotal} />
+                  </div>
                 </>
               )}
 
               {order.status === "WAITING_PAYMENT" && (
-                <div className="text-center py-4">
-                  <Clock className="h-10 w-10 text-warning mx-auto mb-2 opacity-50" />
-                  <p className="text-sm font-semibold text-text-main">Menunggu Pembayaran</p>
-                  <p className="text-xs text-text-muted mt-1">Silakan hubungi pembeli ({order.buyerPhone}) untuk memberikan nomor rekening Anda.</p>
+                <div className="text-center py-4 space-y-3 bg-warning/10 border border-warning/20 p-4 rounded-xl">
+                  <Clock className="h-10 w-10 text-warning-dark mx-auto mb-2" />
+                  <p className="text-sm font-bold text-text-main">Menunggu pembeli melakukan pembayaran.</p>
+                  <p className="text-sm text-text-main font-medium">Silakan kirim nomor rekening BUMDes melalui WhatsApp kepada pembeli.</p>
+                  <p className="text-xs text-text-muted mt-2 font-medium">Setelah pembeli mentransfer dana dan mengunggah bukti pembayaran, Anda dapat melakukan verifikasi di sini.</p>
                 </div>
               )}
 

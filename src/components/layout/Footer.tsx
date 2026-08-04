@@ -1,7 +1,17 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Mail, Phone, MapPin } from "lucide-react";
 
 export default function Footer() {
+  const pathname = usePathname();
+
+  // Hide footer on dashboard and admin pages
+  if (pathname.startsWith("/dashboard") || pathname.startsWith("/admin") || pathname.startsWith("/pesanan")) {
+    return null;
+  }
+
   return (
     <footer className="bg-surface border-t border-border mt-auto pt-20 pb-10">
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">

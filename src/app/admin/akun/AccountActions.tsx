@@ -64,7 +64,7 @@ export function AccountActions({ userId, userName }: { userId: string, userName:
         <Link href={`/admin/akun/edit/${userId}`}>
           <Button 
             variant="outline" 
-            size="icon" 
+            size="sm" 
             disabled={isResetting || isDeleting}
             className="h-8 w-8"
             title="Edit"
@@ -74,7 +74,7 @@ export function AccountActions({ userId, userName }: { userId: string, userName:
         </Link>
         <Button 
           variant="outline" 
-          size="icon" 
+          size="sm" 
           onClick={handleReset} 
           disabled={isResetting || isDeleting}
           className="h-8 w-8"
@@ -84,7 +84,7 @@ export function AccountActions({ userId, userName }: { userId: string, userName:
         </Button>
         <Button 
           variant="outline" 
-          size="icon" 
+          size="sm" 
           onClick={handleDelete} 
           disabled={isResetting || isDeleting}
           className="h-8 w-8 text-danger border-danger hover:bg-danger/10"

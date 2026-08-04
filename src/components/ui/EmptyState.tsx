@@ -12,17 +12,17 @@ interface EmptyStateProps {
 
 export function EmptyState({ title, description, action, icon = "folder", className }: EmptyStateProps) {
   const icons = {
-    folder: <FolderSearch className="h-12 w-12 text-border mx-auto mb-4" />,
-    alert: <AlertCircle className="h-12 w-12 text-border mx-auto mb-4" />,
-    package: <PackageX className="h-12 w-12 text-border mx-auto mb-4" />,
+    folder: <FolderSearch className="h-16 w-16 text-text-muted/30 mx-auto mb-5" />,
+    alert: <AlertCircle className="h-16 w-16 text-text-muted/30 mx-auto mb-5" />,
+    package: <PackageX className="h-16 w-16 text-text-muted/30 mx-auto mb-5" />,
   };
 
   return (
-    <div className={cn("text-center py-16 bg-surface rounded-xl border border-border border-dashed", className)}>
+    <div className={cn("text-center py-16 px-6 bg-surface rounded-2xl border-2 border-border border-dashed shadow-sm", className)}>
       {icons[icon]}
-      <h3 className="text-lg font-bold text-text-main mb-2">{title}</h3>
-      <p className="text-sm text-text-muted mb-6 max-w-md mx-auto">{description}</p>
-      {action && <div>{action}</div>}
+      <h3 className="text-xl font-bold text-text-main mb-3">{title}</h3>
+      <p className="text-base text-text-muted mb-8 max-w-md mx-auto leading-relaxed">{description}</p>
+      {action && <div className="inline-block">{action}</div>}
     </div>
   );
 }

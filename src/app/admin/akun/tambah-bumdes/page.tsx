@@ -29,7 +29,7 @@ export default function TambahBumdesPage() {
   };
 
   return (
-    <div className="w-full px-4 sm:px-8 lg:px-12 py-8">
+    <div className="space-y-6">
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-2xl font-bold text-text-main">Tambah Akun BUMDes</h1>

@@ -42,6 +42,10 @@ const config: Config = {
         info: {
           DEFAULT: "#1976D2",
         },
+        earth: {
+          DEFAULT: "#A0522D",
+          dark: "#8B4513",
+        },
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",

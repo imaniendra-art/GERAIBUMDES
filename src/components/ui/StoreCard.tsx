@@ -25,7 +25,7 @@ export function StoreCard({ store, activeProductCount }: StoreCardProps) {
   const shortLocation = locationParts.slice(0, 2).join(", "); // e.g. "Desa Sukamaju, Kec. Maju"
 
   return (
-    <div className="bg-surface rounded-2xl shadow-natural border border-border group hover-lift flex flex-col h-full overflow-hidden">
+    <div className="bg-surface rounded-2xl shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-200 border border-border group flex flex-col h-full overflow-hidden">
       <div className="h-28 md:h-36 relative">
         {store.bannerUrl ? (
           <img src={store.bannerUrl} alt={`${store.name} Banner`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />

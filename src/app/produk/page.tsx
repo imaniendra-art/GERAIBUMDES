@@ -134,7 +134,7 @@ export default async function MarketplacePage({
           
           <div className="flex-shrink-0">
             <Link href="/bumdes">
-              <Button variant="outline" className="h-10 px-6 border-surface text-surface bg-surface/10 hover:bg-surface/20 font-semibold w-full md:w-auto">
+              <Button variant="outline" className="h-10 px-6 border-surface text-surface bg-surface/10 hover:bg-surface/20 hover:text-white font-semibold w-full md:w-auto">
                 Cari BUMDes
               </Button>
             </Link>

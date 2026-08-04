@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCartStore, calculateActivePrice } from "@/store/cartStore";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
-import { Store as StoreIcon, Loader2 } from "lucide-react";
+import { Store as StoreIcon, Loader2, CheckCircle2 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils/formatters";
 
 interface CheckoutFormProps {
@@ -135,7 +135,7 @@ export default function CheckoutForm({ storeId, user }: CheckoutFormProps) {
                   required
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full bg-surface border border-border text-text-main rounded-md px-4 py-2 focus:ring-primary focus:border-primary"
+                  className="w-full h-11 bg-surface border border-border text-text-main rounded-xl px-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 shadow-sm"
                 />
               </div>
               
@@ -146,7 +146,7 @@ export default function CheckoutForm({ storeId, user }: CheckoutFormProps) {
                   required
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="w-full bg-surface border border-border text-text-main rounded-md px-4 py-2 focus:ring-primary focus:border-primary"
+                  className="w-full h-11 bg-surface border border-border text-text-main rounded-xl px-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 shadow-sm"
                 />
               </div>
 
@@ -158,7 +158,7 @@ export default function CheckoutForm({ storeId, user }: CheckoutFormProps) {
                   value={formData.address}
                   onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                   placeholder="Nama jalan, nomor rumah/gedung, RT/RW, kelurahan, kecamatan, kabupaten/kota, provinsi, kode pos"
-                  className="w-full bg-surface border border-border text-text-main rounded-md px-4 py-2 focus:ring-primary focus:border-primary"
+                  className="w-full bg-surface border border-border text-text-main rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 shadow-sm"
                 ></textarea>
               </div>
 
@@ -169,7 +169,7 @@ export default function CheckoutForm({ storeId, user }: CheckoutFormProps) {
                   value={formData.buyerNote}
                   onChange={(e) => setFormData({ ...formData, buyerNote: e.target.value })}
                   placeholder="Contoh: Mohon dipacking kayu, dikirim secepatnya, dll."
-                  className="w-full bg-surface border border-border text-text-main rounded-md px-4 py-2 focus:ring-primary focus:border-primary"
+                  className="w-full bg-surface border border-border text-text-main rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 shadow-sm"
                 ></textarea>
               </div>
             </form>
@@ -223,8 +223,33 @@ export default function CheckoutForm({ storeId, user }: CheckoutFormProps) {
             </div>
 
             <div className="border-t border-border pt-4 mb-6">
-              <div className="bg-primary/5 border border-primary/20 p-3 rounded-md mb-4 text-xs text-primary-dark">
-                Pesanan ini akan diteruskan ke pihak penjual. Penjual akan meninjau ketersediaan stok dan memasukkan nominal ongkos kirim manual. Anda dapat melakukan pembayaran setelah ongkos kirim ditetapkan.
+              <div className="bg-success/10 border border-success/20 p-4 rounded-xl mb-4 text-sm text-text-main shadow-sm">
+                <p className="font-bold text-success-dark mb-3 flex items-center">
+                  <CheckCircle2 className="w-5 h-5 mr-2" />
+                  Apa yang terjadi setelah pesanan dibuat?
+                </p>
+                <ul className="space-y-2">
+                  <li className="flex items-start">
+                    <CheckCircle2 className="w-4 h-4 text-success mr-2 mt-0.5 flex-shrink-0" />
+                    <span>Pesanan akan dikirim ke BUMDes Penjual.</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle2 className="w-4 h-4 text-success mr-2 mt-0.5 flex-shrink-0" />
+                    <span>Penjual akan memeriksa stok dan menentukan ongkos kirim.</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle2 className="w-4 h-4 text-success mr-2 mt-0.5 flex-shrink-0" />
+                    <span>Penjual akan menghubungi Anda melalui WhatsApp.</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle2 className="w-4 h-4 text-success mr-2 mt-0.5 flex-shrink-0" />
+                    <span>Anda melakukan pembayaran langsung ke rekening BUMDes Penjual.</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle2 className="w-4 h-4 text-success mr-2 mt-0.5 flex-shrink-0" />
+                    <span>Setelah pembayaran diterima, pesanan diproses hingga selesai.</span>
+                  </li>
+                </ul>
               </div>
             </div>
 

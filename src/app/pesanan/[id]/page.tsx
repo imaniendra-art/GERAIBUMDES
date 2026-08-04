@@ -5,12 +5,43 @@ import Order from "@/models/Order";
 import Store from "@/models/Store";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/Card";
-import { ChevronLeft, Store as StoreIcon, CreditCard, Clock, MapPin, AlertCircle, FileText, CheckCircle, Printer } from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import { ArrowLeft, Store as StoreIcon, CreditCard, Clock, MapPin, AlertCircle, FileText, CheckCircle, Package, Truck, Info, Phone, Receipt } from "lucide-react";
 import UploadPaymentForm from "./UploadPaymentForm";
 import { CompleteOrderForm } from "./BuyerActionClient";
 import { formatCurrency, formatDate } from "@/lib/utils/formatters";
-import { orderStatusLabel, paymentStatusLabel } from "@/lib/utils/orderStatus";
 import { PrintButton } from "@/components/ui/PrintButton";
+
+const getBuyerStatusLabel = (status: string) => {
+  switch(status) {
+    case "WAITING_SELLER_CONFIRMATION": return "Menunggu Respon Penjual";
+    case "WAITING_PAYMENT": return "Menunggu Pembayaran";
+    case "PAYMENT_REVIEW": return "Pembayaran Sedang Dicek";
+    case "PROCESSING": return "Pesanan Diproses";
+    case "READY_TO_PICKUP":
+    case "SHIPPED_MANUAL": return "Pesanan Sedang Dikirim";
+    case "COMPLETED": return "Pesanan Selesai";
+    case "CANCELLED": return "Pesanan Dibatalkan";
+    default: return status;
+  }
+};
+
+const getTimelineStep = (status: string) => {
+  if (status === "CANCELLED") return -1;
+  if (status === "WAITING_SELLER_CONFIRMATION") return 1;
+  if (status === "WAITING_PAYMENT" || status === "PAYMENT_REVIEW") return 2;
+  if (status === "PROCESSING") return 3;
+  if (status === "READY_TO_PICKUP" || status === "SHIPPED_MANUAL") return 4;
+  if (status === "COMPLETED") return 5;
+  return 0;
+};
+
+const formatWhatsAppUrl = (phone?: string) => {
+  if (!phone) return "#";
+  let cleaned = phone.replace(/\D/g, "");
+  if (cleaned.startsWith("0")) cleaned = "62" + cleaned.substring(1);
+  return `https://wa.me/${cleaned}`;
+};
 
 export default async function PesananDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
@@ -25,7 +56,7 @@ export default async function PesananDetailPage({ params }: { params: Promise<{ 
   let order;
   try {
     order = await Order.findOne({ _id: resolvedParams.id, buyerId: session.userId })
-      .populate({ path: "sellerStoreId", model: Store, select: "name slug bankAccount" })
+      .populate({ path: "sellerStoreId", model: Store, select: "name slug bankAccount phoneNumber whatsappNumber" })
       .lean();
   } catch {
     notFound();
@@ -35,115 +66,236 @@ export default async function PesananDetailPage({ params }: { params: Promise<{ 
     notFound();
   }
 
+  const storeWa = order.sellerStoreId?.whatsappNumber || order.sellerStoreId?.phoneNumber;
+  const currentStep = getTimelineStep(order.status);
+  const statusLabel = getBuyerStatusLabel(order.status);
+
   return (
-    <div className="w-full px-4 sm:px-8 lg:px-24 py-8">
-      <div className="w-full">
+    <div className="w-full px-4 sm:px-8 lg:px-24 py-8 bg-surface-bg min-h-screen">
+      <div className="max-w-5xl mx-auto">
         <div className="mb-8 flex justify-between items-center print:hidden">
           <Link href="/pesanan">
-            <span className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background border border-border hover:bg-surface-bg hover:text-text-main h-10 py-2 px-4 bg-surface text-text-main">
-              <ChevronLeft className="h-4 w-4 mr-2" /> Kembali
-            </span>
+            <Button variant="ghost" className="rounded-xl text-sm font-semibold transition-colors duration-200 h-11 px-4 text-text-muted hover:text-text-main hover:bg-surface border border-transparent hover:border-border shadow-sm">
+              <ArrowLeft className="h-4 w-4 mr-2" /> Kembali ke Daftar Pesanan
+            </Button>
           </Link>
           {order.status === "COMPLETED" && (
             <PrintButton label="Cetak Kwitansi" href={`/cetak/${order._id}`} />
           )}
         </div>
 
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+        <div className="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-text-main flex items-center">
-              Detail Pesanan <span className="ml-3 text-lg font-normal text-text-muted">#{order.orderNumber}</span>
+            <h1 className="text-3xl font-bold text-text-main flex items-center">
+              Detail Pesanan
             </h1>
-            <p className="text-sm text-text-muted mt-1">Dibuat pada {formatDate(order.createdAt)}</p>
+            <p className="text-sm text-text-muted mt-2 font-medium">No. Pesanan: <span className="text-text-main font-bold">#{order.orderNumber}</span> • Dibuat pada {formatDate(order.createdAt)}</p>
           </div>
-          <div className="flex gap-2">
-            <span className="bg-primary/10 text-primary-dark px-3 py-1.5 rounded-md text-xs font-bold uppercase border border-primary/20">
-              {orderStatusLabel(order.status)}
-            </span>
-            <span className={`px-3 py-1.5 rounded-md text-xs font-bold uppercase border ${
-              order.paymentStatus === 'PAID' ? 'bg-success/10 text-success-dark border-success/20' : 
-              order.paymentStatus === 'WAITING_REVIEW' ? 'bg-warning/10 text-warning-dark border-warning/20' :
-              order.paymentStatus === 'REJECTED' ? 'bg-danger/10 text-danger border-danger/20' :
-              'bg-border/30 text-text-muted border-border'
-            }`}>
-              {paymentStatusLabel(order.paymentStatus)}
+          <div>
+            <span className="bg-primary/10 text-primary-dark px-4 py-2 rounded-full text-sm font-bold border border-primary/20 shadow-sm inline-flex items-center">
+              {statusLabel}
             </span>
           </div>
         </div>
 
-        {/* Timeline Status Sederhana */}
-        <div className="bg-surface p-4 sm:p-6 rounded-lg border border-border mb-6">
-          <div className="flex flex-col sm:flex-row justify-between gap-4">
-            <div className={`flex items-center gap-3 ${["WAITING_SELLER_CONFIRMATION", "CANCELLED"].includes(order.status) ? "opacity-100" : "opacity-50"}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${order.status === "WAITING_SELLER_CONFIRMATION" ? "bg-primary text-white" : "bg-primary/20 text-primary-dark"}`}>1</div>
-              <div className="text-sm font-semibold">Tunggu Ongkir</div>
+        {/* 1. Langkah Selanjutnya Section */}
+        {order.status === "WAITING_SELLER_CONFIRMATION" && (
+          <Card className="border-border rounded-2xl shadow-sm mb-8 bg-white overflow-hidden">
+            <div className="bg-primary/10 px-6 py-4 border-b border-primary/20 flex items-center gap-3">
+              <Info className="h-6 w-6 text-primary-dark" />
+              <h2 className="font-bold text-primary-dark text-lg">Langkah Selanjutnya</h2>
             </div>
-            <div className={`flex items-center gap-3 ${["WAITING_PAYMENT", "PAYMENT_REVIEW"].includes(order.status) ? "opacity-100" : "opacity-50"}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${["WAITING_PAYMENT", "PAYMENT_REVIEW"].includes(order.status) ? "bg-primary text-white" : "bg-primary/20 text-primary-dark"}`}>2</div>
-              <div className="text-sm font-semibold">Pembayaran</div>
+            <CardContent className="p-6">
+              <p className="text-text-main font-medium mb-6 text-base whitespace-pre-wrap leading-relaxed">
+                BUMDes Penjual sedang memeriksa stok dan menghitung ongkos kirim.
+                <br /><br />
+                Silakan tunggu konfirmasi dari penjual.
+                <br /><br />
+                Apabila diperlukan, Anda dapat menghubungi penjual melalui WhatsApp.
+              </p>
+              {storeWa && (
+                <a href={formatWhatsAppUrl(storeWa)} target="_blank" rel="noopener noreferrer">
+                  <Button className="bg-[#25D366] hover:bg-[#128C7E] text-white rounded-xl h-12 px-6 shadow-md transition-all font-bold w-full sm:w-auto">
+                    <Phone className="h-5 w-5 mr-2" />
+                    Hubungi Penjual via WhatsApp
+                  </Button>
+                </a>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
+        {order.status === "WAITING_PAYMENT" && (
+          <Card className="border-border rounded-2xl shadow-sm mb-8 bg-white overflow-hidden">
+            <div className="bg-success/10 px-6 py-4 border-b border-success/20 flex items-center gap-3">
+              <CheckCircle className="h-6 w-6 text-success-dark" />
+              <h2 className="font-bold text-success-dark text-lg">Pesanan telah dikonfirmasi</h2>
             </div>
-            <div className={`flex items-center gap-3 ${order.status === "PROCESSING" ? "opacity-100" : "opacity-50"}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${order.status === "PROCESSING" ? "bg-primary text-white" : "bg-primary/20 text-primary-dark"}`}>3</div>
-              <div className="text-sm font-semibold">Diproses</div>
+            <CardContent className="p-6">
+              <p className="text-text-main font-medium text-base mb-4">
+                Silakan hubungi BUMDes Penjual melalui WhatsApp. Penjual akan memberikan:
+              </p>
+              <ul className="list-disc list-inside text-text-main font-medium text-base mb-6 space-y-1">
+                <li>Total tagihan</li>
+                <li>Nomor rekening</li>
+                <li>Informasi pengiriman</li>
+              </ul>
+              <p className="text-text-main font-medium text-base mb-6">
+                Setelah melakukan transfer, kembali ke halaman ini untuk mengunggah bukti pembayaran.
+              </p>
+              {storeWa && (
+                <a href={formatWhatsAppUrl(storeWa)} target="_blank" rel="noopener noreferrer">
+                  <Button className="bg-[#25D366] hover:bg-[#128C7E] text-white rounded-xl h-12 px-6 shadow-md transition-all font-bold w-full sm:w-auto">
+                    <Phone className="h-5 w-5 mr-2" />
+                    Hubungi Penjual via WhatsApp
+                  </Button>
+                </a>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
+        {order.status === "PAYMENT_REVIEW" && (
+          <Card className="border-border rounded-2xl shadow-sm mb-8 bg-white overflow-hidden">
+            <div className="bg-info/10 px-6 py-4 border-b border-info/20 flex items-center gap-3">
+              <Clock className="h-6 w-6 text-info-dark" />
+              <h2 className="font-bold text-info-dark text-lg">Langkah Selanjutnya</h2>
             </div>
-            <div className={`flex items-center gap-3 ${["READY_TO_PICKUP", "SHIPPED_MANUAL"].includes(order.status) ? "opacity-100" : "opacity-50"}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${["READY_TO_PICKUP", "SHIPPED_MANUAL"].includes(order.status) ? "bg-primary text-white" : "bg-primary/20 text-primary-dark"}`}>4</div>
-              <div className="text-sm font-semibold">Dikirim/Siap</div>
+            <CardContent className="p-6">
+              <p className="text-text-main font-medium text-base">
+                Bukti pembayaran Anda sedang dicek oleh pihak BUMDes. Harap tunggu konfirmasi.
+              </p>
+            </CardContent>
+          </Card>
+        )}
+
+        {order.status === "PROCESSING" && (
+          <Card className="border-border rounded-2xl shadow-sm mb-8 bg-white overflow-hidden">
+            <div className="bg-primary/10 px-6 py-4 border-b border-primary/20 flex items-center gap-3">
+              <Package className="h-6 w-6 text-primary-dark" />
+              <h2 className="font-bold text-primary-dark text-lg">Langkah Selanjutnya</h2>
             </div>
-            <div className={`flex items-center gap-3 ${order.status === "COMPLETED" ? "opacity-100" : "opacity-50"}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${order.status === "COMPLETED" ? "bg-success text-white" : "bg-success/20 text-success-dark"}`}><CheckCircle className="w-5 h-5" /></div>
-              <div className="text-sm font-semibold text-success-dark">Selesai</div>
+            <CardContent className="p-6">
+              <p className="text-text-main font-medium text-base">
+                Pembayaran berhasil dikonfirmasi. Penjual sedang menyiapkan pesanan Anda untuk segera dikirim/diambil.
+              </p>
+            </CardContent>
+          </Card>
+        )}
+
+        {(order.status === "SHIPPED_MANUAL" || order.status === "READY_TO_PICKUP") && (
+          <Card className="border-border rounded-2xl shadow-sm mb-8 bg-white overflow-hidden">
+            <div className="bg-earth/10 px-6 py-4 border-b border-earth/20 flex items-center gap-3">
+              <Truck className="h-6 w-6 text-earth" />
+              <h2 className="font-bold text-earth text-lg">Langkah Selanjutnya</h2>
+            </div>
+            <CardContent className="p-6">
+              <p className="text-text-main font-medium text-base mb-6">
+                Pesanan Anda sedang dalam perjalanan atau sudah siap diambil. Pastikan Anda menerima barang dengan baik.
+              </p>
+              <CompleteOrderForm orderId={order._id.toString()} status={order.status} />
+            </CardContent>
+          </Card>
+        )}
+
+        {order.status === "COMPLETED" && (
+          <Card className="border-border rounded-2xl shadow-sm mb-8 bg-white overflow-hidden">
+            <div className="bg-success/10 px-6 py-4 border-b border-success/20 flex items-center gap-3">
+              <CheckCircle className="h-6 w-6 text-success-dark" />
+              <h2 className="font-bold text-success-dark text-lg">Pesanan Selesai</h2>
+            </div>
+            <CardContent className="p-6">
+              <p className="text-text-main font-medium text-base">
+                Transaksi telah selesai. Terima kasih telah berbelanja di BUMDes!
+              </p>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* 2. Simplified Timeline */}
+        {order.status !== "CANCELLED" && (
+          <div className="bg-white p-6 sm:p-8 rounded-2xl border border-border shadow-sm mb-8">
+            <div className="relative flex justify-between">
+              <div className="absolute top-5 left-0 w-full h-1 bg-border -z-10 rounded-full"></div>
+              <div className={`absolute top-5 left-0 h-1 bg-primary -z-10 rounded-full transition-all duration-500`} style={{ width: `${(Math.max(0, currentStep - 1) / 4) * 100}%` }}></div>
+              
+              {[
+                { step: 1, title: "Dibuat", icon: FileText, desc: "Pesanan masuk" },
+                { step: 2, title: "Pembayaran", icon: CreditCard, desc: "Tagihan & bukti" },
+                { step: 3, title: "Diproses", icon: Package, desc: "Disiapkan penjual" },
+                { step: 4, title: "Dikirim", icon: Truck, desc: "Sedang dikirim" },
+                { step: 5, title: "Selesai", icon: CheckCircle, desc: "Barang diterima" },
+              ].map((item) => {
+                const isCompleted = currentStep > item.step;
+                const isCurrent = currentStep === item.step;
+                const isPending = currentStep < item.step;
+
+                return (
+                  <div key={item.step} className="flex flex-col items-center flex-1 relative bg-white">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center border-4 border-white shadow-sm transition-colors duration-300 ${
+                      isCompleted ? "bg-primary text-white" :
+                      isCurrent ? "bg-primary text-white ring-4 ring-primary/20" :
+                      "bg-surface text-text-muted"
+                    }`}>
+                      <item.icon className="w-5 h-5" />
+                    </div>
+                    <div className="mt-3 text-center">
+                      <p className={`text-sm font-bold ${isCurrent || isCompleted ? "text-text-main" : "text-text-muted"}`}>{item.title}</p>
+                      <p className="text-xs text-text-muted hidden sm:block mt-1 font-medium">{item.desc}</p>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
-        </div>
+        )}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="md:col-span-2 space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 space-y-8">
             
-            {/* Informasi Penjual & Item */}
-            <Card className="border-border">
-              <div className="bg-surface-bg border-b border-border p-4 flex justify-between items-center">
-                <div className="flex items-center text-text-main font-bold">
-                  <StoreIcon className="h-5 w-5 mr-2 text-primary" />
+            {/* 3. Detail Produk (Invoice Items) */}
+            <Card className="border-border rounded-2xl shadow-sm bg-white overflow-hidden">
+              <div className="bg-surface-bg border-b border-border p-5 flex justify-between items-center">
+                <div className="flex items-center text-text-main font-bold text-lg">
+                  <StoreIcon className="h-6 w-6 mr-3 text-primary" />
                   {order.sellerStoreId?.name || "Toko BUMDes"}
                 </div>
               </div>
               <CardContent className="p-0">
                 <div className="divide-y divide-border">
                   {order.items.map((item: any, idx: number) => (
-                    <div key={idx} className="p-4 sm:p-6 flex flex-col sm:flex-row gap-4">
+                    <div key={idx} className="p-5 sm:p-6 flex flex-col sm:flex-row gap-4">
                       <div className="flex-1">
-                        <h3 className="font-semibold text-text-main mb-1">{item.productNameSnapshot}</h3>
-                        <div className="flex items-center gap-2 mb-2 text-sm text-text-muted">
+                        <h3 className="font-bold text-text-main text-base mb-1">{item.productNameSnapshot}</h3>
+                        <div className="flex items-center gap-2 mb-2 text-sm text-text-muted font-medium">
                           <span>{item.quantity} {item.unit} x {formatCurrency(item.price)}</span>
                           {item.appliedPriceType === "WHOLESALE" && (
-                            <span className="bg-secondary/10 text-secondary-dark text-[10px] px-1.5 py-0.5 rounded font-bold uppercase border border-secondary/20">Grosir</span>
+                            <span className="bg-secondary/10 text-secondary-dark text-[10px] px-2 py-0.5 rounded-full font-bold uppercase border border-secondary/20">Harga Grosir</span>
                           )}
                         </div>
                       </div>
-                      <div className="text-left sm:text-right font-bold text-text-main pt-1 sm:pt-0">
+                      <div className="text-left sm:text-right font-bold text-text-main text-lg pt-1 sm:pt-0">
                         {formatCurrency(item.subtotal)}
                       </div>
                     </div>
                   ))}
                 </div>
                 
-                {/* Rincian Harga */}
-                <div className="bg-surface-bg border-t border-border p-4 sm:p-6 space-y-3">
-                  <div className="flex justify-between text-sm text-text-muted">
+                <div className="bg-surface-bg border-t border-border p-5 sm:p-6 space-y-3">
+                  <div className="flex justify-between text-sm text-text-muted font-medium">
                     <span>Subtotal Produk</span>
-                    <span className="font-medium text-text-main">{formatCurrency(order.subtotal)}</span>
+                    <span className="text-text-main">{formatCurrency(order.subtotal)}</span>
                   </div>
-                  <div className="flex justify-between text-sm text-text-muted pb-3 border-b border-border">
-                    <span>Ongkos Kirim Manual</span>
-                    <span className="font-medium text-text-main">
+                  <div className="flex justify-between text-sm text-text-muted font-medium pb-4 border-b border-border">
+                    <span>Ongkos Kirim</span>
+                    <span className="text-text-main">
                       {order.status === "WAITING_SELLER_CONFIRMATION" 
-                        ? <span className="text-warning text-xs font-semibold px-2 py-1 bg-warning/10 rounded">Menunggu Konfirmasi</span>
+                        ? <span className="text-warning-dark text-xs font-bold px-2 py-1 bg-warning/10 rounded-md">Menunggu Penjual</span>
                         : formatCurrency(order.shippingCost)
                       }
                     </span>
                   </div>
-                  <div className="flex justify-between font-bold text-lg pt-1">
+                  <div className="flex justify-between font-bold text-xl pt-2">
                     <span className="text-text-main">Total Pesanan</span>
                     <span className="text-earth">{formatCurrency(order.total)}</span>
                   </div>
@@ -151,20 +303,20 @@ export default async function PesananDetailPage({ params }: { params: Promise<{ 
               </CardContent>
             </Card>
 
-            {/* Catatan Nota */}
-            <Card className="border-border">
+            {/* Catatan */}
+            <Card className="border-border rounded-2xl shadow-sm bg-white overflow-hidden">
               <CardContent className="p-6">
-                <h3 className="font-bold text-text-main mb-4 flex items-center"><FileText className="h-5 w-5 mr-2 text-text-muted"/> Catatan Pesanan</h3>
-                <div className="space-y-4">
+                <h3 className="font-bold text-text-main mb-6 text-lg flex items-center"><FileText className="h-6 w-6 mr-3 text-text-muted"/> Catatan Pesanan</h3>
+                <div className="space-y-5">
                   <div>
-                    <p className="text-xs font-bold text-text-muted uppercase mb-1">Catatan Pembeli</p>
-                    <p className="text-sm text-text-main bg-surface-bg p-3 rounded-md border border-border min-h-[40px] whitespace-pre-wrap">
+                    <p className="text-xs font-bold text-text-muted uppercase tracking-wider mb-2">Catatan Anda (Pembeli)</p>
+                    <p className="text-sm font-medium text-text-main bg-surface-bg p-4 rounded-xl border border-border min-h-[48px] whitespace-pre-wrap">
                       {order.buyerNote || "-"}
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-text-muted uppercase mb-1">Catatan Penjual / Pengiriman</p>
-                    <p className="text-sm text-text-main bg-surface-bg p-3 rounded-md border border-border min-h-[40px] whitespace-pre-wrap">
+                    <p className="text-xs font-bold text-text-muted uppercase tracking-wider mb-2">Pesan dari Penjual</p>
+                    <p className="text-sm font-medium text-text-main bg-surface-bg p-4 rounded-xl border border-border min-h-[48px] whitespace-pre-wrap">
                       {order.manualShippingNote || order.sellerNote || "Belum ada catatan dari penjual."}
                     </p>
                   </div>
@@ -174,172 +326,146 @@ export default async function PesananDetailPage({ params }: { params: Promise<{ 
 
           </div>
 
-          <div className="space-y-6">
+          <div className="space-y-8">
             
-            {/* Detail Pengiriman */}
-            <Card className="border-border">
+            {/* 4. Informasi Pembayaran Terpisah */}
+            <Card className="border-border rounded-2xl shadow-sm bg-white overflow-hidden">
               <CardContent className="p-6">
-                <h3 className="font-bold text-text-main mb-4 flex items-center"><MapPin className="h-5 w-5 mr-2 text-text-muted"/> Info Pengiriman</h3>
-                <div className="space-y-3 text-sm">
-                  <div>
-                    <p className="text-text-muted font-medium">Nama Penerima</p>
-                    <p className="font-semibold text-text-main">{order.buyerName}</p>
-                  </div>
-                  <div>
-                    <p className="text-text-muted font-medium">Nomor HP</p>
-                    <p className="font-semibold text-text-main">{order.buyerPhone}</p>
-                  </div>
-                  <div>
-                    <p className="text-text-muted font-medium">Alamat</p>
-                    <p className="text-text-main whitespace-pre-wrap leading-relaxed">{order.buyerAddress}</p>
-                  </div>
-                  
-                  {(order.status === "SHIPPED_MANUAL" || order.status === "COMPLETED") && (
-                    <div className="mt-4 pt-4 border-t border-border space-y-3">
-                      <p className="font-bold text-text-main">Detail Ekspedisi / Kurir</p>
-                      
-                      {order.shippingProvider && (
-                        <div>
-                          <p className="text-xs text-text-muted">Kurir / Kendaraan</p>
-                          <p className="font-medium text-text-main">{order.shippingProvider}</p>
-                        </div>
-                      )}
-                      
-                      {order.trackingNumber && (
-                        <div>
-                          <p className="text-xs text-text-muted">No. Resi / Plat Kendaraan</p>
-                          <p className="font-medium text-text-main">{order.trackingNumber}</p>
-                        </div>
-                      )}
-
-                      {order.shippingContact && (
-                        <div>
-                          <p className="text-xs text-text-muted">Kontak Pengirim</p>
-                          <p className="font-medium text-text-main">{order.shippingContact}</p>
-                        </div>
-                      )}
-
-                      {order.shippingProofUrl && (
-                        <div>
-                          <p className="text-xs text-text-muted mb-1">Bukti Pengiriman</p>
-                          <a href={order.shippingProofUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline break-all font-medium inline-block">
-                            Lihat Foto Pengiriman ↗
-                          </a>
-                        </div>
-                      )}
-
-                      {order.receiptProofUrl && (
-                        <div className="pt-2 border-t border-border/50">
-                          <p className="text-xs text-text-muted mb-1">Bukti Barang Diterima Pembeli</p>
-                          <a href={order.receiptProofUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-success-dark hover:underline break-all font-medium inline-block">
-                            Lihat Dokumentasi Penerimaan ↗
-                          </a>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Pembayaran */}
-            <Card className="border-border">
-              <CardContent className="p-6">
-                <h3 className="font-bold text-text-main mb-4 flex items-center"><CreditCard className="h-5 w-5 mr-2 text-text-muted"/> Pembayaran</h3>
+                <h3 className="font-bold text-text-main mb-6 text-lg flex items-center"><CreditCard className="h-6 w-6 mr-3 text-text-muted"/> Informasi Pembayaran</h3>
                 
                 {order.status === "WAITING_SELLER_CONFIRMATION" && (
-                  <div className="bg-warning/10 border border-warning/20 p-4 rounded-md text-sm text-text-main mb-4 flex items-start">
-                    <Clock className="h-5 w-5 text-warning mr-2 flex-shrink-0 mt-0.5" />
-                    <div>
-                      <p className="font-semibold mb-1">Menunggu Penjual</p>
-                      <p>Penjual akan meninjau stok dan menginformasikan nominal ongkos kirim sebelum Anda dapat membayar.</p>
-                    </div>
+                  <div className="text-sm font-medium text-text-muted text-center p-4">
+                    Instruksi pembayaran akan muncul setelah ongkos kirim dikonfirmasi oleh penjual.
                   </div>
                 )}
 
                 {order.status === "WAITING_PAYMENT" && order.paymentStatus === "UNPAID" && (
-                  <>
-                    <div className="bg-primary/5 border border-primary/20 p-4 rounded-md text-sm text-text-main mb-6">
-                      <p className="font-bold mb-3 text-primary-dark">Instruksi Pembayaran Manual</p>
-                      <p className="mb-4">Silakan transfer persis sejumlah <strong className="text-lg text-earth">{formatCurrency(order.total)}</strong> ke rekening BUMDes berikut:</p>
+                  <div className="space-y-6">
+                    <div className="bg-primary/5 border border-primary/20 p-5 rounded-xl text-sm text-text-main">
+                      <p className="mb-4 font-medium leading-relaxed">Transfer sebesar <strong className="text-lg text-earth">{formatCurrency(order.total)}</strong> ke rekening BUMDes:</p>
                       
                       {order.sellerStoreId?.bankAccount?.bankAccountNumber ? (
-                        <div className="bg-surface p-4 border border-border rounded-md mb-4 shadow-sm">
-                          <p className="text-xs text-text-muted uppercase mb-1">Bank</p>
-                          <p className="font-bold text-lg mb-3">{order.sellerStoreId.bankAccount.bankName}</p>
+                        <div className="bg-white p-5 border border-border rounded-xl shadow-sm">
+                          <p className="text-xs font-bold text-text-muted uppercase tracking-wider mb-1">Bank</p>
+                          <p className="font-bold text-base mb-4">{order.sellerStoreId.bankAccount.bankName}</p>
                           
-                          <p className="text-xs text-text-muted uppercase mb-1">Nomor Rekening</p>
-                          <p className="font-mono text-xl mb-3 font-bold tracking-wider text-primary-dark">{order.sellerStoreId.bankAccount.bankAccountNumber}</p>
+                          <p className="text-xs font-bold text-text-muted uppercase tracking-wider mb-1">Nomor Rekening</p>
+                          <p className="font-mono text-xl mb-4 font-bold tracking-wider text-primary-dark bg-surface-bg p-2 rounded-lg inline-block border border-border">{order.sellerStoreId.bankAccount.bankAccountNumber}</p>
                           
-                          <p className="text-xs text-text-muted uppercase mb-1">Atas Nama</p>
-                          <p className="font-medium mb-3">{order.sellerStoreId.bankAccount.bankAccountHolderName}</p>
+                          <p className="text-xs font-bold text-text-muted uppercase tracking-wider mb-1">Atas Nama</p>
+                          <p className="font-bold text-base">{order.sellerStoreId.bankAccount.bankAccountHolderName}</p>
 
                           {order.sellerStoreId.bankAccount.paymentNote && (
-                            <div className="mt-3 pt-3 border-t border-border/50">
-                              <p className="text-xs text-text-muted uppercase mb-1">Catatan Penjual</p>
-                              <p className="text-sm italic">{order.sellerStoreId.bankAccount.paymentNote}</p>
+                            <div className="mt-4 pt-4 border-t border-border">
+                              <p className="text-xs font-bold text-text-muted uppercase tracking-wider mb-1">Catatan Pembayaran</p>
+                              <p className="text-sm font-medium italic">{order.sellerStoreId.bankAccount.paymentNote}</p>
                             </div>
                           )}
                         </div>
                       ) : (
-                        <div className="bg-warning/10 border border-warning/20 p-3 rounded-md text-sm text-warning-dark mb-4">
+                        <div className="bg-warning/10 border border-warning/20 p-4 rounded-xl text-sm text-warning-dark">
                           <p className="font-bold mb-1">Rekening belum diatur</p>
-                          <p>Rekening pembayaran belum diatur oleh toko. Silakan hubungi penjual via WhatsApp atau tunggu konfirmasi pembayaran manual.</p>
+                          <p className="font-medium">Hubungi penjual via WhatsApp untuk menanyakan nomor rekening BUMDes.</p>
                         </div>
                       )}
-                      
-                      <p className="text-sm">Setelah transfer, unggah foto bukti pembayaran pada form di bawah ini agar penjual dapat memverifikasinya.</p>
                     </div>
 
-                    <UploadPaymentForm orderId={order._id.toString()} />
-                  </>
-                )}
-
-                {order.paymentStatus === "WAITING_REVIEW" && (
-                  <div className="bg-warning/10 border border-warning/20 p-4 rounded-md text-sm text-text-main flex items-start">
-                    <AlertCircle className="h-5 w-5 text-warning mr-2 flex-shrink-0 mt-0.5" />
-                    <div>
-                      <p className="font-semibold mb-1">Sedang Diverifikasi</p>
-                      <p>Bukti pembayaran Anda sedang ditinjau oleh pihak penjual/admin.</p>
+                    <div className="pt-2">
+                      <p className="text-sm font-bold text-text-main mb-4">Sudah transfer? Konfirmasi di sini</p>
+                      <UploadPaymentForm orderId={order._id.toString()} />
                     </div>
                   </div>
                 )}
 
                 {order.paymentStatus === "REJECTED" && (
-                  <div className="bg-danger/10 border border-danger/20 p-4 rounded-md text-sm text-danger flex items-start">
-                    <AlertCircle className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" />
-                    <div>
-                      <p className="font-semibold mb-1">Pembayaran Ditolak</p>
-                      <p>Bukti pembayaran Anda tidak valid. Silakan unggah kembali bukti pembayaran yang benar atau hubungi penjual.</p>
-                      <div className="mt-4">
-                        <UploadPaymentForm orderId={order._id.toString()} />
+                  <div className="space-y-6">
+                    <div className="bg-danger/10 border border-danger/20 p-4 rounded-xl text-sm text-danger-dark font-medium">
+                      <p className="font-bold mb-1">Pembayaran Ditolak</p>
+                      <p>Bukti yang Anda unggah tidak valid. Silakan unggah kembali bukti pembayaran yang benar.</p>
+                    </div>
+                    <UploadPaymentForm orderId={order._id.toString()} />
+                  </div>
+                )}
+
+                {(order.paymentStatus === "PAID" || order.paymentStatus === "WAITING_REVIEW") && (
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center pb-4 border-b border-border">
+                      <span className="text-sm font-bold text-text-muted uppercase">Status Pembayaran</span>
+                      <span className={`px-3 py-1 text-xs font-bold rounded-full ${order.paymentStatus === 'PAID' ? 'bg-success/10 text-success-dark' : 'bg-warning/10 text-warning-dark'}`}>
+                        {order.paymentStatus === 'PAID' ? 'Lunas' : 'Sedang Dicek'}
+                      </span>
+                    </div>
+                    {order.paymentProofUrl && (
+                      <div className="pt-2">
+                        <p className="text-xs font-bold text-text-muted uppercase tracking-wider mb-2">Bukti Transfer</p>
+                        <a href={order.paymentProofUrl} target="_blank" rel="noopener noreferrer" className="flex items-center text-sm font-bold text-primary hover:text-primary-dark transition-colors bg-primary/5 p-3 rounded-lg border border-primary/20">
+                          <Receipt className="h-5 w-5 mr-2" />
+                          Lihat Bukti Terunggah
+                        </a>
                       </div>
-                    </div>
+                    )}
                   </div>
                 )}
-
-                {order.paymentStatus === "PAID" && (
-                  <div className="bg-success/10 border border-success/20 p-4 rounded-md text-sm text-success-dark flex flex-col items-center justify-center text-center">
-                    <div className="w-10 h-10 bg-success/20 rounded-full flex items-center justify-center mb-2">
-                      <CreditCard className="h-5 w-5 text-success-dark" />
-                    </div>
-                    <p className="font-bold">Pembayaran Berhasil</p>
-                    <p className="text-xs mt-1">Lunas pada {order.paidAt ? new Date(order.paidAt).toLocaleDateString("id-ID") : "-"}</p>
-                  </div>
-                )}
-
               </CardContent>
             </Card>
 
-            {(order.status === "SHIPPED_MANUAL" || order.status === "READY_TO_PICKUP") && (
-              <CompleteOrderForm orderId={order._id.toString()} status={order.status} />
-            )}
+            {/* Info Pengiriman */}
+            <Card className="border-border rounded-2xl shadow-sm bg-white overflow-hidden">
+              <CardContent className="p-6">
+                <h3 className="font-bold text-text-main mb-6 text-lg flex items-center"><MapPin className="h-6 w-6 mr-3 text-text-muted"/> Info Pengiriman</h3>
+                <div className="space-y-4 text-sm font-medium">
+                  <div>
+                    <p className="text-xs font-bold text-text-muted uppercase tracking-wider mb-1">Penerima</p>
+                    <p className="font-bold text-base text-text-main">{order.buyerName}</p>
+                    <p className="text-text-muted mt-0.5">{order.buyerPhone}</p>
+                  </div>
+                  <div className="pt-3">
+                    <p className="text-xs font-bold text-text-muted uppercase tracking-wider mb-1">Alamat</p>
+                    <p className="text-text-main whitespace-pre-wrap leading-relaxed">{order.buyerAddress}</p>
+                  </div>
+                  
+                  {(order.status === "SHIPPED_MANUAL" || order.status === "COMPLETED") && (
+                    <div className="mt-4 pt-5 border-t border-border space-y-4">
+                      <h4 className="font-bold text-text-main text-base">Detail Ekspedisi / Kurir</h4>
+                      
+                      {order.shippingProvider && (
+                        <div>
+                          <p className="text-xs font-bold text-text-muted uppercase tracking-wider mb-1">Kurir / Kendaraan</p>
+                          <p className="font-bold text-text-main">{order.shippingProvider}</p>
+                        </div>
+                      )}
+                      
+                      {order.trackingNumber && (
+                        <div>
+                          <p className="text-xs font-bold text-text-muted uppercase tracking-wider mb-1">No. Resi / Plat</p>
+                          <p className="font-bold text-text-main bg-surface-bg px-3 py-1.5 rounded-lg inline-block border border-border">{order.trackingNumber}</p>
+                        </div>
+                      )}
+
+                      {order.shippingContact && (
+                        <div>
+                          <p className="text-xs font-bold text-text-muted uppercase tracking-wider mb-1">Kontak Kurir</p>
+                          <p className="font-bold text-text-main">{order.shippingContact}</p>
+                        </div>
+                      )}
+
+                      {order.shippingProofUrl && (
+                        <div className="pt-2">
+                          <a href={order.shippingProofUrl} target="_blank" rel="noopener noreferrer" className="flex items-center text-sm font-bold text-earth hover:text-earth-dark transition-colors bg-earth/5 p-3 rounded-lg border border-earth/20">
+                            <Truck className="h-5 w-5 mr-2" />
+                            Lihat Foto Pengiriman
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
 
           </div>
         </div>
 
-        {/* Print-only Footer */}
         <div className="hidden print:block mt-12 text-center text-sm text-text-muted border-t border-border pt-4">
           <p>Terima kasih telah berbelanja di {order.sellerStoreId?.name || "BUMDesMart"}.</p>
           <p>Invoice ini sah dan diterbitkan secara elektronik oleh geraibumdes.com.</p>

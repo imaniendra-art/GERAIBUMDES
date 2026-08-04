@@ -34,7 +34,8 @@ export default async function CetakInvoicePage({ params }: { params: Promise<{ i
 
   // Seller melihat "INVOICE" (penagihan), Buyer melihat "KWITANSI" (bukti terima)
   const isKwitansi = isBuyer; // Pembeli hanya bisa print saat COMPLETED, jadi pasti Kwitansi
-  const docTitle = isKwitansi ? "KWITANSI PEMBAYARAN" : "INVOICE / TAGIHAN";
+  const isPaid = order.paymentStatus === "PAID" || order.status === "COMPLETED";
+  const docTitle = isKwitansi ? "KWITANSI PEMBAYARAN" : (isPaid ? "INVOICE" : "TAGIHAN PEMBELIAN");
 
   return (
     <div className="bg-white min-h-screen text-black p-8 font-sans print:p-0">

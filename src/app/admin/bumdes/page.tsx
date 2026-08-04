@@ -1,21 +1,66 @@
-import { Card } from "@/components/ui/Card";
+import { Card, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import dbConnect from "@/lib/db";
 import BumdesProfile from "@/models/BumdesProfile";
-import "@/models/User"; // Ensure User model is loaded for population
+import "@/models/User";
 import { Badge } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { formatDate } from "@/lib/utils/formatters";
 import { getBumdesBadgeVariant, getBumdesStatusLabel } from "@/lib/utils/status";
 import { BumdesActionButtons } from "@/components/admin/BumdesActionButtons";
+import { Search, Filter, Store, AlertCircle, CheckCircle, XCircle } from "lucide-react";
+import { AutoSubmitSelect } from "@/components/ui/AutoSubmitSelect";
 
-export default async function AdminBumdesList() {
+export default async function AdminBumdesList({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; status?: string }>;
+}) {
   await dbConnect();
+  const { q, status } = await searchParams;
   
-  const profiles = await BumdesProfile.find()
+  // Build query
+  const query: any = {};
+  if (q) {
+    query.name = { $regex: q, $options: "i" };
+  }
+  if (status && status !== "ALL") {
+    query.verificationStatus = status;
+  }
+
+  // Fetch data
+  const profiles = await BumdesProfile.find(query)
     .populate("userId", "name phoneNumber")
-    .sort({ createdAt: -1 });
+    .lean();
+
+  // Custom Sorting: Pending Verification (1), Verified (2), Rejected (3), then Terbaru (Newest first)
+  const statusWeight: Record<string, number> = {
+    PENDING_VERIFICATION: 1,
+    VERIFIED: 2,
+    REJECTED: 3,
+  };
+
+  profiles.sort((a, b) => {
+    const weightA = statusWeight[a.verificationStatus] || 99;
+    const weightB = statusWeight[b.verificationStatus] || 99;
+    
+    if (weightA !== weightB) {
+      return weightA - weightB;
+    }
+    
+    // Within same status, newest first
+    const dateA = new Date(a.createdAt).getTime();
+    const dateB = new Date(b.createdAt).getTime();
+    return dateB - dateA;
+  });
+
+  // Calculate stats
+  const allProfiles = await BumdesProfile.find().lean();
+  const totalBumdes = allProfiles.length;
+  const pendingBumdes = allProfiles.filter(p => p.verificationStatus === "PENDING_VERIFICATION").length;
+  const activeBumdes = allProfiles.filter(p => p.verificationStatus === "VERIFIED").length;
+  const rejectedBumdes = allProfiles.filter(p => p.verificationStatus === "REJECTED").length;
 
   const formatWhatsAppUrl = (phone?: string) => {
     if (!phone) return null;
@@ -27,26 +72,122 @@ export default async function AdminBumdesList() {
   };
 
   return (
-    <div className="w-full max-w-full overflow-hidden">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Daftar BUMDes</h1>
+    <div className="w-full max-w-full overflow-hidden space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h1 className="text-2xl font-bold">Daftar BUMDes</h1>
+          <p className="text-text-muted text-sm mt-1">Kelola dan verifikasi pendaftaran BUMDes di platform</p>
+        </div>
+      </div>
+
+      {/* SUMMARY CARDS */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Card className="border-border">
+          <CardContent className="p-6">
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="text-sm font-medium text-text-muted">Total BUMDes</p>
+                <h3 className="text-2xl font-bold mt-1">{totalBumdes}</h3>
+              </div>
+              <div className="h-10 w-10 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+                <Store className="h-5 w-5" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card className="border-warning/50 bg-warning/5">
+          <CardContent className="p-6">
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="text-sm font-medium text-warning-dark">Menunggu Verifikasi</p>
+                <h3 className="text-2xl font-bold mt-1 text-warning-dark">{pendingBumdes}</h3>
+              </div>
+              <div className="h-10 w-10 bg-warning/20 rounded-full flex items-center justify-center text-warning-dark">
+                <AlertCircle className="h-5 w-5" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-success/50 bg-success/5">
+          <CardContent className="p-6">
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="text-sm font-medium text-success-dark">BUMDes Aktif</p>
+                <h3 className="text-2xl font-bold mt-1 text-success-dark">{activeBumdes}</h3>
+              </div>
+              <div className="h-10 w-10 bg-success/20 rounded-full flex items-center justify-center text-success-dark">
+                <CheckCircle className="h-5 w-5" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-danger/50 bg-danger/5">
+          <CardContent className="p-6">
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="text-sm font-medium text-danger">Pendaftaran Ditolak</p>
+                <h3 className="text-2xl font-bold mt-1 text-danger">{rejectedBumdes}</h3>
+              </div>
+              <div className="h-10 w-10 bg-danger/20 rounded-full flex items-center justify-center text-danger">
+                <XCircle className="h-5 w-5" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       <Card>
+        <div className="p-4 border-b border-border flex flex-col sm:flex-row gap-4 justify-between bg-surface-bg">
+          <div className="flex items-center gap-3">
+            <form className="relative" method="GET" action="/admin/bumdes">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-muted" />
+              <input
+                type="text"
+                name="q"
+                defaultValue={q}
+                placeholder="Cari BUMDes..."
+                className="pl-9 pr-4 py-2 border border-border rounded-lg bg-surface text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-full sm:w-[250px]"
+              />
+              {status && <input type="hidden" name="status" value={status} />}
+            </form>
+          </div>
+          
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <Filter className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-muted" />
+              <form method="GET" action="/admin/bumdes">
+                {q && <input type="hidden" name="q" value={q} />}
+                <AutoSubmitSelect 
+                  name="status"
+                  defaultValue={status || "ALL"}
+                  className="pl-9 pr-8 py-2 border border-border rounded-lg bg-surface text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary appearance-none cursor-pointer"
+                >
+                  <option value="ALL">Semua Status</option>
+                  <option value="PENDING_VERIFICATION">Menunggu Verifikasi</option>
+                  <option value="VERIFIED">Aktif</option>
+                  <option value="REJECTED">Ditolak</option>
+                </AutoSubmitSelect>
+              </form>
+            </div>
+          </div>
+        </div>
+
         <div className="overflow-x-auto">
           <table className="w-full min-w-[1000px] text-sm text-left text-text-main">
-            <thead className="text-xs text-text-muted uppercase bg-surface-bg">
+            <thead className="text-xs text-text-muted uppercase bg-surface-bg border-b border-border">
               <tr>
-                <th className="px-6 py-3">Nama BUMDes</th>
-                <th className="px-6 py-3">Lokasi</th>
-                <th className="px-6 py-3">Nama Pengelola</th>
-                <th className="px-6 py-3">Kontak Pengelola</th>
-                <th className="px-6 py-3">Status</th>
-                <th className="px-6 py-3">Tanggal Daftar</th>
-                <th className="px-6 py-3">Aksi</th>
+                <th className="px-6 py-4 font-semibold">Nama BUMDes</th>
+                <th className="px-6 py-4 font-semibold">Lokasi</th>
+                <th className="px-6 py-4 font-semibold">Pengelola</th>
+                <th className="px-6 py-4 font-semibold">Status</th>
+                <th className="px-6 py-4 font-semibold">Tanggal Daftar</th>
+                <th className="px-6 py-4 font-semibold text-right">Aksi</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-border">
               {profiles.map((profile) => {
                 const user = profile.userId as any;
                 const pengelolaName = profile.directorName || user?.name || "-";
@@ -54,40 +195,51 @@ export default async function AdminBumdesList() {
                 const waUrl = formatWhatsAppUrl(pengelolaPhone !== "-" ? pengelolaPhone : undefined);
 
                 return (
-                <tr key={profile._id.toString()} className="border-b border-border hover:bg-surface-bg/50">
-                  <td className="px-6 py-4 font-medium">{profile.name}</td>
-                  <td className="px-6 py-4">{profile.district}, {profile.regency}</td>
-                  <td className="px-6 py-4">{pengelolaName}</td>
+                <tr key={profile._id.toString()} className="hover:bg-surface-bg/50 transition-colors">
                   <td className="px-6 py-4">
+                    <p className="font-semibold text-text-main">{profile.name}</p>
+                    <p className="text-xs text-text-muted truncate max-w-[200px]">{profile.businessType}</p>
+                  </td>
+                  <td className="px-6 py-4">
+                    <p className="font-medium text-text-main">{profile.village}</p>
+                    <p className="text-xs text-text-muted">{profile.district}, {profile.regency}</p>
+                  </td>
+                  <td className="px-6 py-4">
+                    <p className="font-medium text-text-main">{pengelolaName}</p>
                     {pengelolaPhone !== "-" && waUrl ? (
-                      <a href={waUrl} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                      <a href={waUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline flex items-center gap-1 mt-0.5">
                         {pengelolaPhone}
                       </a>
                     ) : (
-                      pengelolaPhone
+                      <p className="text-xs text-text-muted mt-0.5">{pengelolaPhone}</p>
                     )}
                   </td>
                   <td className="px-6 py-4">
-                    <Badge variant={getBumdesBadgeVariant(profile.verificationStatus)}>
+                    <Badge variant={getBumdesBadgeVariant(profile.verificationStatus)} className="font-medium">
                       {getBumdesStatusLabel(profile.verificationStatus)}
                     </Badge>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 whitespace-nowrap">
                     {formatDate(profile.createdAt)}
                   </td>
-                  <td className="px-6 py-4">
-                    <BumdesActionButtons bumdesId={profile._id.toString()} bumdesName={profile.name} />
+                  <td className="px-6 py-4 text-right">
+                    <Link href={`/admin/bumdes/${profile._id}`}>
+                      <Button variant="outline" size="sm" className="shadow-sm">
+                        Lihat Detail
+                      </Button>
+                    </Link>
                   </td>
                 </tr>
               )})}
+              
               {profiles.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="p-0">
+                  <td colSpan={6} className="p-0">
                     <EmptyState 
-                      title="Tidak Ada BUMDes" 
-                      description="Belum ada pendaftaran BUMDes." 
+                      title="Tidak Ada Data BUMDes" 
+                      description={q || status ? "Coba sesuaikan filter atau kata kunci pencarian Anda." : "Belum ada BUMDes yang terdaftar di platform."} 
                       icon="folder" 
-                      className="border-0 rounded-none bg-transparent py-12"
+                      className="border-0 rounded-none bg-transparent py-16"
                     />
                   </td>
                 </tr>

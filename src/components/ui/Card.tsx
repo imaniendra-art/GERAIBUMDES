@@ -3,7 +3,7 @@ import { cn } from "./Button";
 
 export function Card({ className, children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={cn("bg-surface rounded-2xl shadow-natural hover-lift border border-border overflow-hidden", className)} {...props}>
+    <div className={cn("bg-surface rounded-2xl shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-200 border border-border overflow-hidden", className)} {...props}>
       {children}
     </div>
   );
