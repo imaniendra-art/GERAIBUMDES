@@ -26,27 +26,27 @@ export function StoreCard({ store, activeProductCount }: StoreCardProps) {
 
   return (
     <div className="bg-surface rounded-2xl shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-200 border border-border group flex flex-col h-full overflow-hidden">
-      <div className="h-28 md:h-36 relative">
+      <div className="h-20 md:h-36 relative">
         {store.bannerUrl ? (
           <img src={store.bannerUrl} alt={`${store.name} Banner`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
         ) : (
           <div className="w-full h-full bg-gradient-to-tr from-primary/10 to-secondary/10 group-hover:scale-105 transition-transform duration-500"></div>
         )}
-        <div className="absolute -bottom-8 left-4">
-          <div className="h-16 w-16 bg-surface rounded-full border-4 border-surface shadow-sm flex items-center justify-center overflow-hidden">
+        <div className="absolute -bottom-6 md:-bottom-8 left-3 md:left-4">
+          <div className="h-12 w-12 md:h-16 md:w-16 bg-surface rounded-full border-2 md:border-4 border-surface shadow-sm flex items-center justify-center overflow-hidden">
             {store.logoUrl ? (
               <img src={store.logoUrl} alt={store.name} className="w-full h-full object-cover" />
             ) : (
-              <StoreIcon className="h-8 w-8 text-primary" />
+              <StoreIcon className="h-6 w-6 md:h-8 md:w-8 text-primary" />
             )}
           </div>
         </div>
       </div>
       
-      <div className="p-4 pt-10 flex flex-col flex-grow">
+      <div className="p-3 md:p-4 pt-7 md:pt-10 flex flex-col flex-grow">
         <div className="flex items-start justify-between mb-2">
           <Link href={`/bumdes/${store.slug}`} className="block flex-1">
-            <h3 className="font-bold text-lg hover:text-primary transition-colors text-text-main line-clamp-2">
+            <h3 className="font-bold text-base md:text-lg hover:text-primary transition-colors text-text-main line-clamp-2 leading-tight md:leading-normal">
               {store.name}
             </h3>
           </Link>
@@ -69,11 +69,11 @@ export function StoreCard({ store, activeProductCount }: StoreCardProps) {
         )}
         
         {store.description ? (
-          <p className="text-sm text-text-muted line-clamp-2 mt-auto">
+          <p className="text-xs md:text-sm text-text-muted line-clamp-2 mt-auto">
             {store.description}
           </p>
         ) : (
-          <p className="text-sm text-text-muted italic mt-auto">
+          <p className="text-xs md:text-sm text-text-muted italic mt-auto">
             Belum ada deskripsi.
           </p>
         )}
@@ -85,9 +85,9 @@ export function StoreCard({ store, activeProductCount }: StoreCardProps) {
         )}
       </div>
       
-      <div className="px-5 pb-5 mt-2">
+      <div className="px-3 pb-3 md:px-5 md:pb-5 mt-2">
         <Link href={`/bumdes/${store.slug}`} className="block">
-          <Button variant="outline" className="w-full text-sm h-11">Kunjungi BUMDes</Button>
+          <Button variant="outline" className="w-full text-xs md:text-sm h-9 md:h-11">Kunjungi BUMDes</Button>
         </Link>
       </div>
     </div>

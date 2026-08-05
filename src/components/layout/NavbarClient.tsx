@@ -36,12 +36,12 @@ export default function NavbarClient({ session, unreadCount = 0, storeSlug }: Na
   return (
     <nav className="glass-nav text-text-main sticky top-0 z-50 transition-all duration-300">
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between py-3 min-h-[80px] items-center">
+        <div className="flex justify-between py-2 md:py-3 min-h-[60px] md:min-h-[80px] items-center">
           {/* Logo & Brand */}
           <div className="flex-shrink-0 flex items-center">
-            <Link href="/" className="text-xl sm:text-2xl font-bold tracking-tight text-primary flex items-center gap-2">
-              <Image src="/images/logo.png" alt="Logo GeraiBumdes" width={40} height={40} className="h-8 w-8 sm:h-10 sm:w-10 object-contain" priority />
-              <span className="hidden sm:inline-block">GeraiBumdes</span>
+            <Link href="/" className="text-lg md:text-xl sm:text-2xl font-bold tracking-tight text-primary flex items-center gap-1.5 md:gap-2">
+              <Image src="/images/logo.png" alt="Logo GeraiBumdes" width={40} height={40} className="h-7 w-7 md:h-8 md:w-8 sm:h-10 sm:w-10 object-contain" priority />
+              <span>GeraiBumdes</span>
             </Link>
           </div>
 
@@ -143,43 +143,43 @@ export default function NavbarClient({ session, unreadCount = 0, storeSlug }: Na
           </div>
 
           {/* Mobile Menu Buttons */}
-          <div className="md:hidden flex items-center space-x-1 justify-end">
+          <div className="md:hidden flex items-center space-x-0.5 justify-end">
             {session && (
               <>
                 {session.role === "BUMDES_ADMIN" && (
-                  <Link href="/dashboard/pesanan" className="relative p-2 text-text-muted hover:text-primary transition-colors">
+                  <Link href="/dashboard/pesanan" className="relative p-1.5 text-text-muted hover:text-primary transition-colors">
                     <Bell className="h-5 w-5" />
                     {unreadCount > 0 && (
-                      <span className="absolute top-1 right-1 h-3.5 w-3.5 bg-error text-white text-[9px] font-bold rounded-full flex items-center justify-center border border-white">
+                      <span className="absolute top-0.5 right-0.5 h-3.5 w-3.5 bg-error text-white text-[9px] font-bold rounded-full flex items-center justify-center border border-white">
                         {unreadCount > 99 ? '99+' : unreadCount}
                       </span>
                     )}
                   </Link>
                 )}
-                <Link href="/keranjang" className="p-2 text-text-muted hover:text-primary transition-colors">
+                <Link href="/keranjang" className="p-1.5 text-text-muted hover:text-primary transition-colors">
                   <ShoppingCart className="h-5 w-5" />
                 </Link>
               </>
             )}
-            <button onClick={toggleMobileMenu} className="text-text-main p-2 focus:outline-none hover:text-primary">
+            <button onClick={toggleMobileMenu} className="text-text-main p-1.5 focus:outline-none hover:text-primary">
               {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           </div>
         </div>
 
         {/* Mobile Search Bar Row */}
-        <div className="md:hidden pb-4 px-1">
+        <div className="md:hidden pb-3 px-1 mt-[-4px]">
           <form onSubmit={handleSearch} className="flex gap-2">
             <input
               type="text"
               placeholder="Cari produk..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full h-11 bg-surface-bg border border-border text-text-main rounded-xl pl-4 pr-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 shadow-sm text-sm placeholder-text-muted min-w-0"
+              className="w-full h-10 bg-surface-bg border border-border text-text-main rounded-xl pl-4 pr-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 shadow-sm text-sm placeholder-text-muted min-w-0"
             />
             <button 
               type="submit"
-              className="h-11 px-4 bg-primary hover:brightness-95 text-white rounded-xl flex items-center justify-center transition-colors shadow-sm flex-shrink-0"
+              className="h-10 px-4 bg-primary hover:brightness-95 text-white rounded-xl flex items-center justify-center transition-colors shadow-sm flex-shrink-0"
               aria-label="Cari"
             >
               <Search className="h-4 w-4" />

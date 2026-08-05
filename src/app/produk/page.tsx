@@ -123,11 +123,11 @@ export default async function MarketplacePage({
   return (
     <div className="bg-surface-bg min-h-screen">
       {/* Left-Aligned Slim Hero */}
-      <div className="bg-primary text-surface py-8 border-b border-primary-dark">
-        <div className="w-full px-4 sm:px-8 lg:px-24 flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="bg-primary text-surface py-5 md:py-8 border-b border-primary-dark">
+        <div className="w-full px-4 sm:px-8 lg:px-24 flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight mb-2">Marketplace Antar-BUMDes</h1>
-            <p className="text-surface/80 text-base max-w-xl">
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-1.5 md:mb-2">Marketplace Antar-BUMDes</h1>
+            <p className="text-surface/80 text-sm md:text-base max-w-xl">
               Eksplorasi komoditas dan pasokan unggulan dari berbagai desa.
             </p>
           </div>
@@ -142,8 +142,8 @@ export default async function MarketplacePage({
         </div>
       </div>
 
-      <div className="w-full px-4 sm:px-8 lg:px-24 py-8">
-        <div className="flex items-center text-text-main font-semibold mb-6">
+      <div className="w-full px-4 sm:px-8 lg:px-24 py-4 md:py-8">
+        <div className="flex items-center text-text-main font-semibold mb-4 md:mb-6 text-sm md:text-base">
           {availableProducts.length} Produk Ditemukan
         </div>
 
@@ -173,7 +173,7 @@ export default async function MarketplacePage({
 
           {/* Product Grid */}
           <div className="flex-1">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-6">
               {availableProducts.map((product) => (
                 <ProductCard key={product._id.toString()} product={product} />
               ))}
