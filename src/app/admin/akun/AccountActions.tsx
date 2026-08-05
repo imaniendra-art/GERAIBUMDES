@@ -66,10 +66,10 @@ export function AccountActions({ userId, userName }: { userId: string, userName:
             variant="outline" 
             size="sm" 
             disabled={isResetting || isDeleting}
-            className="h-8 w-8"
+            className="h-8 w-8 p-0"
             title="Edit"
           >
-            <Edit className="h-4 w-4" />
+            <Edit className="h-4 w-4 text-text-muted hover:text-primary transition-colors" />
           </Button>
         </Link>
         <Button 
@@ -77,17 +77,17 @@ export function AccountActions({ userId, userName }: { userId: string, userName:
           size="sm" 
           onClick={handleReset} 
           disabled={isResetting || isDeleting}
-          className="h-8 w-8"
+          className="h-8 w-8 p-0"
           title="Reset Password (12345678)"
         >
-          {isResetting ? <RefreshCw className="h-4 w-4 animate-spin" /> : <Key className="h-4 w-4" />}
+          {isResetting ? <RefreshCw className="h-4 w-4 animate-spin" /> : <Key className="h-4 w-4 text-text-muted hover:text-primary transition-colors" />}
         </Button>
         <Button 
           variant="outline" 
           size="sm" 
           onClick={handleDelete} 
           disabled={isResetting || isDeleting}
-          className="h-8 w-8 text-danger border-danger hover:bg-danger/10"
+          className="h-8 w-8 p-0 text-danger border-danger hover:bg-danger/10"
           title="Hapus"
         >
           {isDeleting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
