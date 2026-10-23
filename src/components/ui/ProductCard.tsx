@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Package, Store as StoreIcon } from "lucide-react";
+import { Package, Store as StoreIcon, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { formatCurrency } from "@/lib/utils/formatters";
@@ -76,7 +76,7 @@ export function ProductCard({ product }: ProductCardProps) {
       
       <div className="px-2.5 pb-2.5 md:px-5 md:pb-5 mt-auto">
         <Link href={`/produk/${product.slug}`} className="block">
-          <Button variant="outline" className="w-full text-xs md:text-sm h-8 md:h-11">Lihat Detail</Button>
+          <Button variant="outline" className="w-full text-xs md:text-sm h-8 md:h-10 group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all font-semibold flex items-center justify-center gap-1.5">Lihat Detail <ArrowRight className="w-3.5 h-3.5 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200" /></Button>
         </Link>
       </div>
     </div>

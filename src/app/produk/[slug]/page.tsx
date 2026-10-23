@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import Link from "next/link";
-import { Package, Store as StoreIcon, MapPin, ChevronRight, Truck, ShieldCheck, CheckCircle2, Info } from "lucide-react";
+import { Package, Store as StoreIcon, MapPin, ChevronRight, Truck, ShieldCheck, CheckCircle2, Info, ShoppingCart } from "lucide-react";
 import AddToCartActions from "@/components/cart/AddToCartActions";
 import { formatCurrency } from "@/lib/utils/formatters";
 import { ProductCard } from "@/components/ui/ProductCard";
@@ -58,7 +58,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                 {/* Main Square Image */}
                 <div className="aspect-square bg-surface-bg rounded-xl flex items-center justify-center overflow-hidden w-full relative group">
                   {product.images?.[0] ? (
-                    <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 mix-blend-multiply" />
+                    <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 " />
                   ) : (
                     <Package className="h-24 w-24 text-border" />
                   )}
@@ -74,7 +74,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                   {/* Current Image Thumbnail */}
                   <div className="w-24 h-24 rounded-lg border-2 border-primary overflow-hidden flex-shrink-0 cursor-pointer">
                     {product.images?.[0] ? (
-                      <img src={product.images[0]} alt="Thumb" className="w-full h-full object-cover mix-blend-multiply" />
+                      <img src={product.images[0]} alt="Thumb" className="w-full h-full object-cover " />
                     ) : (
                       <div className="w-full h-full bg-surface-bg flex items-center justify-center"><Package className="h-6 w-6 text-border" /></div>
                     )}
@@ -157,7 +157,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
             <div className="sticky top-24 space-y-6">
               
               {/* Purchase Panel */}
-              <div className="bg-surface rounded-2xl shadow-natural border border-border p-6">
+              <div id="atur-pesanan" className="bg-surface rounded-2xl shadow-natural border border-border p-6 scroll-mt-24">
                 <h3 className="font-bold text-lg text-text-main mb-5 border-b border-border pb-4">Atur Pesanan</h3>
                 
                 <div className="mb-6">
@@ -245,6 +245,23 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
           </div>
         )}
         
+      </div>
+    
+      {/* Mobile Bottom Sticky Action Bar */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface/95 backdrop-blur-md border-t border-border px-4 py-3 flex items-center justify-between shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
+        <div>
+          <span className="text-[10px] text-text-muted font-medium block">Harga Satuan B2B</span>
+          <div className="text-lg font-black text-primary leading-tight">
+            {formatCurrency(product.retailPrice)}
+            <span className="text-xs text-text-muted font-normal">/{product.unit}</span>
+          </div>
+        </div>
+        <a
+          href="#atur-pesanan"
+          className="px-5 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl text-sm font-bold transition-all shadow-sm flex items-center gap-1.5"
+        >
+          <ShoppingCart className="w-4 h-4" /> Beli / Pesan
+        </a>
       </div>
     </div>
   );

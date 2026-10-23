@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
-import { Package, Search, Filter, Store as StoreIcon } from "lucide-react";
+import { Package, Search, Filter, Store as StoreIcon, RotateCcw } from "lucide-react";
 import dbConnect from "@/lib/db";
 import Product from "@/models/Product";
 import Category from "@/models/Category";
@@ -180,10 +180,20 @@ export default async function MarketplacePage({
             </div>
 
             {availableProducts.length === 0 && (
-              <div className="text-center py-20 bg-surface rounded-lg border border-border">
-                <Package className="h-16 w-16 text-border mx-auto mb-4" />
-                <h2 className="text-xl font-bold text-text-main">Tidak Ada Produk</h2>
-                <p className="text-text-muted mt-2">Coba gunakan kata kunci atau filter lain.</p>
+              <div className="text-center py-16 px-4 bg-surface rounded-2xl border border-border shadow-sm flex flex-col items-center">
+                <div className="w-16 h-16 rounded-full bg-surface-bg flex items-center justify-center mb-4">
+                  <Package className="h-8 w-8 text-text-muted" />
+                </div>
+                <h2 className="text-xl font-bold text-text-main mb-1">Tidak Ada Produk yang Cocok</h2>
+                <p className="text-text-muted text-sm max-w-sm mb-6">
+                  Produk dengan kata kunci atau filter yang Anda pilih saat ini belum tersedia.
+                </p>
+                <Link
+                  href="/produk"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-xl text-sm font-semibold transition-all shadow-sm"
+                >
+                  <RotateCcw className="h-4 w-4" /> Reset Semua Filter
+                </Link>
               </div>
             )}
             

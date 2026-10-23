@@ -134,6 +134,28 @@ export default async function Home() {
                 </Link>
               )}
             </div>
+            {/* Quick Popular Commodity Chips */}
+            <div className="mt-5 md:mt-8 flex flex-wrap items-center gap-2">
+              <span className="text-xs font-semibold text-text-muted">Komoditas Unggulan:</span>
+              <Link href="/produk?q=beras" className="text-xs px-3 py-1.5 rounded-full bg-surface border border-border hover:border-primary hover:text-primary transition-all shadow-sm font-medium flex items-center gap-1.5 group">
+                🌾 Beras Porang
+              </Link>
+              <Link href="/produk?q=kakao" className="text-xs px-3 py-1.5 rounded-full bg-surface border border-border hover:border-primary hover:text-primary transition-all shadow-sm font-medium flex items-center gap-1.5 group">
+                🍫 Kakao Fermentasi
+              </Link>
+              <Link href="/produk?q=kopi" className="text-xs px-3 py-1.5 rounded-full bg-surface border border-border hover:border-primary hover:text-primary transition-all shadow-sm font-medium flex items-center gap-1.5 group">
+                ☕ Kopi
+              </Link>
+              <Link href="/produk?q=udang" className="text-xs px-3 py-1.5 rounded-full bg-surface border border-border hover:border-primary hover:text-primary transition-all shadow-sm font-medium flex items-center gap-1.5 group">
+                🦐 Hasil Laut
+              </Link>
+              <Link href="/produk?q=madu" className="text-xs px-3 py-1.5 rounded-full bg-surface border border-border hover:border-primary hover:text-primary transition-all shadow-sm font-medium flex items-center gap-1.5 group">
+                🍯 Madu Hutan
+              </Link>
+              <Link href="/produk?wholesale=true" className="text-xs px-3 py-1.5 rounded-full bg-secondary/15 text-primary-dark border border-secondary/30 hover:bg-secondary/25 transition-all font-semibold flex items-center gap-1.5">
+                ⚡ Grosir B2B
+              </Link>
+            </div>
             
             <div className="mt-6 md:mt-14 pt-4 md:pt-8 border-t border-border flex flex-wrap items-center justify-between sm:justify-start gap-4 sm:gap-12 text-center sm:text-left">
               <div className="flex-1 sm:flex-none">
