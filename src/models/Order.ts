@@ -92,13 +92,13 @@ const OrderSchema = new Schema<IOrder>(
   {
     orderNumber: { type: String, required: true, unique: true },
     
-    buyerId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    buyerId: { type: Schema.Types.ObjectId, ref: "User", required: true, index: true },
     buyerRole: { type: String, required: true },
     buyerName: { type: String, required: true },
     buyerPhone: { type: String, required: true },
     buyerAddress: { type: String, required: true },
 
-    sellerStoreId: { type: Schema.Types.ObjectId, ref: "Store", required: true },
+    sellerStoreId: { type: Schema.Types.ObjectId, ref: "Store", required: true, index: true },
     sellerBumdesProfileId: { type: Schema.Types.ObjectId, ref: "BumdesProfile", required: true },
     
     items: [OrderItemSchema],
@@ -122,6 +122,7 @@ const OrderSchema = new Schema<IOrder>(
         "CANCELLED",
       ],
       default: "PENDING",
+      index: true,
     },
 
     paymentStatus: {
@@ -152,5 +153,9 @@ const OrderSchema = new Schema<IOrder>(
   },
   { timestamps: true }
 );
+
+// High Performance Compound Indexes for Orders Dashboard and Reports
+OrderSchema.index({ sellerStoreId: 1, status: 1, createdAt: -1 });
+OrderSchema.index({ buyerId: 1, createdAt: -1 });
 
 export default mongoose.models.Order || mongoose.model<IOrder>("Order", OrderSchema);

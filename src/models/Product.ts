@@ -40,9 +40,9 @@ const WholesalePriceTierSchema = new Schema<IWholesalePriceTier>(
 
 const ProductSchema: Schema = new Schema(
   {
-    storeId: { type: Schema.Types.ObjectId, ref: "Store", required: true },
-    categoryId: { type: Schema.Types.ObjectId, ref: "Category", required: true },
-    name: { type: String, required: true },
+    storeId: { type: Schema.Types.ObjectId, ref: "Store", required: true, index: true },
+    categoryId: { type: Schema.Types.ObjectId, ref: "Category", required: true, index: true },
+    name: { type: String, required: true, trim: true },
     slug: { type: String, required: true, unique: true },
     description: { type: String, required: true },
     retailPrice: { type: Number, required: true },
@@ -62,6 +62,7 @@ const ProductSchema: Schema = new Schema(
       type: String,
       enum: ["DRAFT", "WAITING_APPROVAL", "ACTIVE", "INACTIVE", "REJECTED"],
       default: "DRAFT",
+      index: true,
     },
     isFeatured: { type: Boolean, default: false },
     createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
@@ -69,5 +70,10 @@ const ProductSchema: Schema = new Schema(
   },
   { timestamps: true }
 );
+
+// High Performance Compound Indexes for Marketplace Discovery
+ProductSchema.index({ status: 1, isFeatured: -1, createdAt: -1 });
+ProductSchema.index({ storeId: 1, status: 1 });
+ProductSchema.index({ categoryId: 1, status: 1 });
 
 export default mongoose.models.Product || mongoose.model<IProduct>("Product", ProductSchema);

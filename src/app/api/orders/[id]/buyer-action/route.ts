@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import dbConnect from "@/lib/db";
 import Order from "@/models/Order";
+import Product from "@/models/Product";
 
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -23,7 +24,9 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
     if (action === "MARK_COMPLETED") {
       if (!["READY_TO_PICKUP", "SHIPPED_MANUAL"].includes(order.status)) {
-        return NextResponse.json({ error: "Pesanan belum dapat diselesaikan. Pastikan statusnya sudah dikirim atau siap diambil." }, { status: 400 });
+        return NextResponse.json({ 
+          error: "Pesanan belum dapat diselesaikan. Pastikan statusnya sudah dikirim atau siap diambil." 
+        }, { status: 400 });
       }
 
       if (!receiptProofUrl) {
@@ -36,7 +39,29 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
       await order.save();
 
       return NextResponse.json({ success: true, order });
-    } else {
+    } 
+    else if (action === "CANCEL_ORDER") {
+      // Buyer can only cancel before payment is submitted
+      if (!["WAITING_SELLER_CONFIRMATION", "WAITING_PAYMENT"].includes(order.status)) {
+        return NextResponse.json({ 
+          error: "Pesanan yang sedang diverifikasi atau sudah diproses tidak dapat dibatalkan langsung." 
+        }, { status: 400 });
+      }
+
+      // Restore stock back to products
+      for (const item of order.items) {
+        await Product.findByIdAndUpdate(item.productId, {
+          $inc: { stock: item.quantity }
+        }).catch(err => console.error("Error restoring stock on buyer cancel:", err));
+      }
+
+      order.status = "CANCELLED";
+      order.buyerNote = (order.buyerNote ? order.buyerNote + " | " : "") + "Dibatalkan oleh pembeli.";
+      await order.save();
+
+      return NextResponse.json({ success: true, order });
+    } 
+    else {
       return NextResponse.json({ error: "Aksi tidak dikenali." }, { status: 400 });
     }
 

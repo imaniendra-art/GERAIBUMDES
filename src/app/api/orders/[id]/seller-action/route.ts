@@ -4,6 +4,7 @@ import dbConnect from "@/lib/db";
 import Order from "@/models/Order";
 import Store from "@/models/Store";
 import BumdesProfile from "@/models/BumdesProfile";
+import Product from "@/models/Product";
 
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -23,7 +24,8 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
       shippingProvider,
       trackingNumber,
       shippingContact,
-      shippingProofUrl
+      shippingProofUrl,
+      reason
     } = body;
 
     await dbConnect();
@@ -78,7 +80,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
         return NextResponse.json({ error: "Status tujuan tidak valid." }, { status: 400 });
       }
 
-      // Validasi flow
+      // Validasi alur status
       if ((nextStatus === "SHIPPED_MANUAL" || nextStatus === "READY_TO_PICKUP") && order.status !== "PROCESSING") {
         return NextResponse.json({ error: "Pesanan harus dalam status PROCESSING sebelum dikirim." }, { status: 400 });
       }
@@ -103,6 +105,21 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
       if (nextStatus === "COMPLETED") {
         order.completedAt = new Date();
       }
+    }
+    else if (action === "CANCEL_ORDER") {
+      if (["COMPLETED", "CANCELLED"].includes(order.status)) {
+        return NextResponse.json({ error: "Pesanan yang sudah selesai atau dibatalkan tidak dapat diubah." }, { status: 400 });
+      }
+
+      // Restore stock when order is cancelled by seller
+      for (const item of order.items) {
+        await Product.findByIdAndUpdate(item.productId, {
+          $inc: { stock: item.quantity }
+        }).catch(err => console.error("Error restoring stock on cancellation:", err));
+      }
+
+      order.status = "CANCELLED";
+      order.sellerNote = reason ? String(reason).trim() : "Pesanan dibatalkan oleh penjual.";
     }
     else {
       return NextResponse.json({ error: "Aksi tidak dikenali." }, { status: 400 });

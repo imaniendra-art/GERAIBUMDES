@@ -6,6 +6,8 @@ import Product from "@/models/Product";
 import Store from "@/models/Store";
 
 export async function POST(req: Request) {
+  const decrementedItems: { productId: any; quantity: number }[] = [];
+
   try {
     const session = await getSession();
     if (!session) {
@@ -15,39 +17,83 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { storeId, buyerName, buyerPhone, buyerAddress, buyerNote, items } = body;
 
-    if (!storeId || !buyerName || !buyerPhone || !buyerAddress || !items || items.length === 0) {
-      return NextResponse.json({ error: "Data pesanan tidak lengkap" }, { status: 400 });
+    if (!storeId || !buyerName || !buyerPhone || !buyerAddress || !items || !Array.isArray(items) || items.length === 0) {
+      return NextResponse.json({ error: "Data pesanan tidak lengkap." }, { status: 400 });
     }
 
     await dbConnect();
 
     // Verify Store and Seller BUMDes
     const store = await Store.findById(storeId);
-    if (!store) {
-      return NextResponse.json({ error: "Toko penjual tidak ditemukan" }, { status: 404 });
+    if (!store || store.status !== "ACTIVE") {
+      return NextResponse.json({ error: "Toko BUMDes tidak ditemukan atau sedang tidak aktif." }, { status: 404 });
     }
 
-    // Verify Products and Calculate Subtotal Server-Side for Security
+    // 1. Initial Validation: Check product status, store matching, minOrder, and initial stock availability
+    for (const item of items) {
+      if (!item.productId || typeof item.quantity !== "number" || item.quantity <= 0) {
+        return NextResponse.json({ error: "Kuantitas produk tidak valid." }, { status: 400 });
+      }
+
+      const product = await Product.findById(item.productId);
+      if (!product || product.storeId.toString() !== storeId || product.status !== "ACTIVE") {
+        return NextResponse.json({ 
+          error: `Produk "${item.productNameSnapshot || 'terpilih'}" tidak tersedia atau sedang non-aktif.` 
+        }, { status: 400 });
+      }
+
+      if (item.quantity < product.minOrder) {
+        return NextResponse.json({ 
+          error: `Kuantitas "${product.name}" kurang dari batas minimum order (${product.minOrder} ${product.unit}).` 
+        }, { status: 400 });
+      }
+
+      if (product.stock < item.quantity) {
+        return NextResponse.json({ 
+          error: `Stok produk "${product.name}" tidak mencukupi (Tersedia: ${product.stock} ${product.unit}, dipesan: ${item.quantity} ${product.unit}).` 
+        }, { status: 400 });
+      }
+    }
+
+    // 2. Atomic Stock Decrement & Item Pricing
     let calculatedSubtotal = 0;
     const validatedItems = [];
 
     for (const item of items) {
-      const product = await Product.findById(item.productId);
-      if (!product || product.storeId.toString() !== storeId || product.status !== "ACTIVE") {
-        return NextResponse.json({ error: `Produk ${item.productNameSnapshot} tidak tersedia` }, { status: 400 });
+      // Atomic find and decrement: only succeeds if stock is still >= requested quantity
+      const updatedProduct = await Product.findOneAndUpdate(
+        { 
+          _id: item.productId, 
+          status: "ACTIVE", 
+          stock: { $gte: item.quantity } 
+        },
+        { 
+          $inc: { stock: -item.quantity } 
+        },
+        { new: true }
+      );
+
+      if (!updatedProduct) {
+        // Rollback any items that were successfully decremented in previous loop iterations
+        for (const dec of decrementedItems) {
+          await Product.findByIdAndUpdate(dec.productId, {
+            $inc: { stock: dec.quantity }
+          });
+        }
+        return NextResponse.json({
+          error: `Gagal memesan: Stok produk "${item.productNameSnapshot || 'terpilih'}" baru saja habis atau dibeli pengguna lain.`
+        }, { status: 400 });
       }
 
-      if (item.quantity < product.minOrder) {
-        return NextResponse.json({ error: `Kuantitas ${item.productNameSnapshot} kurang dari minimum order (${product.minOrder})` }, { status: 400 });
-      }
+      // Record successful decrement for rollback capability
+      decrementedItems.push({ productId: item.productId, quantity: item.quantity });
 
-      // We should ideally calculate retail vs wholesale strictly on server, but for MVP we trust the client's type if the price matches
-      // However, it's safer to re-calculate:
-      let activePrice = product.retailPrice;
-      let activeType = "RETAIL";
+      // Determine retail vs wholesale price tier
+      let activePrice = updatedProduct.retailPrice;
+      let activeType: "RETAIL" | "WHOLESALE" = "RETAIL";
 
-      if (product.isWholesaleAvailable && product.wholesalePriceTiers?.length > 0) {
-        const sortedTiers = [...product.wholesalePriceTiers].sort((a, b) => b.minQty - a.minQty);
+      if (updatedProduct.isWholesaleAvailable && updatedProduct.wholesalePriceTiers?.length > 0) {
+        const sortedTiers = [...updatedProduct.wholesalePriceTiers].sort((a, b) => b.minQty - a.minQty);
         for (const tier of sortedTiers) {
           if (item.quantity >= tier.minQty) {
             if (tier.maxQty && item.quantity > tier.maxQty) {
@@ -64,28 +110,28 @@ export async function POST(req: Request) {
       calculatedSubtotal += itemSubtotal;
 
       validatedItems.push({
-        productId: product._id,
-        productNameSnapshot: product.name,
-        productSlugSnapshot: product.slug,
+        productId: updatedProduct._id,
+        productNameSnapshot: updatedProduct.name,
+        productSlugSnapshot: updatedProduct.slug,
         storeId: store._id,
         quantity: item.quantity,
-        unit: product.unit,
+        unit: updatedProduct.unit,
         price: activePrice,
         appliedPriceType: activeType,
         subtotal: itemSubtotal
       });
     }
 
-    // Generate Order Number
+    // 3. Create Order
     const orderNumber = `INV-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 
     const newOrder = await Order.create({
       orderNumber,
       buyerId: session.userId,
       buyerRole: session.role,
-      buyerName,
-      buyerPhone,
-      buyerAddress,
+      buyerName: String(buyerName).trim(),
+      buyerPhone: String(buyerPhone).trim(),
+      buyerAddress: String(buyerAddress).trim(),
       
       sellerStoreId: store._id,
       sellerBumdesProfileId: store.bumdesId,
@@ -94,17 +140,25 @@ export async function POST(req: Request) {
       
       subtotal: calculatedSubtotal,
       shippingCost: 0,
-      total: calculatedSubtotal, // shipping cost is 0 initially
+      total: calculatedSubtotal,
 
       status: "WAITING_SELLER_CONFIRMATION",
       paymentStatus: "UNPAID",
       
-      buyerNote,
+      buyerNote: buyerNote ? String(buyerNote).trim() : "",
     });
 
     return NextResponse.json({ success: true, orderId: newOrder._id }, { status: 201 });
   } catch (error: any) {
+    // If order creation itself throws, rollback all decremented stock!
+    if (decrementedItems.length > 0) {
+      for (const dec of decrementedItems) {
+        await Product.findByIdAndUpdate(dec.productId, {
+          $inc: { stock: dec.quantity }
+        }).catch(e => console.error("Rollback error:", e));
+      }
+    }
     console.error("Order creation error:", error);
-    return NextResponse.json({ error: "Gagal memproses pesanan" }, { status: 500 });
+    return NextResponse.json({ error: "Gagal memproses pesanan. Silakan coba kembali." }, { status: 500 });
   }
 }
