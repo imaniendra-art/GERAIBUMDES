@@ -18,8 +18,8 @@ export default async function AdminAccountsPage({ searchParams }: { searchParams
 
   await dbConnect();
   
-  // Fetch all users
-  const users = await User.find({}).sort({ createdAt: -1 });
+  // Fetch all users securely (excluding passwordHash)
+  const users = await User.find({}).select("-passwordHash").sort({ createdAt: -1 });
   
   const bumdesUsers = users.filter(u => ["BUMDES_ADMIN", "BUMDES_MEMBER", "CUSTOMER"].includes(u.role));
   const adminUsers = users.filter(u => ["SUPER_ADMIN", "PLATFORM_ADMIN"].includes(u.role));
