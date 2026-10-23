@@ -10,6 +10,14 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "GeraiBumdes.com - Pusat Belanja Desa",
   description: "Menghubungkan kebutuhan dan potensi usaha BUMDes dari berbagai daerah dalam satu platform digital.",
+  icons: {
+    icon: [
+      { url: "/images/logo.png", type: "image/png" },
+      { url: "/icon.png", type: "image/png" },
+    ],
+    shortcut: "/images/logo.png",
+    apple: "/images/logo.png",
+  },
 };
 
 export default function RootLayout({
