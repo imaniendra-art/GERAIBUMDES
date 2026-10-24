@@ -9,7 +9,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { formatDate } from "@/lib/utils/formatters";
 import { getBumdesBadgeVariant, getBumdesStatusLabel } from "@/lib/utils/status";
 import { BumdesActionButtons } from "@/components/admin/BumdesActionButtons";
-import { Search, Filter, Store, AlertCircle, CheckCircle, XCircle } from "lucide-react";
+import { Search, Filter, Store, AlertCircle, CheckCircle, XCircle, AlertTriangle } from "lucide-react";
 import { AutoSubmitSelect } from "@/components/ui/AutoSubmitSelect";
 
 export default async function AdminBumdesList({
@@ -61,6 +61,37 @@ export default async function AdminBumdesList({
   const pendingBumdes = allProfiles.filter(p => p.verificationStatus === "PENDING_VERIFICATION").length;
   const activeBumdes = allProfiles.filter(p => p.verificationStatus === "VERIFIED").length;
   const rejectedBumdes = allProfiles.filter(p => p.verificationStatus === "REJECTED").length;
+
+  // Detect potential duplicates across all registered profiles
+  const duplicateIdSet = new Set<string>();
+  for (let i = 0; i < allProfiles.length; i++) {
+    for (let j = i + 1; j < allProfiles.length; j++) {
+      const p1 = allProfiles[i];
+      const p2 = allProfiles[j];
+
+      const sameVillage =
+        p1.village &&
+        p2.village &&
+        p1.village.trim().toLowerCase() === p2.village.trim().toLowerCase() &&
+        p1.district &&
+        p2.district &&
+        p1.district.trim().toLowerCase() === p2.district.trim().toLowerCase();
+
+      const c1 = p1.contactNumber ? p1.contactNumber.replace(/\D/g, "") : "";
+      const c2 = p2.contactNumber ? p2.contactNumber.replace(/\D/g, "") : "";
+      const sameContact = c1 && c2 && c1.length >= 8 && c1 === c2;
+
+      const sameName =
+        p1.name &&
+        p2.name &&
+        p1.name.trim().toLowerCase() === p2.name.trim().toLowerCase();
+
+      if (sameVillage || sameContact || sameName) {
+        duplicateIdSet.add(p1._id.toString());
+        duplicateIdSet.add(p2._id.toString());
+      }
+    }
+  }
 
   const formatWhatsAppUrl = (phone?: string) => {
     if (!phone) return null;
@@ -193,11 +224,19 @@ export default async function AdminBumdesList({
                 const pengelolaName = profile.directorName || user?.name || "-";
                 const pengelolaPhone = profile.contactNumber || user?.phoneNumber || "-";
                 const waUrl = formatWhatsAppUrl(pengelolaPhone !== "-" ? pengelolaPhone : undefined);
+                const isDuplicate = duplicateIdSet.has(profile._id.toString());
 
                 return (
                 <tr key={profile._id.toString()} className="hover:bg-surface-bg/50 transition-colors">
                   <td className="px-6 py-4">
-                    <p className="font-semibold text-text-main">{profile.name}</p>
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <p className="font-semibold text-text-main">{profile.name}</p>
+                      {isDuplicate && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-warning/15 text-warning-dark border border-warning/30" title="Terdeteksi pendaftaran lain dengan Desa, Kontak, atau Nama yang sama">
+                          <AlertTriangle className="w-3 h-3 flex-shrink-0 text-warning" /> Potensi Duplikat
+                        </span>
+                      )}
+                    </div>
                     <p className="text-xs text-text-muted truncate max-w-[200px]">{profile.businessType}</p>
                   </td>
                   <td className="px-6 py-4">

@@ -8,6 +8,14 @@ import { checkRateLimit } from "@/lib/rateLimit";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+function normalizePhone(phone: string): string {
+  let cleaned = phone.replace(/\D/g, "");
+  if (cleaned.startsWith("62")) {
+    cleaned = "0" + cleaned.substring(2);
+  }
+  return cleaned;
+}
+
 export async function POST(req: Request) {
   try {
     // Rate Limiting on Registration: Max 10 per hour per IP
@@ -41,14 +49,37 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Password minimal 8 karakter." }, { status: 400 });
     }
 
+    // 1. Email Uniqueness Check
     const existingUser = await User.findOne({ email: normalizedEmail });
     if (existingUser) {
-      return NextResponse.json({ error: "Email sudah terdaftar." }, { status: 400 });
+      return NextResponse.json({ error: "Email sudah terdaftar. Silakan masuk menggunakan akun Anda." }, { status: 400 });
+    }
+
+    // 2. Phone Number / WhatsApp Uniqueness Check
+    const trimmedPhone = String(data.phoneNumber).trim();
+    const cleanPhone = normalizePhone(trimmedPhone);
+    const existingPhone = await User.findOne({
+      phoneNumber: {
+        $in: [
+          trimmedPhone,
+          cleanPhone,
+          `62${cleanPhone.replace(/^0/, "")}`,
+          `+62${cleanPhone.replace(/^0/, "")}`,
+        ],
+      },
+    });
+
+    if (existingPhone) {
+      return NextResponse.json(
+        {
+          error: `Nomor telepon/WhatsApp (${trimmedPhone}) sudah terdaftar pada akun lain. Silakan gunakan nomor aktif lainnya atau masuk ke akun Anda.`,
+        },
+        { status: 400 }
+      );
     }
 
     const passwordHash = await bcrypt.hash(data.password, 10);
     const trimmedName = String(data.name).trim();
-    const trimmedPhone = String(data.phoneNumber).trim();
     const trimmedAddress = data.address ? String(data.address).trim() : "";
 
     if (type === "CUSTOMER") {
@@ -80,15 +111,64 @@ export async function POST(req: Request) {
       }
 
       const trimmedBumdesName = String(bumdesName).trim();
+      const normVillage = String(village).trim();
+      const normDistrict = String(district).trim();
+      const normRegency = String(regency).trim();
+      const normProvince = String(province).trim();
 
-      // Generate base slug
-      const baseSlug = trimmedBumdesName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
-      let slug = baseSlug;
-      let counter = 1;
-      
-      while (await Store.findOne({ slug })) {
-        slug = `${baseSlug}-${counter}`;
-        counter++;
+      // 3. "1 Desa 1 BUMDes" Legal Rule Check (Peraturan Pemerintah/UU Desa)
+      const existingVillageBumdes = await BumdesProfile.findOne({
+        village: { $regex: new RegExp(`^${normVillage.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i") },
+        district: { $regex: new RegExp(`^${normDistrict.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i") },
+        regency: { $regex: new RegExp(`^${normRegency.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i") },
+        verificationStatus: { $ne: "REJECTED" },
+      });
+
+      if (existingVillageBumdes) {
+        if (existingVillageBumdes.verificationStatus === "PENDING_VERIFICATION") {
+          return NextResponse.json(
+            {
+              error: `BUMDes untuk Desa/Kelurahan ${normVillage} (${existingVillageBumdes.name}) sudah terdaftar dan saat ini sedang menunggu verifikasi Admin. Anda tidak perlu mendaftar ulang.`,
+            },
+            { status: 409 }
+          );
+        }
+        if (existingVillageBumdes.verificationStatus === "VERIFIED") {
+          return NextResponse.json(
+            {
+              error: `BUMDes untuk Desa/Kelurahan ${normVillage} sudah aktif terdaftar di GeraiBumdes. Silakan masuk dengan akun pengelola desa Anda atau hubungi layanan bantuan jika Anda pengurus resmi yang baru.`,
+            },
+            { status: 409 }
+          );
+        }
+      }
+
+      // 4. Same BUMDes Name in the Same Regency Check
+      const existingNameInRegency = await BumdesProfile.findOne({
+        name: { $regex: new RegExp(`^${trimmedBumdesName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i") },
+        regency: { $regex: new RegExp(`^${normRegency.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i") },
+        verificationStatus: { $ne: "REJECTED" },
+      });
+
+      if (existingNameInRegency) {
+        return NextResponse.json(
+          {
+            error: `BUMDes dengan nama "${trimmedBumdesName}" sudah terdaftar di ${normRegency}. Mohon gunakan nama resmi BUMDes Anda atau periksa kembali data pendaftaran.`,
+          },
+          { status: 409 }
+        );
+      }
+
+      // 5. Store Slug Uniqueness (No silent -1 counter)
+      const baseSlug = trimmedBumdesName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
+      const existingStore = await Store.findOne({ slug: baseSlug });
+      if (existingStore) {
+        return NextResponse.json(
+          {
+            error: `Toko/BUMDes dengan nama serupa ("${trimmedBumdesName}") sudah ada di platform. Harap tambahkan nama spesifik desa Anda (contoh: "${trimmedBumdesName} ${normVillage}").`,
+          },
+          { status: 409 }
+        );
       }
 
       // Create User
@@ -106,10 +186,10 @@ export async function POST(req: Request) {
         name: trimmedBumdesName,
         directorName: trimmedName,
         contactNumber: trimmedPhone,
-        village: String(village).trim(),
-        district: String(district).trim(),
-        regency: String(regency).trim(),
-        province: String(province).trim(),
+        village: normVillage,
+        district: normDistrict,
+        regency: normRegency,
+        province: normProvince,
         businessType,
         description: String(description).trim(),
         verificationStatus: "PENDING_VERIFICATION",
@@ -119,7 +199,7 @@ export async function POST(req: Request) {
       await Store.create({
         bumdesId: bumdesProfile._id,
         name: trimmedBumdesName,
-        slug,
+        slug: baseSlug,
         description: String(description).trim(),
         status: "PENDING",
       });
