@@ -14,7 +14,6 @@ import {
   FolderTree,
   Briefcase,
   MapPin,
-  ExternalLink,
 } from "lucide-react";
 
 export function AdminSidebarNav() {
@@ -48,7 +47,7 @@ export function AdminSidebarNav() {
     const isExactAdmin = pathname === "/admin" && path === "/admin";
     const highlight = isExactAdmin || (path !== "/admin" && isActive);
 
-    return `flex items-center justify-between hover:bg-surface/10 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+    return `flex items-center justify-between hover:bg-surface/10 px-3 py-2 rounded-xl text-[13px] font-medium transition-colors ${
       highlight
         ? "bg-surface/15 text-white shadow-sm font-semibold"
         : "text-surface/75 hover:text-white"
@@ -56,28 +55,28 @@ export function AdminSidebarNav() {
   };
 
   return (
-    <nav className="px-2.5 py-1 space-y-1.5">
+    <nav className="px-3 py-1 space-y-1.5">
       {/* 1. RINGKASAN */}
       <div className="space-y-0.5">
         <Link href="/admin" className={getLinkClasses("/admin")}>
           <div className="flex items-center">
-            <LayoutDashboard className="h-4 w-4 mr-2.5 shrink-0" /> Ringkasan
+            <LayoutDashboard className="h-[18px] w-[18px] mr-2.5 shrink-0" /> Ringkasan
           </div>
         </Link>
       </div>
 
       {/* 2. OPERASIONAL BUMDES & PRODUK */}
-      <div className="space-y-0.5">
-        <p className="px-2.5 pt-1 text-[9px] font-bold text-surface/40 uppercase tracking-widest">
+      <div className="space-y-0.5 pt-0.5">
+        <p className="px-3 pt-1.5 pb-0.5 text-[10.5px] font-bold text-surface/50 uppercase tracking-wider">
           BUMDes & Produk
         </p>
         <Link href="/admin/bumdes" className={getLinkClasses("/admin/bumdes")}>
           <div className="flex items-center">
-            <Store className="h-4 w-4 mr-2.5 shrink-0" /> Kelola BUMDes
+            <Store className="h-[18px] w-[18px] mr-2.5 shrink-0" /> Kelola BUMDes
           </div>
           {counts.bumdesCount > 0 && (
             <span
-              className="bg-danger text-white text-[10px] font-bold px-2 py-0.5 rounded-full ml-auto shadow-sm"
+              className="bg-danger text-white text-[11px] font-bold px-2 py-0.5 rounded-full ml-auto shadow-sm"
               title={`${counts.bumdesCount} BUMDes menunggu verifikasi`}
             >
               {counts.bumdesCount}
@@ -87,11 +86,11 @@ export function AdminSidebarNav() {
 
         <Link href="/admin/produk" className={getLinkClasses("/admin/produk")}>
           <div className="flex items-center">
-            <Package className="h-4 w-4 mr-2.5 shrink-0" /> Kelola Produk
+            <Package className="h-[18px] w-[18px] mr-2.5 shrink-0" /> Kelola Produk
           </div>
           {counts.productCount > 0 && (
             <span
-              className="bg-danger text-white text-[10px] font-bold px-2 py-0.5 rounded-full ml-auto shadow-sm"
+              className="bg-danger text-white text-[11px] font-bold px-2 py-0.5 rounded-full ml-auto shadow-sm"
               title={`${counts.productCount} produk menunggu verifikasi`}
             >
               {counts.productCount}
@@ -101,13 +100,13 @@ export function AdminSidebarNav() {
       </div>
 
       {/* 3. PENGELOLAAN KEUANGAN & TRANSAKSI */}
-      <div className="space-y-0.5">
-        <p className="px-2.5 pt-1 text-[9px] font-bold text-surface/40 uppercase tracking-widest">
+      <div className="space-y-0.5 pt-0.5">
+        <p className="px-3 pt-1.5 pb-0.5 text-[10.5px] font-bold text-surface/50 uppercase tracking-wider">
           Pengelolaan Keuangan
         </p>
         <Link href="/admin/pesanan" className={getLinkClasses("/admin/pesanan")}>
           <div className="flex items-center">
-            <ShoppingBag className="h-4 w-4 mr-2.5 shrink-0" /> Pesanan & Transaksi
+            <ShoppingBag className="h-[18px] w-[18px] mr-2.5 shrink-0" /> Pesanan & Transaksi
           </div>
         </Link>
         <Link
@@ -115,19 +114,19 @@ export function AdminSidebarNav() {
           className={getLinkClasses("/admin/laporan/transaksi")}
         >
           <div className="flex items-center">
-            <CreditCard className="h-4 w-4 mr-2.5 shrink-0" /> Laporan Transaksi
+            <CreditCard className="h-[18px] w-[18px] mr-2.5 shrink-0" /> Laporan Transaksi
           </div>
         </Link>
       </div>
 
       {/* 4. MANAJEMEN AKUN & AKSES */}
-      <div className="space-y-0.5">
-        <p className="px-2.5 pt-1 text-[9px] font-bold text-surface/40 uppercase tracking-widest">
+      <div className="space-y-0.5 pt-0.5">
+        <p className="px-3 pt-1.5 pb-0.5 text-[10.5px] font-bold text-surface/50 uppercase tracking-wider">
           Pengguna & Akses
         </p>
         <Link href="/admin/akun" className={getLinkClasses("/admin/akun")}>
           <div className="flex items-center">
-            <Users className="h-4 w-4 mr-2.5 shrink-0" /> Manajemen Akun
+            <Users className="h-[18px] w-[18px] mr-2.5 shrink-0" /> Manajemen Akun
           </div>
         </Link>
         <Link
@@ -135,14 +134,14 @@ export function AdminSidebarNav() {
           className={getLinkClasses("/admin/laporan/aktivitas")}
         >
           <div className="flex items-center">
-            <Activity className="h-4 w-4 mr-2.5 shrink-0" /> Log Aktivitas Admin
+            <Activity className="h-[18px] w-[18px] mr-2.5 shrink-0" /> Log Aktivitas Admin
           </div>
         </Link>
       </div>
 
       {/* 5. MASTER DATA */}
-      <div className="space-y-0.5">
-        <p className="px-2.5 pt-1 text-[9px] font-bold text-surface/40 uppercase tracking-widest">
+      <div className="space-y-0.5 pt-0.5">
+        <p className="px-3 pt-1.5 pb-0.5 text-[10.5px] font-bold text-surface/50 uppercase tracking-wider">
           Master Data
         </p>
         <Link
@@ -150,7 +149,7 @@ export function AdminSidebarNav() {
           className={getLinkClasses("/admin/master/kategori")}
         >
           <div className="flex items-center">
-            <FolderTree className="h-4 w-4 mr-2.5 shrink-0 opacity-80" /> Kategori Produk
+            <FolderTree className="h-[18px] w-[18px] mr-2.5 shrink-0 opacity-80" /> Kategori Produk
           </div>
         </Link>
         <Link
@@ -158,7 +157,7 @@ export function AdminSidebarNav() {
           className={getLinkClasses("/admin/master/jenis-usaha")}
         >
           <div className="flex items-center">
-            <Briefcase className="h-4 w-4 mr-2.5 shrink-0 opacity-80" /> Jenis Usaha
+            <Briefcase className="h-[18px] w-[18px] mr-2.5 shrink-0 opacity-80" /> Jenis Usaha
           </div>
         </Link>
         <Link
@@ -166,7 +165,7 @@ export function AdminSidebarNav() {
           className={getLinkClasses("/admin/master/wilayah")}
         >
           <div className="flex items-center">
-            <MapPin className="h-4 w-4 mr-2.5 shrink-0 opacity-80" /> Wilayah
+            <MapPin className="h-[18px] w-[18px] mr-2.5 shrink-0 opacity-80" /> Wilayah
           </div>
         </Link>
       </div>
