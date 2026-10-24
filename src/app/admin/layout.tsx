@@ -22,7 +22,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   }
 
   return (
-    <div className="flex h-[calc(100vh-60px)] md:h-[calc(100vh-80px)] overflow-hidden bg-surface-bg p-0 md:p-3.5 md:gap-3.5">
+    <div className="flex h-[calc(100vh-64px)] md:h-[calc(100vh-85px)] overflow-hidden bg-surface-bg p-0 md:p-3.5 md:gap-3.5">
       {/* Floating Modern Rounded Sidebar */}
       <aside className="w-64 bg-primary-dark text-surface hidden md:flex flex-col h-full shrink-0 select-none overflow-hidden justify-between rounded-2xl shadow-xl shadow-emerald-950/20 border border-white/10 ring-1 ring-black/5">
         {/* Header Profil Administrator Aktif */}
