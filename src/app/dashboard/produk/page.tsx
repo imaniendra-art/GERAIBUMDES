@@ -7,7 +7,7 @@ import BumdesProfile from "@/models/BumdesProfile";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
-import { Package, Plus, ArrowLeft, Clock, CheckCircle2, XCircle, AlertCircle, Sparkles } from "lucide-react";
+import { Package, Plus, Clock, CheckCircle2, XCircle, AlertCircle, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { formatCurrency } from "@/lib/utils/formatters";
 import { getProductStatusLabel, getProductBadgeVariant } from "@/lib/utils/status";
@@ -59,16 +59,7 @@ export default async function BUMDesProductsPage() {
   return (
     <div className="space-y-6">
       <SuccessToast />
-      
-      <div className="mb-6">
-        <Link href="/dashboard">
-          <Button variant="ghost" className="rounded-xl text-sm font-semibold transition-colors duration-200 h-11 px-4 text-text-muted hover:text-text-main hover:bg-surface-bg">
-            <ArrowLeft className="h-4 w-4 mr-2" /> Kembali ke Dashboard
-          </Button>
-        </Link>
-      </div>
-
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-text-main tracking-tight">Kelola Produk</h1>
           <p className="text-text-muted mt-1.5 font-medium">Kelola seluruh produk yang dijual melalui GeraiBUMDes.</p>

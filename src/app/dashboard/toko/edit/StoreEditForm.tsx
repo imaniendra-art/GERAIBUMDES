@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader } from "@/components/ui/Card";
-import { Store, Building, MapPin, Landmark, Phone, ImageIcon, Save, ArrowLeft, Loader2, Users, FileCheck, CheckCircle2, ShieldCheck, Briefcase, Info, BadgeCheck, X } from "lucide-react";
+import { Store, Building, MapPin, Landmark, Phone, ImageIcon, Save, Loader2, Users, FileCheck, CheckCircle2, ShieldCheck, Briefcase, Info, BadgeCheck, X } from "lucide-react";
 import Link from "next/link";
 import { LocationSelector } from "@/components/ui/LocationSelector";
 import { ImageUploader } from "@/components/ui/ImageUploader";
@@ -119,17 +119,9 @@ export default function StoreEditForm({ initialData }: { initialData: any }) {
 
   return (
     <div className="space-y-6">
-      <div className="mb-10">
-        <div className="flex items-center mb-6">
-          <Link href="/dashboard">
-            <Button variant="ghost" className="rounded-xl text-sm font-semibold transition-colors duration-200 h-11 px-4 text-text-muted hover:text-text-main hover:bg-surface-bg">
-              <ArrowLeft className="h-4 w-4 mr-2" /> Kembali ke Dashboard
-            </Button>
-          </Link>
-        </div>
-        
-        <h1 className="text-3xl sm:text-4xl font-bold text-text-main tracking-tight mb-2">Edit Profil BUMDes</h1>
-        <p className="text-text-muted font-medium text-lg">Lengkapi profil usaha agar lebih dipercaya pembeli.</p>
+      <div>
+        <h1 className="text-2xl sm:text-3xl font-bold text-text-main tracking-tight mb-1.5">Edit Profil BUMDes</h1>
+        <p className="text-text-muted font-medium text-sm">Lengkapi profil usaha agar lebih dipercaya pembeli.</p>
       </div>
 
       {error && (

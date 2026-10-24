@@ -6,7 +6,7 @@ import Store from "@/models/Store";
 import BumdesProfile from "@/models/BumdesProfile";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/Card";
-import { Package, ChevronRight, ChevronLeft, Search, Filter, AlertTriangle, ShoppingBag, ArrowLeft } from "lucide-react";
+import { Package, ChevronRight, ChevronLeft, Search, Filter, AlertTriangle, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -48,15 +48,7 @@ export default async function PenjualPesananPage({
 
   return (
     <div className="space-y-6">
-      <div className="mb-10">
-        <Link href="/dashboard">
-          <Button variant="ghost" className="rounded-xl text-sm font-semibold transition-colors duration-200 h-11 px-4 text-text-muted hover:text-text-main hover:bg-surface-bg">
-            <ArrowLeft className="h-4 w-4 mr-2" /> Kembali ke Dashboard
-          </Button>
-        </Link>
-      </div>
-
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-text-main tracking-tight">Pesanan Masuk</h1>
           <p className="text-text-muted mt-1.5 font-medium">Kelola seluruh pesanan yang masuk ke toko BUMDes Anda.</p>
