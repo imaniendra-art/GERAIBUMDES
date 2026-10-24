@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import dbConnect from "@/lib/db";
 import BumdesProfile from "@/models/BumdesProfile";
 import Store from "@/models/Store";
+import Order from "@/models/Order";
 import Link from "next/link";
 import { LogOut, UserCog } from "lucide-react";
 import { BumdesSidebarNav } from "@/components/admin/BumdesSidebarNav";
@@ -17,11 +18,18 @@ export default async function DashboardLayout({ children }: { children: React.Re
   await dbConnect();
   let profile = null;
   let store = null;
+  let pendingOrdersCount = 0;
   
   try {
     profile = await BumdesProfile.findOne({ userId: session.userId });
     if (profile) {
       store = await Store.findOne({ bumdesId: profile._id });
+      if (store) {
+        pendingOrdersCount = await Order.countDocuments({
+          sellerStoreId: store._id,
+          status: "WAITING_SELLER_CONFIRMATION",
+        });
+      }
     }
   } catch (error) {
     console.error("Error fetching profile/store for layout:", error);
@@ -58,7 +66,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
         {/* Navigasi Menu Tengah (Bebas Scroll Halus jika di Layar Mini) */}
         <div className="flex-1 min-h-0 overflow-y-auto p-3 space-y-0.5 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-          <BumdesSidebarNav storeSlug={store?.slug} />
+          <BumdesSidebarNav storeSlug={store?.slug} pendingOrdersCount={pendingOrdersCount} />
         </div>
 
         {/* Footer Paten (Selalu Terlihat di Layar Bawah - Zero Scroll) */}
