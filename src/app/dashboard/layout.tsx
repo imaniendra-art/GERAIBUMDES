@@ -28,8 +28,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-surface-bg">
-      <aside className="w-64 bg-primary-dark text-surface hidden md:flex flex-col h-screen shrink-0 select-none overflow-hidden justify-between">
+    <div className="flex h-[calc(100vh-60px)] md:h-[calc(100vh-80px)] overflow-hidden bg-surface-bg">
+      <aside className="w-64 bg-primary-dark text-surface hidden md:flex flex-col h-full shrink-0 select-none overflow-hidden justify-between">
         {/* Header Ringkas BUMDes */}
         <div className="h-16 px-4 border-b border-surface/10 shrink-0 flex items-center gap-3 bg-black/10">
           <div className="h-9 w-9 rounded-full bg-white/10 flex items-center justify-center font-bold text-sm flex-shrink-0 overflow-hidden border border-white/10">
@@ -46,7 +46,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         </div>
 
         {/* Navigasi Menu Tengah (Bebas Scroll Halus jika di Layar Mini) */}
-        <div className="flex-1 overflow-y-auto p-3 space-y-0.5 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+        <div className="flex-1 min-h-0 overflow-y-auto p-3 space-y-0.5 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           <BumdesSidebarNav storeSlug={store?.slug} />
         </div>
 
@@ -70,7 +70,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       </aside>
 
       {/* Bagian Kanan (Isian Konten) yang Dapat Di-scroll Bebas Secara Mandiri */}
-      <main className="flex-1 min-w-0 h-screen overflow-y-auto p-4 sm:p-8">
+      <main className="flex-1 min-w-0 h-full overflow-y-auto p-4 sm:p-8">
         {children}
       </main>
     </div>

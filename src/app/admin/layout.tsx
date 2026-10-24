@@ -22,35 +22,42 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-surface-bg">
-      <aside className="w-60 bg-primary-dark text-surface hidden md:flex flex-col h-screen shrink-0 select-none overflow-hidden justify-between">
-        {/* Header Ringkas: Brand & Admin */}
-        <div className="h-13 px-3.5 border-b border-surface/10 shrink-0 flex items-center justify-between bg-black/10">
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div className="h-7 w-7 rounded-lg bg-cta flex items-center justify-center font-bold text-white text-xs shadow-sm shrink-0">
-              GB
+    <div className="flex h-[calc(100vh-60px)] md:h-[calc(100vh-80px)] overflow-hidden bg-surface-bg">
+      <aside className="w-60 bg-primary-dark text-surface hidden md:flex flex-col h-full shrink-0 select-none overflow-hidden justify-between">
+        {/* Header Profil Administrator Aktif */}
+        <div className="h-16 px-3.5 border-b border-surface/10 shrink-0 flex items-center gap-3 bg-black/15">
+          <div className="relative shrink-0">
+            <div className="h-9 w-9 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-700 flex items-center justify-center font-bold text-white text-sm shadow-md ring-2 ring-white/20">
+              {currentUser?.name ? currentUser.name.charAt(0).toUpperCase() : "A"}
             </div>
-            <div className="overflow-hidden min-w-0">
-              <p className="font-bold text-xs text-white tracking-wide leading-tight truncate">
-                Gerai<span className="text-cta">BUMDes</span>
-              </p>
-              <p className="text-[10px] text-surface/60 truncate leading-tight mt-0.5">
-                {currentUser?.name || "Admin"}
-              </p>
+            <span
+              className="absolute -bottom-0.5 -right-0.5 h-3 w-3 bg-emerald-400 rounded-full border-2 border-primary-dark shadow-sm"
+              title="Online / Aktif"
+            />
+          </div>
+          <div className="overflow-hidden min-w-0 flex-1">
+            <p
+              className="font-bold text-xs text-white tracking-wide leading-tight truncate"
+              title={currentUser?.name || "Admin"}
+            >
+              {currentUser?.name || "Administrator"}
+            </p>
+            <div className="flex items-center gap-1.5 mt-1">
+              <span className="inline-flex items-center gap-1 text-[9px] font-bold px-1.5 py-0.5 bg-emerald-950/70 text-emerald-300 rounded border border-emerald-500/30 uppercase tracking-wider">
+                <ShieldCheck className="h-2.5 w-2.5 text-emerald-400 shrink-0" />
+                {currentUser?.role === "SUPER_ADMIN" ? "Super Admin" : "Admin"}
+              </span>
             </div>
           </div>
-          <span className="text-[9px] font-bold px-1.5 py-0.5 bg-white/10 text-emerald-300 rounded border border-white/10 shrink-0 uppercase tracking-wider ml-1">
-            {currentUser?.role === "SUPER_ADMIN" ? "Super" : "Admin"}
-          </span>
         </div>
 
         {/* Navigasi Menu: Pas 1 Layar Tanpa Scroll */}
-        <div className="flex-1 overflow-y-auto py-1.5 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+        <div className="flex-1 min-h-0 overflow-y-auto py-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           <AdminSidebarNav />
         </div>
 
-        {/* Footer Paten (Selalu Terlihat di Layar Bawah) */}
-        <div className="p-2.5 border-t border-surface/10 shrink-0 bg-black/15 space-y-0.5">
+        {/* Footer Paten (Selalu Terlihat di Layar Bawah - Zero Overflow) */}
+        <div className="p-2.5 border-t border-surface/10 shrink-0 bg-black/20 space-y-1">
           <Link
             href="/"
             className="flex items-center hover:bg-surface/10 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors text-surface/75 hover:text-white w-full"
@@ -69,7 +76,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       </aside>
 
       {/* Bagian Kanan (Isian Konten) yang Dapat Di-scroll */}
-      <main className="flex-1 min-w-0 h-screen overflow-y-auto p-4 sm:p-8">
+      <main className="flex-1 min-w-0 h-full overflow-y-auto p-4 sm:p-8">
         {children}
       </main>
     </div>
