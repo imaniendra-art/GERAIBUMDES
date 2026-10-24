@@ -22,7 +22,7 @@ export default function Footer() {
               GeraiBUMDes
             </h3>
             <p className="text-text-muted mb-4 md:mb-6 leading-relaxed max-w-sm text-sm md:text-[15px]">
-              GeraiBUMDes menghubungkan potensi desa di seluruh Indonesia. Platform marketplace BUMDes untuk masa depan desa yang mandiri dan profesional.
+              Membangun kekuatan ekonomi dari desa untuk desa. GeraiBUMDes merajut kolaborasi antar-BUMDes se-Nusantara untuk saling melengkapi kebutuhan komoditas dan mensejahterakan warga bersama.
             </p>
           </div>
           
