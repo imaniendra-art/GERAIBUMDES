@@ -15,7 +15,18 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
   const resolvedParams = await params;
   await dbConnect();
 
-  const product = await Product.findOne({ slug: resolvedParams.slug, status: "ACTIVE" })
+  const slugParam = resolvedParams?.slug ? decodeURIComponent(resolvedParams.slug).trim() : "";
+  if (!slugParam) {
+    notFound();
+  }
+
+  // Support case-insensitive slug match and direct ObjectId lookups
+  const isObjectId = /^[0-9a-fA-F]{24}$/.test(slugParam);
+  const query = isObjectId
+    ? { $or: [{ _id: slugParam }, { slug: new RegExp(`^${slugParam}$`, "i") }], status: "ACTIVE" }
+    : { slug: new RegExp(`^${slugParam}$`, "i"), status: "ACTIVE" };
+
+  const product = await Product.findOne(query)
     .populate({ path: "storeId", model: Store, select: "name slug status description village district province logoUrl" })
     .populate({ path: "categoryId", model: Category, select: "name" })
     .lean();

@@ -36,7 +36,7 @@ export default async function DashboardPage() {
         <Card>
           <CardContent className="p-6">
             <h2 className="text-lg font-semibold mb-2">Selamat datang, {session.name || session.email}!</h2>
-            <p className="text-text-muted mb-6">Kelola pesanan dan aktivitas belanja Anda di BUMDesMart.</p>
+            <p className="text-text-muted mb-6">Kelola pesanan dan aktivitas belanja Anda di GeraiBumdes.</p>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
               <Link href="/pesanan" className="w-full">
