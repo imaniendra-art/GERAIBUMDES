@@ -62,9 +62,6 @@ export default async function Home() {
       <section className="bg-surface-bg text-text-main min-h-[60vh] md:min-h-[85vh] flex items-center relative overflow-hidden border-b border-border py-6 md:py-24">
         <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col lg:flex-row items-center gap-6 md:gap-16">
           <div className="max-w-3xl flex-1 animate-fade-in mt-4 md:mt-0">
-            <div className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary font-bold text-sm mb-6 border border-primary/20">
-              🚀 Platform B2B BUMDes #1 di Indonesia
-            </div>
             <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[80px] font-bold tracking-tight mb-4 md:mb-8 text-primary leading-[1.05]">
               Pasar Digital <br className="hidden sm:block" /> <span className="text-text-main">BUMDes Nasional</span>
             </h1>
@@ -390,10 +387,6 @@ export default async function Home() {
       <section id="cara-kerja" className="py-12 md:py-24 bg-surface border-t border-border/50">
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8 md:mb-16">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold mb-3 border border-primary/20">
-              <Sprout className="h-3.5 w-3.5" />
-              Rantai Pasok Ekonomi Sirkular Desa
-            </div>
             <h2 className="text-2xl md:text-4xl font-bold text-text-main mb-3 md:mb-4">
               Dari Rakyat Desa, Kembali ke Rakyat Desa
             </h2>
