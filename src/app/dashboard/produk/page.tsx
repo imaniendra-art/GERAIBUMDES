@@ -165,7 +165,53 @@ export default async function BUMDesProductsPage() {
         </div>
       )}
 
-      <div className="bg-surface rounded-2xl shadow-sm border border-border overflow-hidden mb-8 transition-shadow duration-300 hover:shadow-md">
+      {/* Mobile View: Kartu Bento Produk */}
+      {products.length > 0 && (
+        <div className="block md:hidden space-y-3 mb-8">
+          {products.map((product) => (
+            <div key={product._id.toString()} className="bg-surface rounded-2xl p-4 border border-border shadow-sm space-y-3">
+              <div className="flex items-start gap-3">
+                <div className="h-16 w-16 bg-surface-bg rounded-xl flex items-center justify-center text-text-muted border border-border/50 shrink-0 overflow-hidden">
+                  {product.images?.[0] ? (
+                    <img src={product.images[0]} alt={product.name} className="h-full w-full object-cover" />
+                  ) : (
+                    <Package className="h-6 w-6" />
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between gap-2">
+                    <h3 className="font-bold text-sm text-text-main line-clamp-1">{product.name}</h3>
+                    <Badge variant={getProductBadgeVariant(product.status)} className="rounded-lg px-2 py-0.5 text-[9px] shrink-0">
+                      {getProductStatusLabel(product.status)}
+                    </Badge>
+                  </div>
+                  <p className="text-primary font-bold text-sm mt-1">
+                    {formatCurrency(product.retailPrice)} <span className="text-[11px] text-text-muted font-normal">/{product.unit}</span>
+                  </p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="text-[10px] text-text-muted">Stok: <strong>{product.stock}</strong></span>
+                    {product.isWholesaleAvailable && (
+                      <span className="text-[9px] font-bold text-success-dark bg-success/10 px-1.5 py-0.5 rounded">Grosir</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-2 border-t border-border/60 flex justify-end">
+                <ProductActionButtons 
+                  productId={product._id.toString()} 
+                  productName={product.name} 
+                  editUrl={`/dashboard/produk/${product._id}/edit`} 
+                  status={product.status}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Desktop View: Tabel Tradisional */}
+      <div className="hidden md:block bg-surface rounded-2xl shadow-sm border border-border overflow-hidden mb-8 transition-shadow duration-300 hover:shadow-md">
         <div className="overflow-x-auto p-1 sm:p-2">
           <table className="w-full text-sm text-left text-text-main">
             <thead className="text-xs text-text-muted uppercase bg-surface-bg/80 border-b border-border font-semibold">

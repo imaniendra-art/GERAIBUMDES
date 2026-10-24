@@ -3,8 +3,11 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { LogOut, ExternalLink, ShieldCheck } from "lucide-react";
 import { AdminSidebarNav } from "@/components/admin/AdminSidebarNav";
+import { AdminMobileBottomNav } from "@/components/admin/AdminMobileBottomNav";
 import dbConnect from "@/lib/db";
 import User from "@/models/User";
+import BumdesProfile from "@/models/BumdesProfile";
+import Product from "@/models/Product";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await getSession();
@@ -15,15 +18,20 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   await dbConnect();
   let currentUser = null;
+  let pendingBumdesCount = 0;
+  let pendingProductsCount = 0;
+
   try {
     currentUser = await User.findById(session.userId).select("name email role").lean();
+    pendingBumdesCount = await BumdesProfile.countDocuments({ verificationStatus: "PENDING_VERIFICATION" });
+    pendingProductsCount = await Product.countDocuments({ status: "WAITING_APPROVAL" });
   } catch (err) {
-    console.error("Error fetching admin profile:", err);
+    console.error("Error fetching admin profile/counts:", err);
   }
 
   return (
     <div className="flex h-[calc(100vh-64px)] md:h-[calc(100vh-85px)] overflow-hidden bg-surface-bg p-0 md:p-3.5 md:gap-3.5">
-      {/* Floating Modern Rounded Sidebar */}
+      {/* Floating Modern Rounded Sidebar (Desktop) */}
       <aside className="w-64 bg-primary-dark text-surface hidden md:flex flex-col h-full shrink-0 select-none overflow-hidden justify-between rounded-2xl shadow-xl shadow-emerald-950/20 border border-white/10 ring-1 ring-black/5">
         {/* Header Profil Administrator Aktif */}
         <div className="h-16 px-4 border-b border-surface/10 shrink-0 flex items-center gap-3 bg-black/15">
@@ -76,10 +84,16 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         </div>
       </aside>
 
-      {/* Bagian Kanan (Isian Konten) yang Dapat Di-scroll */}
-      <main className="flex-1 min-w-0 h-full overflow-y-auto p-4 sm:p-6 md:p-6">
+      {/* Bagian Kanan (Isian Konten) dengan padding bottom ekstra di mobile agar tidak tertutup dock bar */}
+      <main className="flex-1 min-w-0 h-full overflow-y-auto p-4 sm:p-6 md:p-6 pb-20 md:pb-6">
         {children}
       </main>
+
+      {/* Modern Floating Bottom Navigation Bar (Khusus Layar Mobile) */}
+      <AdminMobileBottomNav
+        pendingBumdesCount={pendingBumdesCount}
+        pendingProductsCount={pendingProductsCount}
+      />
     </div>
   );
 }

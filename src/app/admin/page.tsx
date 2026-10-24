@@ -79,13 +79,23 @@ export default async function AdminDashboardPage() {
 
       {/* Mobile Admin Menu */}
       <div className="md:hidden grid grid-cols-2 gap-3">
-        <Link href="/admin/bumdes" className="flex flex-col items-center justify-center bg-surface p-4 rounded-xl border border-border shadow-sm hover:border-primary/50 transition-colors">
+        <Link href="/admin/bumdes" className="flex flex-col items-center justify-center bg-surface p-4 rounded-xl border border-border shadow-sm hover:border-primary/50 transition-colors relative">
           <StoreIcon className="h-6 w-6 text-primary mb-2" />
           <span className="text-xs font-bold text-center">BUMDes</span>
+          {pendingBumdes > 0 && (
+            <span className="absolute top-2 right-2 bg-danger text-white text-[10px] font-black px-1.5 py-0.5 rounded-full shadow-sm">
+              {pendingBumdes}
+            </span>
+          )}
         </Link>
-        <Link href="/admin/produk" className="flex flex-col items-center justify-center bg-surface p-4 rounded-xl border border-border shadow-sm hover:border-primary/50 transition-colors">
+        <Link href="/admin/produk" className="flex flex-col items-center justify-center bg-surface p-4 rounded-xl border border-border shadow-sm hover:border-primary/50 transition-colors relative">
           <Package className="h-6 w-6 text-primary mb-2" />
           <span className="text-xs font-bold text-center">Produk</span>
+          {pendingProducts > 0 && (
+            <span className="absolute top-2 right-2 bg-danger text-white text-[10px] font-black px-1.5 py-0.5 rounded-full shadow-sm">
+              {pendingProducts}
+            </span>
+          )}
         </Link>
         <Link href="/admin/pesanan" className="flex flex-col items-center justify-center bg-surface p-4 rounded-xl border border-border shadow-sm hover:border-primary/50 transition-colors">
           <ShoppingBag className="h-6 w-6 text-primary mb-2" />

@@ -116,7 +116,63 @@ export default async function PenjualPesananPage({
           </p>
         </div>
       ) : (
-        <div className="bg-surface rounded-2xl shadow-sm border border-border overflow-hidden transition-shadow duration-300 hover:shadow-md mb-8">
+        <>
+          {/* Mobile View: Kartu Bento Pesanan */}
+        <div className="block md:hidden space-y-3 mb-8">
+          {orders.map((order) => (
+            <div key={order._id.toString()} className="bg-surface rounded-2xl p-4 border border-border shadow-sm space-y-3">
+              <div className="flex justify-between items-start gap-2 border-b border-border/60 pb-2.5">
+                <div>
+                  <span className="font-bold text-sm text-text-main block">#{order.orderNumber}</span>
+                  <span className="text-[11px] text-text-muted">{formatDate(order.createdAt)}</span>
+                </div>
+                <div className="flex flex-col items-end gap-1">
+                  <Badge variant={getOrderStatusBadgeVariant(order.status)} className="rounded-lg px-2 py-0.5 text-[10px]">
+                    {orderStatusLabel(order.status)}
+                  </Badge>
+                  <Badge variant={getPaymentStatusBadgeVariant(order.paymentStatus)} className="rounded-lg px-2 py-0.5 text-[9px]">
+                    {order.paymentStatus === "PAID" ? "Lunas" : "Belum Lunas"}
+                  </Badge>
+                </div>
+              </div>
+
+              <div>
+                <p className="text-[10px] font-semibold text-text-muted uppercase tracking-wider">Pembeli</p>
+                <p className="font-bold text-sm text-text-main">{order.buyerName}</p>
+                <p className="text-xs text-text-muted line-clamp-1 mt-0.5">{order.buyerAddress}</p>
+              </div>
+
+              {order.status === 'WAITING_SELLER_CONFIRMATION' && (
+                <div className="text-[11px] text-warning-dark font-bold bg-warning/10 p-2.5 rounded-xl flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-warning-dark shrink-0"></span>
+                  Perlu Konfirmasi Ongkir & Stok
+                </div>
+              )}
+
+              {order.status === 'PAYMENT_REVIEW' && (
+                <div className="text-[11px] text-primary-dark font-bold bg-primary/10 p-2.5 rounded-xl flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-primary-dark shrink-0"></span>
+                  Bukti Transfer Menunggu Konfirmasi
+                </div>
+              )}
+
+              <div className="flex justify-between items-center pt-2 border-t border-border/60">
+                <div>
+                  <span className="text-[10px] text-text-muted uppercase tracking-wider block">Total Tagihan</span>
+                  <span className="text-base font-extrabold text-primary">{formatCurrency(order.total)}</span>
+                </div>
+                <Link href={`/dashboard/pesanan/${order._id}`}>
+                  <Button size="sm" className="rounded-xl h-9 px-4 font-bold text-xs shadow-sm">
+                    Detail
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop View: Tabel Tradisional */}
+        <div className="hidden md:block bg-surface rounded-2xl shadow-sm border border-border overflow-hidden transition-shadow duration-300 hover:shadow-md mb-8">
           <div className="overflow-x-auto p-1 sm:p-2">
             <table className="w-full text-sm text-left text-text-main">
               <thead className="text-xs text-text-muted uppercase bg-surface-bg/80 border-b border-border font-semibold">
@@ -177,6 +233,7 @@ export default async function PenjualPesananPage({
             </table>
           </div>
         </div>
+        </>
       )}
     </div>
   );

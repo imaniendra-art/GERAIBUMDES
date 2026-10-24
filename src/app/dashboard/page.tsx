@@ -3,7 +3,7 @@ import { getSession } from "@/lib/auth";
 import dbConnect from "@/lib/db";
 import BumdesProfile from "@/models/BumdesProfile";
 import Link from "next/link";
-import { LayoutDashboard, ShoppingBag, Package, Settings, Users, LogOut, Clock, AlertTriangle, UserCog, TrendingUp, CheckCircle, PlusCircle, BookOpen, Truck } from "lucide-react";
+import { LayoutDashboard, ShoppingBag, Package, Settings, Users, LogOut, Clock, AlertTriangle, UserCog, TrendingUp, CheckCircle, PlusCircle, BookOpen, Truck, BarChart3, ShoppingCart } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { formatCurrency } from "@/lib/utils/formatters";
@@ -222,32 +222,46 @@ export default async function DashboardPage() {
 
           {/* Mobile Dashboard Menu */}
           <div className="md:hidden grid grid-cols-2 gap-3 mb-8">
-            <Link href="/dashboard/toko/edit" className="flex flex-col items-center justify-center bg-surface p-4 rounded-2xl border border-border shadow-sm hover:shadow-md hover:bg-surface-bg transition-all duration-200">
-              <Settings className="h-6 w-6 text-primary mb-2" />
-              <span className="text-xs font-bold text-center">Profil BUMDes</span>
+            <Link href="/dashboard/pesanan" className="flex flex-col items-center justify-center bg-surface p-4 rounded-2xl border border-border shadow-sm hover:shadow-md hover:bg-surface-bg transition-all duration-200 relative">
+              <ShoppingBag className="h-6 w-6 text-primary mb-2" />
+              <span className="text-xs font-bold text-center text-text-main">
+                Pesanan Masuk
+              </span>
+              {newOrders > 0 && (
+                <span className="absolute top-2 right-2 bg-danger text-white text-[10px] font-black px-1.5 py-0.5 rounded-full shadow-sm">
+                  {newOrders}
+                </span>
+              )}
             </Link>
 
             <Link href="/dashboard/produk" className="flex flex-col items-center justify-center bg-surface p-4 rounded-2xl border border-border shadow-sm hover:shadow-md hover:bg-surface-bg transition-all duration-200">
               <Package className="h-6 w-6 text-primary mb-2" />
-              <span className="text-xs font-bold text-center">Produk Saya</span>
+              <span className="text-xs font-bold text-center text-text-main">Produk Saya</span>
             </Link>
-            <Link href="/dashboard/pesanan" className="flex flex-col items-center justify-center bg-surface p-4 rounded-2xl border border-border shadow-sm hover:shadow-md hover:bg-surface-bg transition-all duration-200">
-              <ShoppingBag className="h-6 w-6 text-primary mb-2" />
-              <span className="text-xs font-bold text-center text-primary-dark">
-                Pesanan Masuk {newOrders > 0 && `(${newOrders})`}
-              </span>
+
+            <Link href="/dashboard/laporan/penjualan" className="flex flex-col items-center justify-center bg-surface p-4 rounded-2xl border border-border shadow-sm hover:shadow-md hover:bg-surface-bg transition-all duration-200">
+              <BarChart3 className="h-6 w-6 text-primary mb-2" />
+              <span className="text-xs font-bold text-center text-text-main">Laporan Penjualan</span>
             </Link>
-            <Link href="/pesanan" className="flex flex-col items-center justify-center bg-surface p-4 rounded-2xl border border-border shadow-sm hover:shadow-md hover:bg-surface-bg transition-all duration-200">
-              <Users className="h-6 w-6 text-primary mb-2" />
-              <span className="text-xs font-bold text-center">Pembelian Saya</span>
+
+            <Link href="/dashboard/pembelian" className="flex flex-col items-center justify-center bg-surface p-4 rounded-2xl border border-border shadow-sm hover:shadow-md hover:bg-surface-bg transition-all duration-200">
+              <ShoppingCart className="h-6 w-6 text-primary mb-2" />
+              <span className="text-xs font-bold text-center text-text-main">Pembelian B2B</span>
             </Link>
+
+            <Link href="/dashboard/toko/edit" className="flex flex-col items-center justify-center bg-surface p-4 rounded-2xl border border-border shadow-sm hover:shadow-md hover:bg-surface-bg transition-all duration-200">
+              <Settings className="h-6 w-6 text-primary mb-2" />
+              <span className="text-xs font-bold text-center text-text-main">Profil BUMDes</span>
+            </Link>
+
             <Link href="/dashboard/pengaturan" className="flex flex-col items-center justify-center bg-surface p-4 rounded-2xl border border-border shadow-sm hover:shadow-md hover:bg-surface-bg transition-all duration-200">
               <UserCog className="h-6 w-6 text-primary mb-2" />
-              <span className="text-xs font-bold text-center">Pengaturan Akun</span>
+              <span className="text-xs font-bold text-center text-text-main">Pengaturan Akun</span>
             </Link>
-            <div className="col-span-2 mt-2">
+
+            <div className="col-span-2 mt-1">
               <form action="/api/auth/logout" method="POST">
-                <button type="submit" className="w-full flex items-center justify-center bg-danger/10 text-danger p-4 rounded-xl border border-danger/20 shadow-sm hover:bg-danger/20 transition-all duration-200">
+                <button type="submit" className="w-full flex items-center justify-center bg-danger/10 text-danger p-3.5 rounded-xl border border-danger/20 shadow-sm hover:bg-danger/20 transition-all duration-200">
                   <LogOut className="h-5 w-5 mr-2" />
                   <span className="text-sm font-bold">Keluar (Logout)</span>
                 </button>
