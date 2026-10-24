@@ -51,6 +51,10 @@ export default async function PesananDetailPage({ params }: { params: Promise<{ 
     redirect("/login");
   }
 
+  if (session.role === "BUMDES_ADMIN") {
+    redirect(`/dashboard/pembelian/${resolvedParams.id}`);
+  }
+
   await dbConnect();
 
   let order;

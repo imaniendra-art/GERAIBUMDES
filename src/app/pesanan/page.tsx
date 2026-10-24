@@ -11,11 +11,11 @@ import {
   Package, 
   ChevronRight, 
   ArrowLeft, 
-  Store as StoreIcon,
-  Search,
-  Filter,
-  Calendar,
-  FileText
+  Store as StoreIcon, 
+  Search, 
+  Filter, 
+  Calendar, 
+  FileText 
 } from "lucide-react";
 
 export default async function PesananSayaPage() {
@@ -23,6 +23,11 @@ export default async function PesananSayaPage() {
 
   if (!session) {
     redirect("/login");
+  }
+
+  // Jika BUMDes Admin, arahkan langsung ke layout dashboard internal agar sidebar tetap utuh
+  if (session.role === "BUMDES_ADMIN") {
+    redirect("/dashboard/pembelian");
   }
 
   await dbConnect();
@@ -37,9 +42,9 @@ export default async function PesananSayaPage() {
       <div className="w-full">
         {/* Breadcrumb / Back Button */}
         <div className="mb-10">
-          <Link href="/dashboard">
+          <Link href="/">
             <Button variant="ghost" className="rounded-xl text-sm font-semibold transition-colors duration-200 h-11 px-4 text-text-muted hover:text-text-main hover:bg-surface-bg">
-              <ArrowLeft className="h-4 w-4 mr-2" /> Kembali ke Dashboard
+              <ArrowLeft className="h-4 w-4 mr-2" /> Kembali ke Beranda
             </Button>
           </Link>
         </div>
@@ -48,7 +53,7 @@ export default async function PesananSayaPage() {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-6">
           <div>
             <h1 className="text-3xl font-bold text-text-main">Pembelian Saya</h1>
-            <p className="text-text-muted mt-2">Kelola seluruh transaksi pembelian produk dari BUMDes lain.</p>
+            <p className="text-text-muted mt-2">Kelola seluruh transaksi pembelian produk Anda di GeraiBUMDes.</p>
           </div>
           <Link href="/pesanan/laporan">
             <Button className="flex items-center h-11 px-6 rounded-xl font-semibold shadow-sm hover:shadow-md transition-all duration-200">
@@ -113,7 +118,7 @@ export default async function PesananSayaPage() {
               <Package className="h-16 w-16 text-primary" />
             </div>
             <h2 className="text-2xl font-bold text-text-main mb-3">Belum ada riwayat pembelian</h2>
-            <p className="text-text-muted mb-8 max-w-md">Produk yang Anda beli dari BUMDes lain melalui marketplace akan muncul di sini.</p>
+            <p className="text-text-muted mb-8 max-w-md">Produk yang Anda beli melalui marketplace akan muncul di sini.</p>
             <Link href="/">
               <Button className="h-12 px-8 rounded-xl font-semibold shadow-sm hover:shadow-md transition-all duration-200">
                 <StoreIcon className="h-5 w-5 mr-2" />
@@ -124,7 +129,6 @@ export default async function PesananSayaPage() {
         ) : (
           <div className="space-y-4">
             {orders.map((order) => {
-              // Get the actual badge colors based on status
               const getStatusBadge = (status: string) => {
                 const s = status.toUpperCase();
                 if (s === "PENDING" || s === "WAITING_CONFIRMATION") return "bg-yellow-500/10 text-yellow-700 border-yellow-500/20";
@@ -144,7 +148,6 @@ export default async function PesananSayaPage() {
                 return "bg-surface-bg text-text-muted border-border";
               };
 
-              // Count total items
               const totalItems = order.items.reduce((acc: number, item: any) => acc + item.quantity, 0);
 
               return (
@@ -200,7 +203,7 @@ export default async function PesananSayaPage() {
                         {order.items.slice(0, 2).map((item: any, idx: number) => (
                           <div key={idx} className="flex justify-between items-center text-sm border-l-2 border-primary/20 pl-3">
                             <span className="text-text-main font-medium line-clamp-1 pr-4">{item.productNameSnapshot}</span>
-                            <span className="text-text-muted font-mono whitespace-nowrap">{item.quantity} x {formatCurrency(item.priceSnapshot)}</span>
+                            <span className="text-text-muted font-mono whitespace-nowrap">{item.quantity} x {formatCurrency(item.price)}</span>
                           </div>
                         ))}
                         {order.items.length > 2 && (

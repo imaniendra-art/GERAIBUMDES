@@ -89,9 +89,9 @@ export function BumdesSidebarNav({ storeSlug, pendingOrdersCount = 0 }: BumdesSi
         <h4 className="px-3 pt-1.5 pb-0.5 text-[10.5px] font-bold text-surface/50 uppercase tracking-wider">
           Belanja B2B
         </h4>
-        <Link href="/pesanan" className={getLinkClasses("/pesanan")}>
+        <Link href="/dashboard/pembelian" className={getLinkClasses("/dashboard/pembelian")}>
           <div className="flex items-center">
-            <ShoppingCart className={getIconClasses(pathname.startsWith("/pesanan"))} /> Pembelian Saya
+            <ShoppingCart className={getIconClasses(pathname.startsWith("/dashboard/pembelian"))} /> Pembelian Saya
           </div>
         </Link>
       </div>

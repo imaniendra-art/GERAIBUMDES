@@ -25,6 +25,16 @@ export default async function LaporanPembelianPage({
     redirect("/login");
   }
 
+  if (session.role === "BUMDES_ADMIN") {
+    const q = new URLSearchParams();
+    if (resolvedParams.startDate) q.set("startDate", resolvedParams.startDate);
+    if (resolvedParams.endDate) q.set("endDate", resolvedParams.endDate);
+    if (resolvedParams.status) q.set("status", resolvedParams.status);
+    if (resolvedParams.paymentStatus) q.set("paymentStatus", resolvedParams.paymentStatus);
+    const qs = q.toString() ? `?${q.toString()}` : "";
+    redirect(`/dashboard/pembelian/laporan${qs}`);
+  }
+
   await dbConnect();
 
   const statusFilter = resolvedParams.status || "ALL";
