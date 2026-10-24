@@ -51,15 +51,41 @@ export default function Footer() {
             <ul className="space-y-2 md:space-y-4 text-sm md:text-base">
               <li className="flex items-start gap-3 text-text-muted">
                 <MapPin className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                <span>Gedung Kementerian Desa, Jakarta Selatan, Indonesia</span>
+                <a 
+                  href="https://maps.google.com/?q=STIMI+YAPMI+Makassar" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="hover:text-primary transition-colors leading-relaxed"
+                >
+                  STIMI YAPMI Makassar, Jl. Perintis Kemerdekaan KM. 9, Tamalanrea, Kota Makassar, Sulawesi Selatan
+                </a>
               </li>
-              <li className="flex items-center gap-3 text-text-muted">
-                <Phone className="w-5 h-5 text-primary flex-shrink-0" />
-                <span>0812-3456-7890</span>
+              <li className="flex items-start gap-3 text-text-muted">
+                <Phone className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                <div className="flex flex-col gap-1">
+                  <a 
+                    href="https://wa.me/6285174489071" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="hover:text-primary transition-colors"
+                  >
+                    +62 851-7448-9071
+                  </a>
+                  <a 
+                    href="https://wa.me/628998701617" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="hover:text-primary transition-colors"
+                  >
+                    +62 899-8701-617
+                  </a>
+                </div>
               </li>
               <li className="flex items-center gap-3 text-text-muted">
                 <Mail className="w-5 h-5 text-primary flex-shrink-0" />
-                <span>halo@geraibumdes.com</span>
+                <a href="mailto:halo@geraibumdes.com" className="hover:text-primary transition-colors">
+                  halo@geraibumdes.com
+                </a>
               </li>
             </ul>
           </div>
