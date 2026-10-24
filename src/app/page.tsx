@@ -1,4 +1,4 @@
-import { ArrowRight, ShoppingBag, Store, TrendingUp, CheckCircle, Search, ShieldCheck, MapPin, ArrowRightCircle, PackageOpen, Users, Truck, Leaf, Star, Box } from "lucide-react";
+import { ArrowRight, ArrowDown, ShoppingBag, Store, TrendingUp, CheckCircle, Search, ShieldCheck, MapPin, ArrowRightCircle, PackageOpen, Users, Truck, Leaf, Star, Box, Sprout, HeartHandshake, RefreshCw } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
@@ -386,54 +386,151 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Skenario Flow */}
-      <section id="cara-kerja" className="py-8 md:py-24 bg-surface">
+      {/* Skenario Flow: Ekonomi Sirkular Desa (5 Langkah) */}
+      <section id="cara-kerja" className="py-12 md:py-24 bg-surface border-t border-border/50">
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-6 md:mb-16">
-            <h2 className="text-2xl md:text-3xl font-bold text-text-main mb-3 md:mb-6">Cara Kerja Platform</h2>
-            <p className="text-sm md:text-lg text-text-muted max-w-2xl mx-auto leading-relaxed">
-              Tiga langkah mudah untuk mulai berkolaborasi dengan ribuan BUMDes di seluruh nusantara.
+          <div className="text-center mb-8 md:mb-16">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold mb-3 border border-primary/20">
+              <Sprout className="h-3.5 w-3.5" />
+              Rantai Pasok Ekonomi Sirkular Desa
+            </div>
+            <h2 className="text-2xl md:text-4xl font-bold text-text-main mb-3 md:mb-4">
+              Dari Rakyat Desa, Kembali ke Rakyat Desa
+            </h2>
+            <p className="text-sm md:text-base text-text-muted max-w-3xl mx-auto leading-relaxed">
+              GeraiBUMDes menghubungkan hasil panen dan komoditas petani lokal ke jaringan BUMDes nusantara, untuk disalurkan kembali memenuhi kebutuhan masyarakat di desa lain dengan harga terjangkau.
             </p>
           </div>
 
-          <div className="flex flex-col lg:flex-row items-center justify-center gap-3 lg:gap-12 relative">
+          {/* 5-Step Connected Flow */}
+          <div className="flex flex-col lg:flex-row items-stretch justify-center gap-3 xl:gap-2.5 relative">
             
-            {/* Step 1 */}
-            <div className="flex flex-col items-center text-center z-10 w-full lg:w-72">
-              <div className="bg-primary/5 p-4 md:p-8 rounded-xl md:rounded-[2rem] w-full flex flex-col items-center justify-center border border-primary/10 relative h-[140px] md:h-auto md:aspect-square md:mb-6">
-                <div className="absolute top-3 left-3 md:top-4 md:left-4 bg-primary text-white w-6 h-6 md:w-8 md:h-8 rounded-full flex items-center justify-center font-bold text-xs md:text-base">1</div>
-                <Store className="h-8 w-8 md:h-16 md:w-16 text-primary mb-2 md:mb-4" />
-                <h4 className="font-bold text-sm md:text-xl mb-1 md:mb-2">BUMDes Penyedia</h4>
-                <p className="text-[11px] md:text-base text-text-muted leading-tight line-clamp-2">Menawarkan komoditas unggulan desanya dengan harga grosir kompetitif.</p>
+            {/* Step 1: Warga Desa Produsen */}
+            <div className="flex-1 bg-emerald-500/[0.04] p-5 rounded-2xl border border-emerald-500/20 shadow-sm flex flex-col items-center text-center relative hover:shadow-md transition-all group">
+              <div className="absolute top-3.5 left-3.5 bg-emerald-600 text-white w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs shadow-sm">
+                1
               </div>
+              <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-600 mb-3 group-hover:scale-105 transition-transform">
+                <Sprout className="h-6 w-6 md:h-7 md:w-7" />
+              </div>
+              <h4 className="font-bold text-sm md:text-base text-text-main mb-1.5">Warga Desa Produsen</h4>
+              <p className="text-xs text-text-muted leading-relaxed">
+                Petani, peternak, dan UMKM desa menyetorkan hasil bumi unggulan ke BUMDes lokal dengan jaminan harga adil dan pasar pasti.
+              </p>
             </div>
 
-            <ArrowRight className="hidden lg:block h-12 w-12 text-border flex-shrink-0" />
-            <div className="lg:hidden h-4 w-[2px] bg-border border-dashed"></div>
-
-            {/* Step 2 */}
-            <div className="flex flex-col items-center text-center z-10 w-full lg:w-72">
-              <div className="bg-cta/5 p-4 md:p-8 rounded-xl md:rounded-[2rem] w-full flex flex-col items-center justify-center border border-cta/10 relative h-[140px] md:h-auto md:aspect-square md:mb-6">
-                <div className="absolute top-3 left-3 md:top-4 md:left-4 bg-cta text-white w-6 h-6 md:w-8 md:h-8 rounded-full flex items-center justify-center font-bold text-xs md:text-base">2</div>
-                <ShieldCheck className="h-8 w-8 md:h-16 md:w-16 text-cta mb-2 md:mb-4" />
-                <h4 className="font-bold text-sm md:text-xl mb-1 md:mb-2 text-text-main">GeraiBUMDes</h4>
-                <p className="text-[11px] md:text-base text-text-muted leading-tight line-clamp-2">Platform pintar yang menjembatani transaksi B2B antar-desa secara aman.</p>
-              </div>
+            {/* Desktop Arrow 1 */}
+            <div className="hidden lg:flex items-center justify-center px-0.5 text-border shrink-0">
+              <ArrowRight className="h-5 w-5 text-emerald-600/40" />
+            </div>
+            {/* Mobile Arrow 1 */}
+            <div className="lg:hidden flex justify-center py-0.5">
+              <ArrowDown className="h-4 w-4 text-emerald-600/50" />
             </div>
 
-            <ArrowRight className="hidden lg:block h-12 w-12 text-border flex-shrink-0" />
-            <div className="lg:hidden h-4 w-[2px] bg-border border-dashed"></div>
-
-            {/* Step 3 */}
-            <div className="flex flex-col items-center text-center z-10 w-full lg:w-72">
-              <div className="bg-secondary/5 p-4 md:p-8 rounded-xl md:rounded-[2rem] w-full flex flex-col items-center justify-center border border-secondary/10 relative h-[140px] md:h-auto md:aspect-square md:mb-6">
-                <div className="absolute top-3 left-3 md:top-4 md:left-4 bg-secondary text-white w-6 h-6 md:w-8 md:h-8 rounded-full flex items-center justify-center font-bold text-xs md:text-base">3</div>
-                <Users className="h-8 w-8 md:h-16 md:w-16 text-secondary mb-2 md:mb-4" />
-                <h4 className="font-bold text-sm md:text-xl mb-1 md:mb-2">BUMDes Pembeli</h4>
-                <p className="text-[11px] md:text-base text-text-muted leading-tight line-clamp-2">Menerima pasokan komoditas untuk disalurkan ke masyarakat lokal.</p>
+            {/* Step 2: BUMDes Penyedia */}
+            <div className="flex-1 bg-primary/[0.04] p-5 rounded-2xl border border-primary/20 shadow-sm flex flex-col items-center text-center relative hover:shadow-md transition-all group">
+              <div className="absolute top-3.5 left-3.5 bg-primary text-white w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs shadow-sm">
+                2
               </div>
+              <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-3 group-hover:scale-105 transition-transform">
+                <Store className="h-6 w-6 md:h-7 md:w-7" />
+              </div>
+              <h4 className="font-bold text-sm md:text-base text-text-main mb-1.5">BUMDes Penyedia</h4>
+              <p className="text-xs text-text-muted leading-relaxed">
+                Menghimpun, menstandarisasi mutu, dan mengemas komoditas unggulan desa untuk dipasarkan ke skala nasional.
+              </p>
+            </div>
+
+            {/* Desktop Arrow 2 */}
+            <div className="hidden lg:flex items-center justify-center px-0.5 text-border shrink-0">
+              <ArrowRight className="h-5 w-5 text-primary/40" />
+            </div>
+            {/* Mobile Arrow 2 */}
+            <div className="lg:hidden flex justify-center py-0.5">
+              <ArrowDown className="h-4 w-4 text-primary/50" />
+            </div>
+
+            {/* Step 3: GeraiBUMDes Hub */}
+            <div className="flex-1 bg-amber-500/[0.05] p-5 rounded-2xl border border-amber-500/25 shadow-sm flex flex-col items-center text-center relative hover:shadow-md transition-all group ring-1 ring-amber-500/10">
+              <div className="absolute top-3.5 left-3.5 bg-amber-600 text-white w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs shadow-sm">
+                3
+              </div>
+              <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-600 mb-3 group-hover:scale-105 transition-transform">
+                <ShieldCheck className="h-6 w-6 md:h-7 md:w-7" />
+              </div>
+              <h4 className="font-bold text-sm md:text-base text-text-main mb-1.5">GeraiBUMDes Hub</h4>
+              <p className="text-xs text-text-muted leading-relaxed">
+                Platform pintar yang mempertemukan desa surplus dan defisit komoditas, mengamankan transaksi B2B tanpa tengkulak.
+              </p>
+            </div>
+
+            {/* Desktop Arrow 3 */}
+            <div className="hidden lg:flex items-center justify-center px-0.5 text-border shrink-0">
+              <ArrowRight className="h-5 w-5 text-amber-600/40" />
+            </div>
+            {/* Mobile Arrow 3 */}
+            <div className="lg:hidden flex justify-center py-0.5">
+              <ArrowDown className="h-4 w-4 text-amber-600/50" />
+            </div>
+
+            {/* Step 4: BUMDes Pembeli */}
+            <div className="flex-1 bg-blue-500/[0.04] p-5 rounded-2xl border border-blue-500/20 shadow-sm flex flex-col items-center text-center relative hover:shadow-md transition-all group">
+              <div className="absolute top-3.5 left-3.5 bg-blue-600 text-white w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs shadow-sm">
+                4
+              </div>
+              <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-600 mb-3 group-hover:scale-105 transition-transform">
+                <ShoppingBag className="h-6 w-6 md:h-7 md:w-7" />
+              </div>
+              <h4 className="font-bold text-sm md:text-base text-text-main mb-1.5">BUMDes Pembeli</h4>
+              <p className="text-xs text-text-muted leading-relaxed">
+                Mendatangkan pasokan komoditas yang belum ada di desanya langsung dengan harga grosir produsen dari BUMDes lain.
+              </p>
+            </div>
+
+            {/* Desktop Arrow 4 */}
+            <div className="hidden lg:flex items-center justify-center px-0.5 text-border shrink-0">
+              <ArrowRight className="h-5 w-5 text-blue-600/40" />
+            </div>
+            {/* Mobile Arrow 4 */}
+            <div className="lg:hidden flex justify-center py-0.5">
+              <ArrowDown className="h-4 w-4 text-blue-600/50" />
+            </div>
+
+            {/* Step 5: Warga Desa Konsumen */}
+            <div className="flex-1 bg-teal-500/[0.04] p-5 rounded-2xl border border-teal-500/20 shadow-sm flex flex-col items-center text-center relative hover:shadow-md transition-all group">
+              <div className="absolute top-3.5 left-3.5 bg-teal-600 text-white w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs shadow-sm">
+                5
+              </div>
+              <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-teal-500/10 flex items-center justify-center text-teal-600 mb-3 group-hover:scale-105 transition-transform">
+                <HeartHandshake className="h-6 w-6 md:h-7 md:w-7" />
+              </div>
+              <h4 className="font-bold text-sm md:text-base text-text-main mb-1.5">Warga Desa Konsumen</h4>
+              <p className="text-xs text-text-muted leading-relaxed">
+                Masyarakat di desa tujuan menikmati ketersediaan bahan pokok segar melimpah dengan harga yang hemat & terjangkau.
+              </p>
             </div>
             
+          </div>
+
+          {/* Circular Economy Indicator Pill */}
+          <div className="mt-8 md:mt-12 bg-primary/5 border border-primary/20 rounded-2xl p-4 md:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+            <div className="flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                <RefreshCw className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <h5 className="font-bold text-sm text-text-main">Siklus Ekonomi Berkelanjutan Antar-Desa</h5>
+                <p className="text-xs text-text-muted mt-0.5">
+                  Memutus ketergantungan pada rantai tengkulak, menjaga perputaran uang dan nilai tambah tetap berputar di kantong masyarakat desa.
+                </p>
+              </div>
+            </div>
+            <Link href="/produk" className="shrink-0">
+              <Button variant="outline" size="sm" className="rounded-xl text-xs font-bold border-primary/30 hover:bg-primary/10 hover:text-primary transition-all">
+                Jelajahi Komoditas Desa <ArrowRight className="h-3.5 w-3.5 ml-1.5" />
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
