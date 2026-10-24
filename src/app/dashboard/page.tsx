@@ -103,6 +103,34 @@ export default async function DashboardPage() {
       redirect("/bumdes/revisi-pendaftaran");
     }
 
+    if (profile.verificationStatus === "SUSPENDED") {
+      return (
+        <div className="min-h-screen bg-surface-bg p-8 flex justify-center items-center">
+          <Card className="max-w-lg text-center border-amber-300 shadow-md">
+            <CardContent className="p-8">
+              <AlertTriangle className="h-16 w-16 text-amber-600 mx-auto mb-4" />
+              <h2 className="text-2xl font-bold mb-2 text-text-main">Akun BUMDes Ditangguhkan</h2>
+              <p className="text-text-muted mb-4 text-sm leading-relaxed">
+                Aktivitas dan produk BUMDes <strong>{profile.name}</strong> saat ini sedang ditangguhkan sementara oleh Admin Platform.
+              </p>
+              {profile.suspensionReason && (
+                <div className="bg-amber-50 border border-amber-200 text-amber-900 p-3.5 rounded-md text-xs mb-6 text-left">
+                  <span className="font-semibold block mb-1">Catatan / Alasan Penangguhan:</span>
+                  <p className="italic">{profile.suspensionReason}</p>
+                </div>
+              )}
+              <p className="text-xs text-text-muted mb-6">
+                Silakan hubungi administrator platform GeraiBUMDes apabila Anda memerlukan informasi pemulihan status akun.
+              </p>
+              <form action="/api/auth/logout" method="POST">
+                <Button type="submit" variant="outline">Keluar dari Akun</Button>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+      );
+    }
+
     // VERIFIED STATUS
     const StoreModel = (await import("@/models/Store")).default;
     const ProductModel = (await import("@/models/Product")).default;

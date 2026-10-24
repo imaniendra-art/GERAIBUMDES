@@ -13,6 +13,9 @@ export interface IBumdesProfile extends Document {
   verifiedAt?: Date;
   verifiedBy?: mongoose.Types.ObjectId;
   rejectionReason?: string;
+  suspensionReason?: string;
+  suspendedAt?: Date;
+  suspendedBy?: mongoose.Types.ObjectId;
   directorName: string;
   contactNumber: string;
   createdAt: Date;
@@ -37,6 +40,9 @@ const BumdesProfileSchema: Schema = new Schema(
     verifiedAt: { type: Date },
     verifiedBy: { type: Schema.Types.ObjectId, ref: "User" },
     rejectionReason: { type: String },
+    suspensionReason: { type: String },
+    suspendedAt: { type: Date },
+    suspendedBy: { type: Schema.Types.ObjectId, ref: "User" },
     directorName: { type: String, required: true },
     contactNumber: { type: String, required: true },
   },

@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/Card";
 import { Store, Building, MapPin, Landmark, Phone, ImageIcon, Save, ArrowLeft, Loader2, Users, FileCheck, CheckCircle2, ShieldCheck, Briefcase, Info, BadgeCheck, X } from "lucide-react";
 import Link from "next/link";
 import { LocationSelector } from "@/components/ui/LocationSelector";
+import { ImageUploader } from "@/components/ui/ImageUploader";
 
 const BUSINESS_TYPE_OPTIONS = [
   "Pertanian & Perkebunan",
@@ -160,30 +161,28 @@ export default function StoreEditForm({ initialData }: { initialData: any }) {
                 <label className={labelClass}>Deskripsi BUMDes</label>
                 <textarea name="description" rows={4} value={formData.description} onChange={handleChange} className="w-full bg-surface-bg border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-200 shadow-sm placeholder:text-text-muted/50 resize-y" placeholder="Ceritakan sejarah singkat, visi, dan keunggulan BUMDes Anda..."></textarea>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
                 <div>
-                  <label className={labelClass}>URL Logo (Opsional)</label>
-                  <div className="relative">
-                    <input type="text" name="logoUrl" value={formData.logoUrl} onChange={handleChange} className={`${inputClass} pl-10`} placeholder="https://..." />
-                    <ImageIcon className="absolute left-3.5 top-3.5 h-4 w-4 text-text-muted/70" />
-                  </div>
-                  {formData.logoUrl && (
-                    <div className="mt-3 h-24 w-24 bg-surface-bg border border-border rounded-xl overflow-hidden shadow-sm">
-                      <img src={formData.logoUrl} alt="Logo preview" className="w-full h-full object-cover" onError={(e) => (e.currentTarget.style.display = 'none')} />
-                    </div>
-                  )}
+                  <ImageUploader
+                    label="Logo BUMDes"
+                    value={formData.logoUrl}
+                    onChange={(url) => setFormData((prev: any) => ({ ...prev, logoUrl: url }))}
+                    folder="logos"
+                    aspectRatio="square"
+                    maxDimension={600}
+                    helperText="Logo BUMDes, otomatis dikompres ke WebP (~50-80 KB)."
+                  />
                 </div>
                 <div>
-                  <label className={labelClass}>URL Banner (Opsional)</label>
-                  <div className="relative">
-                    <input type="text" name="bannerUrl" value={formData.bannerUrl} onChange={handleChange} className={`${inputClass} pl-10`} placeholder="https://..." />
-                    <ImageIcon className="absolute left-3.5 top-3.5 h-4 w-4 text-text-muted/70" />
-                  </div>
-                  {formData.bannerUrl && (
-                    <div className="mt-3 h-24 w-full bg-surface-bg border border-border rounded-xl overflow-hidden shadow-sm">
-                      <img src={formData.bannerUrl} alt="Banner preview" className="w-full h-full object-cover" onError={(e) => (e.currentTarget.style.display = 'none')} />
-                    </div>
-                  )}
+                  <ImageUploader
+                    label="Banner Toko / Profil"
+                    value={formData.bannerUrl}
+                    onChange={(url) => setFormData((prev: any) => ({ ...prev, bannerUrl: url }))}
+                    folder="banners"
+                    aspectRatio="video"
+                    maxDimension={1600}
+                    helperText="Banner tampilan toko BUMDes, otomatis dikompres ke WebP (~100-150 KB)."
+                  />
                 </div>
               </div>
             </div>

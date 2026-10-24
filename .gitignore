@@ -43,3 +43,7 @@ next-env.d.ts
 data/regions.json
 !data/regions.sample.json
 !data/regions.sulsel.json
+
+# user uploads (local server storage)
+/public/uploads/*
+!/public/uploads/**/.gitkeep

@@ -4,8 +4,9 @@ import Link from "next/link";
 import dbConnect from "@/lib/db";
 import BumdesProfile from "@/models/BumdesProfile";
 import User from "@/models/User";
-import { CheckCircle, Clock } from "lucide-react";
+import { CheckCircle, Clock, PauseCircle, AlertTriangle } from "lucide-react";
 import { BumdesVerificationActions } from "@/components/admin/BumdesVerificationActions";
+import { BumdesActionButtons } from "@/components/admin/BumdesActionButtons";
 
 export default async function AdminBumdesDetail({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
@@ -21,11 +22,22 @@ export default async function AdminBumdesDetail({ params }: { params: Promise<{ 
   
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Detail Pendaftaran BUMDes</h1>
-        <Link href="/admin/bumdes">
-          <Button variant="outline">Kembali</Button>
-        </Link>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <div>
+          <h1 className="text-2xl font-bold">Detail BUMDes: {profile.name}</h1>
+          <p className="text-xs text-text-muted mt-1">ID: {resolvedParams.id}</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <BumdesActionButtons
+            bumdesId={resolvedParams.id}
+            bumdesName={profile.name as string}
+            status={profile.verificationStatus}
+            suspensionReason={profile.suspensionReason}
+          />
+          <Link href="/admin/bumdes">
+            <Button variant="outline">Kembali</Button>
+          </Link>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -120,6 +132,21 @@ export default async function AdminBumdesDetail({ params }: { params: Promise<{ 
                     <div>
                       <p className="font-medium text-sm text-success-dark">Verifikasi Selesai</p>
                       <p className="text-xs text-text-muted">BUMDes aktif beroperasi</p>
+                    </div>
+                  </div>
+                ) : profile.verificationStatus === "SUSPENDED" ? (
+                  <div className="flex items-start gap-3">
+                    <PauseCircle className="h-5 w-5 text-amber-600 mt-0.5" />
+                    <div>
+                      <p className="font-medium text-sm text-amber-700 font-semibold">BUMDes Ditangguhkan (Suspended)</p>
+                      <p className="text-xs text-text-muted mt-0.5">
+                        {profile.suspensionReason ? `Alasan: ${profile.suspensionReason}` : "Toko dinonaktifkan sementara oleh Admin"}
+                      </p>
+                      {profile.suspendedAt && (
+                        <p className="text-[11px] text-text-muted mt-0.5">
+                          Tanggal: {new Date(profile.suspendedAt).toLocaleDateString("id-ID")}
+                        </p>
+                      )}
                     </div>
                   </div>
                 ) : (

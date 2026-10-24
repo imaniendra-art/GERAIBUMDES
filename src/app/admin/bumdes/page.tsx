@@ -9,7 +9,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { formatDate } from "@/lib/utils/formatters";
 import { getBumdesBadgeVariant, getBumdesStatusLabel } from "@/lib/utils/status";
 import { BumdesActionButtons } from "@/components/admin/BumdesActionButtons";
-import { Search, Filter, Store, AlertCircle, CheckCircle, XCircle, AlertTriangle } from "lucide-react";
+import { Search, Filter, Store, AlertCircle, CheckCircle, XCircle, AlertTriangle, PauseCircle } from "lucide-react";
 import { AutoSubmitSelect } from "@/components/ui/AutoSubmitSelect";
 
 export default async function AdminBumdesList({
@@ -34,11 +34,12 @@ export default async function AdminBumdesList({
     .populate("userId", "name phoneNumber")
     .lean();
 
-  // Custom Sorting: Pending Verification (1), Verified (2), Rejected (3), then Terbaru (Newest first)
+  // Custom Sorting: Pending Verification (1), Verified (2), Suspended (3), Rejected (4), then Terbaru (Newest first)
   const statusWeight: Record<string, number> = {
     PENDING_VERIFICATION: 1,
     VERIFIED: 2,
-    REJECTED: 3,
+    SUSPENDED: 3,
+    REJECTED: 4,
   };
 
   profiles.sort((a, b) => {
@@ -60,6 +61,7 @@ export default async function AdminBumdesList({
   const totalBumdes = allProfiles.length;
   const pendingBumdes = allProfiles.filter(p => p.verificationStatus === "PENDING_VERIFICATION").length;
   const activeBumdes = allProfiles.filter(p => p.verificationStatus === "VERIFIED").length;
+  const suspendedBumdes = allProfiles.filter(p => p.verificationStatus === "SUSPENDED").length;
   const rejectedBumdes = allProfiles.filter(p => p.verificationStatus === "REJECTED").length;
 
   // Detect potential duplicates across all registered profiles
@@ -106,64 +108,78 @@ export default async function AdminBumdesList({
     <div className="w-full max-w-full overflow-hidden space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold">Daftar BUMDes</h1>
-          <p className="text-text-muted text-sm mt-1">Kelola dan verifikasi pendaftaran BUMDes di platform</p>
+          <h1 className="text-2xl font-bold">Kelola BUMDes</h1>
+          <p className="text-text-muted text-sm mt-1">Kelola direktori, akun pengelola, status verifikasi, dan penangguhan BUMDes</p>
         </div>
       </div>
 
       {/* SUMMARY CARDS */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
         <Card className="border-border">
-          <CardContent className="p-6">
+          <CardContent className="p-4 sm:p-5">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-sm font-medium text-text-muted">Total BUMDes</p>
-                <h3 className="text-2xl font-bold mt-1">{totalBumdes}</h3>
+                <p className="text-xs sm:text-sm font-medium text-text-muted">Total BUMDes</p>
+                <h3 className="text-xl sm:text-2xl font-bold mt-1">{totalBumdes}</h3>
               </div>
-              <div className="h-10 w-10 bg-primary/10 rounded-full flex items-center justify-center text-primary">
-                <Store className="h-5 w-5" />
+              <div className="h-9 w-9 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+                <Store className="h-4 w-4 sm:h-5 sm:w-5" />
               </div>
             </div>
           </CardContent>
         </Card>
         
         <Card className="border-warning/50 bg-warning/5">
-          <CardContent className="p-6">
+          <CardContent className="p-4 sm:p-5">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-sm font-medium text-warning-dark">Menunggu Verifikasi</p>
-                <h3 className="text-2xl font-bold mt-1 text-warning-dark">{pendingBumdes}</h3>
+                <p className="text-xs sm:text-sm font-medium text-warning-dark">Perlu Verifikasi</p>
+                <h3 className="text-xl sm:text-2xl font-bold mt-1 text-warning-dark">{pendingBumdes}</h3>
               </div>
-              <div className="h-10 w-10 bg-warning/20 rounded-full flex items-center justify-center text-warning-dark">
-                <AlertCircle className="h-5 w-5" />
+              <div className="h-9 w-9 bg-warning/20 rounded-full flex items-center justify-center text-warning-dark">
+                <AlertCircle className="h-4 w-4 sm:h-5 sm:w-5" />
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card className="border-success/50 bg-success/5">
-          <CardContent className="p-6">
+          <CardContent className="p-4 sm:p-5">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-sm font-medium text-success-dark">BUMDes Aktif</p>
-                <h3 className="text-2xl font-bold mt-1 text-success-dark">{activeBumdes}</h3>
+                <p className="text-xs sm:text-sm font-medium text-success-dark">BUMDes Aktif</p>
+                <h3 className="text-xl sm:text-2xl font-bold mt-1 text-success-dark">{activeBumdes}</h3>
               </div>
-              <div className="h-10 w-10 bg-success/20 rounded-full flex items-center justify-center text-success-dark">
-                <CheckCircle className="h-5 w-5" />
+              <div className="h-9 w-9 bg-success/20 rounded-full flex items-center justify-center text-success-dark">
+                <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-danger/50 bg-danger/5">
-          <CardContent className="p-6">
+        <Card className="border-amber-500/50 bg-amber-500/5">
+          <CardContent className="p-4 sm:p-5">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-sm font-medium text-danger">Pendaftaran Ditolak</p>
-                <h3 className="text-2xl font-bold mt-1 text-danger">{rejectedBumdes}</h3>
+                <p className="text-xs sm:text-sm font-medium text-amber-700">Ditangguhkan</p>
+                <h3 className="text-xl sm:text-2xl font-bold mt-1 text-amber-700">{suspendedBumdes}</h3>
               </div>
-              <div className="h-10 w-10 bg-danger/20 rounded-full flex items-center justify-center text-danger">
-                <XCircle className="h-5 w-5" />
+              <div className="h-9 w-9 bg-amber-500/20 rounded-full flex items-center justify-center text-amber-700">
+                <PauseCircle className="h-4 w-4 sm:h-5 sm:w-5" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-danger/50 bg-danger/5 col-span-2 sm:col-span-1">
+          <CardContent className="p-4 sm:p-5">
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="text-xs sm:text-sm font-medium text-danger">Ditolak</p>
+                <h3 className="text-xl sm:text-2xl font-bold mt-1 text-danger">{rejectedBumdes}</h3>
+              </div>
+              <div className="h-9 w-9 bg-danger/20 rounded-full flex items-center justify-center text-danger">
+                <XCircle className="h-4 w-4 sm:h-5 sm:w-5" />
               </div>
             </div>
           </CardContent>
@@ -199,6 +215,7 @@ export default async function AdminBumdesList({
                   <option value="ALL">Semua Status</option>
                   <option value="PENDING_VERIFICATION">Menunggu Verifikasi</option>
                   <option value="VERIFIED">Aktif</option>
+                  <option value="SUSPENDED">Ditangguhkan (Suspended)</option>
                   <option value="REJECTED">Ditolak</option>
                 </AutoSubmitSelect>
               </form>
@@ -262,11 +279,12 @@ export default async function AdminBumdesList({
                     {formatDate(profile.createdAt)}
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <Link href={`/admin/bumdes/${profile._id}`}>
-                      <Button variant="outline" size="sm" className="shadow-sm">
-                        Lihat Detail
-                      </Button>
-                    </Link>
+                    <BumdesActionButtons
+                      bumdesId={profile._id.toString()}
+                      bumdesName={profile.name}
+                      status={profile.verificationStatus}
+                      suspensionReason={profile.suspensionReason}
+                    />
                   </td>
                 </tr>
               )})}

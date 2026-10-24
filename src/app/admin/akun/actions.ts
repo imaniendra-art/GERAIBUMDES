@@ -10,7 +10,7 @@ import { getSession } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { logAdminActivity } from "@/lib/adminLogger";
 
-export async function resetUserPassword(userId: string) {
+export async function resetUserPassword(userId: string, customPassword?: string) {
   const session = await getSession();
   
   if (!session || (session.role !== "SUPER_ADMIN" && session.role !== "PLATFORM_ADMIN")) {
@@ -19,21 +19,40 @@ export async function resetUserPassword(userId: string) {
 
   try {
     await dbConnect();
-    const newPasswordHash = await bcrypt.hash("12345678", 10);
+    const usedPassword = customPassword && customPassword.trim().length >= 6 
+      ? customPassword.trim() 
+      : "12345678";
+
+    const newPasswordHash = await bcrypt.hash(usedPassword, 10);
     
     const user = await User.findByIdAndUpdate(userId, {
       passwordHash: newPasswordHash
     });
 
     if (!user) {
-      return { success: false, error: "User not found" };
+      return { success: false, error: "Pengguna tidak ditemukan." };
+    }
+
+    try {
+      await logAdminActivity(
+        session.userId,
+        "RESET_PASSWORD",
+        user.email,
+        `Mereset password akun ${user.name} (${user.role})`
+      );
+    } catch (logErr) {
+      console.warn("Failed to log admin activity:", logErr);
     }
 
     revalidatePath("/admin/akun");
-    return { success: true, message: `Password berhasil direset menjadi: 12345678` };
+    return { 
+      success: true, 
+      message: `Password berhasil direset menjadi: ${usedPassword}`,
+      password: usedPassword 
+    };
   } catch (error: any) {
     console.error("Error resetting password:", error);
-    return { success: false, error: "Gagal mereset password" };
+    return { success: false, error: "Gagal mereset password pengguna." };
   }
 }
 

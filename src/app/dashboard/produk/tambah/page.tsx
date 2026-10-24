@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import { Plus, Trash2, ArrowLeft } from "lucide-react";
+import { ImageUploader } from "@/components/ui/ImageUploader";
 
 export default function TambahProdukPage() {
   const router = useRouter();
@@ -31,7 +32,7 @@ export default function TambahProdukPage() {
     stock: "0",
     locationText: "",
     shippingNotes: "",
-    imageUrl: "",
+    images: [] as string[],
     isWholesaleAvailable: false,
     wholesalePriceTiers: [{ minQty: 10, maxQty: "", price: "" }]
   });
@@ -95,7 +96,7 @@ export default function TambahProdukPage() {
         retailPrice: Number(formData.retailPrice),
         minOrder: Number(formData.minOrder),
         stock: Number(formData.stock),
-        images: formData.imageUrl ? [formData.imageUrl] : [],
+        images: formData.images || [],
         wholesalePriceTiers: formData.isWholesaleAvailable 
           ? formData.wholesalePriceTiers.map(t => ({
               minQty: Number(t.minQty),
@@ -167,9 +168,16 @@ export default function TambahProdukPage() {
                 </select>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-1">URL Gambar (Opsional)</label>
-                <input name="imageUrl" value={formData.imageUrl} onChange={handleChange} className="w-full px-3 py-2 border rounded bg-surface" placeholder="https://example.com/image.jpg" />
+              <div className="col-span-1 md:col-span-2">
+                <ImageUploader
+                  multiple={true}
+                  maxFiles={5}
+                  label="Foto Produk (Maksimal 5 Foto)"
+                  values={formData.images}
+                  onChangeMultiple={(urls) => setFormData((prev) => ({ ...prev, images: urls }))}
+                  folder="products"
+                  helperText="Pilih hingga 5 foto. Foto pertama otomatis menjadi foto utama/sampul produk. Format WebP hemat kapasitas server."
+                />
               </div>
 
               <div className="col-span-1 md:col-span-2">

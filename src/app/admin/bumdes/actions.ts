@@ -170,3 +170,129 @@ export async function rejectBumdes(bumdesId: string, reason: string) {
   }
 }
 
+export async function suspendBumdes(bumdesId: string, reason: string) {
+  const session = await getSession();
+  if (!session || (session.role !== "SUPER_ADMIN" && session.role !== "PLATFORM_ADMIN")) {
+    return { success: false, error: "Unauthorized" };
+  }
+
+  if (!reason || reason.trim() === "") {
+    return { success: false, error: "Alasan penangguhan (suspend) wajib diisi." };
+  }
+
+  try {
+    await dbConnect();
+    const profile = await BumdesProfile.findByIdAndUpdate(
+      bumdesId,
+      {
+        verificationStatus: "SUSPENDED",
+        suspensionReason: reason.trim(),
+        suspendedAt: new Date(),
+        suspendedBy: session.userId,
+      },
+      { new: true }
+    );
+
+    if (!profile) return { success: false, error: "BUMDes tidak ditemukan." };
+
+    // Sembunyikan toko dari marketplace
+    await Store.findOneAndUpdate({ bumdesId }, { status: "INACTIVE" });
+
+    await logAdminActivity(
+      session.userId,
+      "SUSPEND_BUMDES",
+      profile.name as string,
+      `BUMDes ${profile.name} ditangguhkan (SUSPENDED). Alasan: ${reason}`
+    );
+
+    revalidatePath("/admin/bumdes");
+    revalidatePath(`/admin/bumdes/${bumdesId}`);
+    revalidatePath("/bumdes");
+    return { success: true, message: `BUMDes ${profile.name} berhasil ditangguhkan.` };
+  } catch (error: any) {
+    console.error("Error suspending BUMDes:", error);
+    return { success: false, error: "Terjadi kesalahan sistem saat menangguhkan BUMDes." };
+  }
+}
+
+export async function unsuspendBumdes(bumdesId: string) {
+  const session = await getSession();
+  if (!session || (session.role !== "SUPER_ADMIN" && session.role !== "PLATFORM_ADMIN")) {
+    return { success: false, error: "Unauthorized" };
+  }
+
+  try {
+    await dbConnect();
+    const profile = await BumdesProfile.findByIdAndUpdate(
+      bumdesId,
+      {
+        verificationStatus: "VERIFIED",
+        suspensionReason: "",
+        suspendedAt: undefined,
+        suspendedBy: undefined,
+      },
+      { new: true }
+    );
+
+    if (!profile) return { success: false, error: "BUMDes tidak ditemukan." };
+
+    // Aktifkan kembali toko
+    await Store.findOneAndUpdate({ bumdesId }, { status: "ACTIVE" });
+
+    await logAdminActivity(
+      session.userId,
+      "UNSUSPEND_BUMDES",
+      profile.name as string,
+      `BUMDes ${profile.name} diaktifkan kembali dari status penangguhan.`
+    );
+
+    revalidatePath("/admin/bumdes");
+    revalidatePath(`/admin/bumdes/${bumdesId}`);
+    revalidatePath("/bumdes");
+    return { success: true, message: `BUMDes ${profile.name} berhasil diaktifkan kembali.` };
+  } catch (error: any) {
+    console.error("Error unsuspending BUMDes:", error);
+    return { success: false, error: "Terjadi kesalahan sistem saat mengaktifkan kembali BUMDes." };
+  }
+}
+
+export async function resetBumdesPassword(bumdesId: string, customPassword?: string) {
+  const session = await getSession();
+  if (!session || (session.role !== "SUPER_ADMIN" && session.role !== "PLATFORM_ADMIN")) {
+    return { success: false, error: "Unauthorized" };
+  }
+
+  try {
+    await dbConnect();
+    const profile = await BumdesProfile.findById(bumdesId);
+    if (!profile || !profile.userId) {
+      return { success: false, error: "Akun pengelola BUMDes tidak ditemukan." };
+    }
+
+    const passwordToSet = customPassword && customPassword.trim().length >= 6 
+      ? customPassword.trim() 
+      : "12345678";
+
+    const bcrypt = (await import("bcryptjs")).default;
+    const passwordHash = await bcrypt.hash(passwordToSet, 10);
+
+    await User.findByIdAndUpdate(profile.userId, { passwordHash });
+
+    await logAdminActivity(
+      session.userId,
+      "RESET_PASSWORD_BUMDES",
+      profile.name as string,
+      `Reset password pengelola BUMDes ${profile.name} menjadi ${passwordToSet}`
+    );
+
+    revalidatePath("/admin/bumdes");
+    revalidatePath(`/admin/bumdes/${bumdesId}`);
+    return { 
+      success: true, 
+      message: `Password akun pengelola berhasil direset menjadi: ${passwordToSet}` 
+    };
+  } catch (error: any) {
+    console.error("Error resetting BUMDes password:", error);
+    return { success: false, error: "Gagal mereset password akun pengelola BUMDes." };
+  }
+}

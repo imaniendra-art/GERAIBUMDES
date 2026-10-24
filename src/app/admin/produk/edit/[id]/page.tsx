@@ -8,6 +8,7 @@ import Link from "next/link";
 import { Plus, Trash2, ChevronLeft } from "lucide-react";
 import { getProductStatusLabel, getProductBadgeVariant } from "@/lib/utils/status";
 import { Badge } from "@/components/ui/Badge";
+import { ImageUploader } from "@/components/ui/ImageUploader";
 
 export default function EditProdukPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
@@ -25,7 +26,7 @@ export default function EditProdukPage({ params }: { params: Promise<{ id: strin
     stock: "0",
     locationText: "",
     shippingNotes: "",
-    imageUrl: "",
+    images: [] as string[],
     isWholesaleAvailable: false,
     wholesalePriceTiers: [{ minQty: 10, maxQty: "", price: "" }],
     status: ""
@@ -50,7 +51,7 @@ export default function EditProdukPage({ params }: { params: Promise<{ id: strin
           stock: data.stock || "0",
           locationText: data.locationText || "",
           shippingNotes: data.shippingNotes || "",
-          imageUrl: data.images?.[0] || "",
+          images: Array.isArray(data.images) ? data.images : (data.images?.[0] ? [data.images[0]] : []),
           isWholesaleAvailable: data.isWholesaleAvailable || false,
           wholesalePriceTiers: data.wholesalePriceTiers?.length ? data.wholesalePriceTiers : [{ minQty: 10, maxQty: "", price: "" }],
           status: data.status || ""
@@ -118,7 +119,7 @@ export default function EditProdukPage({ params }: { params: Promise<{ id: strin
         retailPrice: Number(formData.retailPrice),
         minOrder: Number(formData.minOrder),
         stock: Number(formData.stock),
-        images: formData.imageUrl ? [formData.imageUrl] : [],
+        images: formData.images || [],
         wholesalePriceTiers: formData.isWholesaleAvailable 
           ? formData.wholesalePriceTiers.map(t => ({
               minQty: Number(t.minQty),
@@ -181,11 +182,18 @@ export default function EditProdukPage({ params }: { params: Promise<{ id: strin
                 </Badge>
               </div>
               <div>
-                <select name="status" value={formData.status} onChange={handleChange} className="px-3 py-2 border rounded text-sm bg-surface">
-                  <option value={formData.status}>{formData.status}</option>
-                  {["ACTIVE", "WAITING_APPROVAL", "REJECTED"].includes(formData.status) && <option value="INACTIVE">Ubah jadi INACTIVE (Sembunyikan)</option>}
-                  {formData.status === "INACTIVE" && <option value="ACTIVE">Aktifkan Kembali</option>}
-                  <option value="DRAFT">Jadikan DRAFT</option>
+                <label className="block text-xs font-semibold text-text-muted mb-1">Ubah Status Produk:</label>
+                <select 
+                  name="status" 
+                  value={formData.status} 
+                  onChange={handleChange} 
+                  className="px-3 py-2 border border-border rounded text-sm bg-surface font-medium focus:outline-none focus:border-primary"
+                >
+                  <option value="ACTIVE">Aktif (Tampil di Marketplace)</option>
+                  <option value="WAITING_APPROVAL">Menunggu Verifikasi</option>
+                  <option value="INACTIVE">Nonaktif (Sembunyikan)</option>
+                  <option value="REJECTED">Ditolak</option>
+                  <option value="DRAFT">Draf</option>
                 </select>
               </div>
             </div>
@@ -211,9 +219,16 @@ export default function EditProdukPage({ params }: { params: Promise<{ id: strin
                 </select>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-1">URL Gambar (Opsional)</label>
-                <input name="imageUrl" value={formData.imageUrl} onChange={handleChange} className="w-full px-3 py-2 border rounded bg-surface" />
+              <div className="col-span-1 md:col-span-2">
+                <ImageUploader
+                  multiple={true}
+                  maxFiles={5}
+                  label="Foto Produk (Maksimal 5 Foto)"
+                  values={formData.images}
+                  onChangeMultiple={(urls) => setFormData((prev) => ({ ...prev, images: urls }))}
+                  folder="products"
+                  helperText="Pilih hingga 5 foto. Foto pertama otomatis menjadi foto utama/sampul produk. Format WebP hemat kapasitas server."
+                />
               </div>
 
               <div className="col-span-1 md:col-span-2">

@@ -10,6 +10,7 @@ import { Package, Store as StoreIcon, MapPin, ChevronRight, Truck, ShieldCheck, 
 import AddToCartActions from "@/components/cart/AddToCartActions";
 import { formatCurrency } from "@/lib/utils/formatters";
 import { ProductCard } from "@/components/ui/ProductCard";
+import { ProductImageGallery } from "@/components/products/ProductImageGallery";
 
 export default async function ProductDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = await params;
@@ -65,36 +66,11 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
           {/* LEFT: Image Gallery */}
           <div className="lg:col-span-3 flex flex-col gap-4">
             <div className="sticky top-24">
-              <div className="bg-surface rounded-2xl border border-border overflow-hidden p-6 flex flex-col gap-4">
-                {/* Main Square Image */}
-                <div className="aspect-square bg-surface-bg rounded-xl flex items-center justify-center overflow-hidden w-full relative group">
-                  {product.images?.[0] ? (
-                    <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 " />
-                  ) : (
-                    <Package className="h-24 w-24 text-border" />
-                  )}
-                  {product.isWholesaleAvailable && (
-                    <div className="absolute top-4 left-4 z-10">
-                      <Badge variant="warning" className="shadow-sm">Grosir</Badge>
-                    </div>
-                  )}
-                </div>
-                
-                {/* Thumbnails (Future-proofed) */}
-                <div className="flex gap-4 overflow-x-auto pt-2 pb-1 hide-scrollbar">
-                  {/* Current Image Thumbnail */}
-                  <div className="w-24 h-24 rounded-lg border-2 border-primary overflow-hidden flex-shrink-0 cursor-pointer">
-                    {product.images?.[0] ? (
-                      <img src={product.images[0]} alt="Thumb" className="w-full h-full object-cover " />
-                    ) : (
-                      <div className="w-full h-full bg-surface-bg flex items-center justify-center"><Package className="h-6 w-6 text-border" /></div>
-                    )}
-                  </div>
-                  {/* Dummy Placeholders to show capability */}
-                  <div className="w-24 h-24 rounded-lg border border-border bg-surface-bg/50 opacity-40 flex-shrink-0 cursor-not-allowed"></div>
-                  <div className="w-24 h-24 rounded-lg border border-border bg-surface-bg/50 opacity-40 flex-shrink-0 cursor-not-allowed"></div>
-                </div>
-              </div>
+              <ProductImageGallery
+                images={product.images || []}
+                productName={product.name}
+                isWholesaleAvailable={Boolean(product.isWholesaleAvailable)}
+              />
             </div>
           </div>
 

@@ -6,6 +6,7 @@ export function getBumdesStatusLabel(status: string): string {
     PENDING_VERIFICATION: "Menunggu Verifikasi",
     VERIFIED: "Aktif",
     REJECTED: "Ditolak",
+    SUSPENDED: "Ditangguhkan",
   };
   return labels[status] || status;
 }
@@ -14,6 +15,7 @@ export function getBumdesBadgeVariant(status: string): BadgeVariant {
   if (status === "VERIFIED") return "success";
   if (status === "PENDING_VERIFICATION") return "warning";
   if (status === "REJECTED") return "danger";
+  if (status === "SUSPENDED") return "danger";
   return "neutral";
 }
 
@@ -64,5 +66,24 @@ export function getPaymentStatusBadgeVariant(status: string): BadgeVariant {
   if (status === "UNPAID") return "warning";
   if (status === "WAITING_REVIEW") return "primary";
   if (status === "REJECTED") return "danger";
+  return "neutral";
+}
+
+// --- User Roles ---
+export function getUserRoleLabel(role: string): string {
+  const labels: Record<string, string> = {
+    SUPER_ADMIN: "Super Admin",
+    PLATFORM_ADMIN: "Admin Platform",
+    BUMDES_ADMIN: "Pengelola BUMDes",
+    BUMDES_MEMBER: "Anggota BUMDes",
+    CUSTOMER: "Pembeli",
+  };
+  return labels[role] || role;
+}
+
+export function getUserRoleBadgeVariant(role: string): BadgeVariant {
+  if (role === "SUPER_ADMIN" || role === "PLATFORM_ADMIN") return "primary";
+  if (role === "BUMDES_ADMIN") return "success";
+  if (role === "BUMDES_MEMBER") return "warning";
   return "neutral";
 }

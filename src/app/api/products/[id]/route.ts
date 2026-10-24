@@ -4,38 +4,52 @@ import dbConnect from "@/lib/db";
 import Product from "@/models/Product";
 import Store from "@/models/Store";
 import BumdesProfile from "@/models/BumdesProfile";
+import { logAdminActivity } from "@/lib/adminLogger";
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const resolvedParams = await params;
     const session = await getSession();
-    if (!session || session.role !== "BUMDES_ADMIN") {
+    if (!session || !["BUMDES_ADMIN", "SUPER_ADMIN", "PLATFORM_ADMIN"].includes(session.role)) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     await dbConnect();
 
-    const profile = await BumdesProfile.findOne({ userId: session.userId });
-    const store = await Store.findOne({ bumdesId: profile?._id });
+    let product;
+    const isAdmin = session.role === "SUPER_ADMIN" || session.role === "PLATFORM_ADMIN";
 
-    if (!store) {
-      return NextResponse.json({ error: "Toko tidak ditemukan." }, { status: 404 });
-    }
+    if (isAdmin) {
+      product = await Product.findById(resolvedParams.id);
+      if (!product) {
+        return NextResponse.json({ error: "Produk tidak ditemukan." }, { status: 404 });
+      }
+    } else {
+      const profile = await BumdesProfile.findOne({ userId: session.userId });
+      const store = await Store.findOne({ bumdesId: profile?._id });
 
-    const product = await Product.findOne({ _id: resolvedParams.id, createdBy: session.userId });
-    if (!product) {
-      return NextResponse.json({ error: "Produk tidak ditemukan atau bukan milik Anda." }, { status: 404 });
+      if (!store) {
+        return NextResponse.json({ error: "Toko tidak ditemukan." }, { status: 404 });
+      }
+
+      product = await Product.findOne({ _id: resolvedParams.id, createdBy: session.userId });
+      if (!product) {
+        return NextResponse.json({ error: "Produk tidak ditemukan atau bukan milik Anda." }, { status: 404 });
+      }
     }
 
     const data = await req.json();
 
-    // If updating status to DRAFT or INACTIVE
+    // If updating status
     if (data.status) {
-      if (["DRAFT", "INACTIVE"].includes(data.status)) {
+      if (isAdmin) {
         product.status = data.status;
       } else {
-        // Can only resubmit for approval if it was Draft or Inactive
-        product.status = "WAITING_APPROVAL";
+        if (["DRAFT", "INACTIVE"].includes(data.status)) {
+          product.status = data.status;
+        } else {
+          product.status = "WAITING_APPROVAL";
+        }
       }
     }
 
@@ -55,6 +69,15 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     product.updatedBy = session.userId;
     product._id = resolvedParams.id; // ensure ID is preserved
     await product.save();
+
+    if (isAdmin) {
+      await logAdminActivity(
+        session.userId,
+        "UPDATE_PRODUCT",
+        product.name,
+        `Admin memperbarui data produk/harga: ${product.name}`
+      );
+    }
 
     return NextResponse.json({ message: "Produk berhasil diperbarui", product });
   } catch (error: unknown) {
