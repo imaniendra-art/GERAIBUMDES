@@ -12,6 +12,7 @@ import { getOrderStatusBadgeVariant, getPaymentStatusBadgeVariant } from "@/lib/
 import { orderStatusLabel, paymentStatusLabel } from "@/lib/utils/orderStatus";
 import { Badge } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { DeleteOrderButton } from "./DeleteOrderButton";
 
 export default async function AdminPesananPage({
   searchParams,
@@ -114,7 +115,11 @@ export default async function AdminPesananPage({
                       <div className="text-xs text-text-muted">{formatDate(order.createdAt)}</div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="font-medium text-text-main">{order.sellerStoreId?.name || "-"}</div>
+                      <div className="font-medium text-text-main">
+                        {order.sellerStoreId?.name || (
+                          <span className="text-text-muted italic text-xs">[Toko Dihapus]</span>
+                        )}
+                      </div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="font-medium text-text-main">{order.buyerName}</div>
@@ -134,9 +139,15 @@ export default async function AdminPesananPage({
                       </Badge>
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <Link href={`/admin/pesanan/${order._id}`}>
-                        <Button variant="outline" size="sm">Detail</Button>
-                      </Link>
+                      <div className="flex items-center justify-end gap-1.5">
+                        <Link href={`/admin/pesanan/${order._id}`}>
+                          <Button variant="outline" size="sm">Detail</Button>
+                        </Link>
+                        <DeleteOrderButton
+                          orderId={order._id.toString()}
+                          orderNumber={order.orderNumber}
+                        />
+                      </div>
                     </td>
                   </tr>
                 ))}

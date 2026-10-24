@@ -6,6 +6,7 @@ import Store from "@/models/Store";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/Card";
 import { ChevronLeft, MapPin, Package, FileText, CreditCard } from "lucide-react";
+import { DeleteOrderButton } from "../DeleteOrderButton";
 
 export default async function AdminPesananDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
@@ -30,12 +31,18 @@ export default async function AdminPesananDetailPage({ params }: { params: Promi
 
   return (
     <div className="space-y-6">
-      <div className="mb-8">
+      <div className="flex items-center justify-between mb-8">
         <Link href="/admin/pesanan">
           <span className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background border border-border hover:bg-surface-bg hover:text-text-main h-10 py-2 px-4 bg-surface text-text-main">
             <ChevronLeft className="h-4 w-4 mr-2" /> Kembali
           </span>
         </Link>
+        <DeleteOrderButton
+          orderId={order._id.toString()}
+          orderNumber={order.orderNumber}
+          variant="button"
+          redirectTo="/admin/pesanan"
+        />
       </div>
 
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
@@ -60,7 +67,9 @@ export default async function AdminPesananDetailPage({ params }: { params: Promi
           <Card>
             <div className="bg-surface-bg border-b border-border p-4 flex items-center text-text-main font-bold justify-between">
               <div className="flex items-center"><Package className="h-5 w-5 mr-2 text-text-muted" /> Rincian Produk</div>
-              <div className="text-sm font-normal text-text-muted">Penjual: <span className="font-semibold text-text-main">{order.sellerStoreId?.name || "-"}</span></div>
+              <div className="text-sm font-normal text-text-muted">
+                Penjual: <span className="font-semibold text-text-main">{order.sellerStoreId?.name || "[Toko Dihapus]"}</span>
+              </div>
             </div>
             <CardContent className="p-0">
               <div className="divide-y divide-border">

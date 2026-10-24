@@ -5,6 +5,7 @@ import BumdesProfile from "@/models/BumdesProfile";
 import Store from "@/models/Store";
 import Product from "@/models/Product";
 import User from "@/models/User";
+import Order from "@/models/Order";
 import { getSession } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { logAdminActivity } from "@/lib/adminLogger";
@@ -29,8 +30,18 @@ export async function deleteBumdesProfile(bumdesId: string) {
       if (productCount > 0) {
         return { success: false, error: `BUMDes masih memiliki ${productCount} produk aktif. Harap hapus produk terlebih dahulu.` };
       }
+
+      // Bersihkan transaksi yang pernah terkait dengan toko BUMDes ini agar tidak menjadi data yatim
+      await Order.deleteMany({
+        $or: [
+          { sellerStoreId: store._id },
+          { sellerBumdesProfileId: profile._id }
+        ]
+      });
       
       await Store.findByIdAndDelete(store._id);
+    } else {
+      await Order.deleteMany({ sellerBumdesProfileId: profile._id });
     }
     
     await BumdesProfile.findByIdAndDelete(bumdesId);
@@ -43,11 +54,14 @@ export async function deleteBumdesProfile(bumdesId: string) {
       session.userId,
       "DELETE_BUMDES",
       profile.name,
-      `Menghapus BUMDes beserta akun pengelolanya: ${profile.name}`
+      `Menghapus BUMDes beserta akun dan transaksi terkait: ${profile.name}`
     );
 
     revalidatePath("/admin/bumdes");
-    return { success: true, message: "BUMDes dan akun terkait berhasil dihapus." };
+    revalidatePath("/admin/pesanan");
+    revalidatePath("/admin/laporan/transaksi");
+    revalidatePath("/admin");
+    return { success: true, message: "BUMDes dan data terkait berhasil dihapus." };
   } catch (error: any) {
     console.error("Error deleting BUMDes:", error);
     return { success: false, error: "Terjadi kesalahan sistem saat menghapus BUMDes." };
