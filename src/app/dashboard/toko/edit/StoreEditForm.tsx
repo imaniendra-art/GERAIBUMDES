@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader } from "@/components/ui/Card";
-import { Store, Building, MapPin, Landmark, Phone, ImageIcon, Save, Loader2, Users, FileCheck, CheckCircle2, ShieldCheck, Briefcase, Info, BadgeCheck, X } from "lucide-react";
+import { Store, Building, MapPin, Landmark, QrCode, Phone, ImageIcon, Save, Loader2, Users, FileCheck, CheckCircle2, ShieldCheck, Briefcase, Info, BadgeCheck, X } from "lucide-react";
 import Link from "next/link";
 import { LocationSelector } from "@/components/ui/LocationSelector";
 import { ImageUploader } from "@/components/ui/ImageUploader";
@@ -118,20 +118,32 @@ export default function StoreEditForm({ initialData }: { initialData: any }) {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-text-main tracking-tight mb-1.5">Edit Profil BUMDes</h1>
-        <p className="text-text-muted font-medium text-sm">Lengkapi profil usaha agar lebih dipercaya pembeli.</p>
-      </div>
-
-      {error && (
-        <div className="bg-error/10 border border-error/20 text-error-dark p-4 rounded-xl text-sm mb-8 flex items-center shadow-sm">
-          <Info className="h-5 w-5 mr-3 shrink-0" />
-          {error}
+    <div className="space-y-6 pb-12">
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-border/50">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-text-main tracking-tight mb-1">Edit Profil BUMDes</h1>
+            <p className="text-text-muted font-medium text-sm">Lengkapi profil usaha agar lebih dipercaya pembeli.</p>
+          </div>
+          <div className="flex items-center gap-3 w-full sm:w-auto shrink-0">
+            <Link href="/dashboard" className="w-full sm:w-auto">
+              <Button type="button" variant="outline" disabled={isSaving} className="w-full sm:w-28 h-10 rounded-xl shadow-sm border-border text-text-main font-semibold">
+                Batal
+              </Button>
+            </Link>
+            <Button type="submit" disabled={isSaving} className="w-full sm:w-auto min-w-36 h-10 shadow-sm">
+              {isSaving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
+              {isSaving ? "Menyimpan..." : "Simpan Perubahan"}
+            </Button>
+          </div>
         </div>
-      )}
 
-      <form onSubmit={handleSubmit} className="pb-32">
+        {error && (
+          <div className="bg-error/10 border border-error/20 text-error-dark p-4 rounded-xl text-sm flex items-center shadow-sm">
+            <Info className="h-5 w-5 mr-3 shrink-0" />
+            {error}
+          </div>
+        )}
         <div className="flex flex-col lg:flex-row gap-8 items-start">
           {/* KOLOM KIRI: Informasi Utama */}
           <div className="flex-1 space-y-8 min-w-0">
@@ -345,24 +357,42 @@ export default function StoreEditForm({ initialData }: { initialData: any }) {
                 <label className="block text-sm font-semibold text-success-dark/90 mb-2">Catatan Tambahan (Opsional)</label>
                 <input type="text" name="bank_paymentNote" value={formData.bankAccount.paymentNote} onChange={handleChange} className="w-full h-11 bg-white/80 border border-success/30 rounded-xl px-4 text-sm focus:outline-none focus:ring-2 focus:ring-success/40 focus:border-success transition-all duration-200 shadow-sm placeholder:text-success/40" placeholder="Misal: Harap transfer tepat waktu." />
               </div>
+
+              {/* UPLOAD QRIS / QR CODE */}
+              <div className="pt-4 border-t border-success/20">
+                <div className="flex items-center gap-2 mb-2">
+                  <QrCode className="h-4 w-4 text-success-dark" />
+                  <span className="text-sm font-bold text-success-dark">Barcode QRIS BUMDes (Opsional)</span>
+                </div>
+                <ImageUploader
+                  label=""
+                  value={formData.bankAccount?.qrisUrl || ""}
+                  onChange={(url) => setFormData((prev: any) => ({
+                    ...prev,
+                    bankAccount: { ...(prev.bankAccount || {}), qrisUrl: url }
+                  }))}
+                  folder="qris"
+                  aspectRatio="square"
+                  maxDimension={800}
+                  helperText="Unggah gambar QRIS BUMDes (format JPG, PNG, atau WebP). Pembeli dapat langsung scan barcode ini saat membayar pesanan."
+                />
+              </div>
             </div>
           </div>
           </div> {/* END KOLOM KANAN */}
         </div>
 
-        {/* STICKY SAVE BAR */}
-        <div className="fixed bottom-0 left-0 md:left-64 right-0 bg-surface/95 backdrop-blur-md border-t border-border px-4 sm:px-8 py-4 shadow-[0_-4px_20px_-10px_rgba(0,0,0,0.1)] z-[9999]">
-          <div className="w-full flex flex-col-reverse sm:flex-row justify-end items-center gap-3">
-            <Link href="/dashboard" className="w-full sm:w-auto">
-              <Button type="button" variant="outline" disabled={isSaving} className="w-full sm:w-32 h-11 rounded-xl shadow-sm hover:-translate-y-0.5 transition-all duration-200 border-border text-text-main font-semibold">
-                Batal
-              </Button>
-            </Link>
-            <Button type="submit" disabled={isSaving} className="w-full sm:w-auto min-w-40 h-11">
-              {isSaving ? <Loader2 className="h-5 w-5 animate-spin mr-2" /> : <Save className="h-5 w-5 mr-2" />}
-              {isSaving ? "Menyimpan..." : "Simpan Perubahan"}
+        {/* ACTION BUTTONS (INLINE DI BAWAH FORM - BUKAN FOOTER MELAYANG) */}
+        <div className="flex justify-end items-center gap-3 pt-6 border-t border-border/50">
+          <Link href="/dashboard">
+            <Button type="button" variant="outline" disabled={isSaving} className="h-10 px-5 rounded-xl border-border text-text-main font-semibold">
+              Batal
             </Button>
-          </div>
+          </Link>
+          <Button type="submit" disabled={isSaving} className="h-10 px-6 min-w-36 shadow-sm">
+            {isSaving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
+            {isSaving ? "Menyimpan..." : "Simpan Perubahan"}
+          </Button>
         </div>
       </form>
     </div>

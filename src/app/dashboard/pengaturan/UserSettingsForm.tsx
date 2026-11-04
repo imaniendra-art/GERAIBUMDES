@@ -71,7 +71,25 @@ export function UserSettingsForm({ initialData }: { initialData: any }) {
   const strength = getPasswordStrength(formData.password);
 
   return (
-    <form onSubmit={handleSubmit} className="pb-32">
+    <form onSubmit={handleSubmit} className="space-y-6 pb-12">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-border/50">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-text-main tracking-tight">Pengaturan Akun Pengguna</h1>
+          <p className="text-text-muted mt-1 font-medium text-sm">Kelola informasi administrator dan keamanan akun.</p>
+        </div>
+        <div className="flex items-center gap-3 w-full sm:w-auto shrink-0">
+          <Link href="/dashboard" className="w-full sm:w-auto">
+            <Button type="button" variant="outline" disabled={loading} className="w-full sm:w-28 h-10 rounded-xl shadow-sm border-border text-text-main font-semibold">
+              Batal
+            </Button>
+          </Link>
+          <Button type="submit" disabled={loading} className="w-full sm:w-auto min-w-36 h-10 shadow-sm">
+            {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
+            {loading ? "Menyimpan..." : "Simpan Perubahan"}
+          </Button>
+        </div>
+      </div>
+
       {message && (
         <div className={`mb-6 p-4 rounded-xl flex items-center shadow-sm text-sm font-medium ${message.type === 'success' ? 'bg-success/10 border border-success/20 text-success-dark' : 'bg-error/10 border border-error/20 text-error-dark'}`}>
           <Info className="h-5 w-5 mr-3 shrink-0" />
@@ -248,19 +266,17 @@ export function UserSettingsForm({ initialData }: { initialData: any }) {
 
       </div>
 
-      {/* STICKY SAVE BAR */}
-      <div className="fixed bottom-0 left-0 md:left-64 right-0 bg-white border-t border-border/40 px-4 sm:px-8 py-4 shadow-[0_-4px_15px_rgba(0,0,0,0.03)] z-[9999]">
-        <div className="w-full flex flex-col-reverse sm:flex-row justify-end items-center gap-3">
-          <Link href="/dashboard" className="w-full sm:w-auto">
-            <Button type="button" variant="outline" disabled={loading} className="w-full sm:w-32 h-11 rounded-xl shadow-sm hover:-translate-y-0.5 transition-all duration-200 border-border text-text-main font-semibold">
-              Batal
-            </Button>
-          </Link>
-          <Button type="submit" disabled={loading} className="w-full sm:w-auto min-w-48 h-11">
-            {loading ? <Loader2 className="h-5 w-5 animate-spin mr-2" /> : <Save className="h-5 w-5 mr-2" />}
-            {loading ? "Menyimpan..." : "Simpan Perubahan"}
+      {/* ACTION BUTTONS (INLINE DI BAWAH FORM - BUKAN FOOTER MELAYANG) */}
+      <div className="flex justify-end items-center gap-3 pt-6 border-t border-border/50">
+        <Link href="/dashboard">
+          <Button type="button" variant="outline" disabled={loading} className="h-10 px-5 rounded-xl border-border text-text-main font-semibold">
+            Batal
           </Button>
-        </div>
+        </Link>
+        <Button type="submit" disabled={loading} className="h-10 px-6 min-w-36 shadow-sm">
+          {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Save className="h-4 w-4 mr-2" />}
+          {loading ? "Menyimpan..." : "Simpan Perubahan"}
+        </Button>
       </div>
     </form>
   );

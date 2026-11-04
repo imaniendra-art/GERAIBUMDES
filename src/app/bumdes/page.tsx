@@ -1,5 +1,4 @@
 import { Search, Filter, Store as StoreIcon } from "lucide-react";
-import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
 import dbConnect from "@/lib/db";
@@ -84,29 +83,7 @@ export default async function TokoDirectoryPage({
 
   return (
     <div className="bg-surface-bg min-h-screen">
-      {/* Left-Aligned Slim Hero */}
-      <div className="bg-primary text-surface py-8 border-b border-primary-dark">
-        <div className="w-full px-4 sm:px-8 lg:px-24 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight mb-2">Direktori BUMDes</h1>
-            <p className="text-surface/80 text-base max-w-xl">
-              Temukan berbagai Badan Usaha Milik Desa terverifikasi dari seluruh Indonesia.
-            </p>
-          </div>
-          <div className="flex-shrink-0">
-            <Link href="/produk">
-              <Button variant="outline" className="h-10 px-6 border-surface text-surface bg-surface/10 hover:bg-surface/20 hover:text-white font-semibold w-full md:w-auto">
-                Cari Produk
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      <div className="w-full px-4 sm:px-8 lg:px-24 py-8">
-        <div className="flex items-center text-text-main font-semibold mb-6">
-          {stores.length} BUMDes Ditemukan
-        </div>
+      <div className="w-full px-4 sm:px-8 lg:px-24 py-6 md:py-8">
 
         <div className="flex flex-col md:flex-row gap-8">
           {/* Sidebar Filters */}

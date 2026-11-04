@@ -3,7 +3,7 @@ import { getSession } from "@/lib/auth";
 import fs from "fs";
 import path from "path";
 
-const ALLOWED_FOLDERS = ["products", "logos", "banners", "payments"] as const;
+const ALLOWED_FOLDERS = ["products", "logos", "banners", "payments", "qris"] as const;
 type AllowedFolder = (typeof ALLOWED_FOLDERS)[number];
 
 const MIME_EXTENSIONS: Record<string, string> = {

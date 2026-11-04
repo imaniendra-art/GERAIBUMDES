@@ -364,11 +364,43 @@ export default async function DashboardPembelianDetailPage({ params }: { params:
                 <div className="space-y-6">
                   <div className="bg-primary/5 border border-primary/20 p-5 rounded-xl text-sm text-text-main">
                     <p className="mb-4 font-medium leading-relaxed">
-                      Transfer sebesar <strong className="text-lg text-primary">{formatCurrency(order.total)}</strong> ke rekening BUMDes:
+                      Tagihan Pembayaran: <strong className="text-lg text-primary">{formatCurrency(order.total)}</strong>
                     </p>
+
+                    {/* TAMPILKAN BARCODE QRIS JIKA ADA */}
+                    {order.sellerStoreId?.bankAccount?.qrisUrl && (
+                      <div className="bg-surface p-5 border border-border rounded-xl shadow-sm text-center mb-5">
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full text-xs font-bold mb-3 border border-emerald-200">
+                          <QrCode className="h-4 w-4" /> Bayar Cepat via QRIS
+                        </div>
+                        <div className="max-w-[240px] mx-auto p-2 bg-white rounded-2xl border-2 border-emerald-500/20 shadow-sm">
+                          <img
+                            src={order.sellerStoreId.bankAccount.qrisUrl}
+                            alt="QRIS Pembayaran BUMDes"
+                            className="w-full aspect-square object-contain rounded-xl"
+                          />
+                        </div>
+                        <p className="text-xs text-text-muted mt-3 font-medium">
+                          Scan barcode QRIS menggunakan m-banking atau e-wallet (BCA, Mandiri, BRI, GoPay, OVO, Dana, dll).
+                        </p>
+                        <div className="mt-3">
+                          <a
+                            href={order.sellerStoreId.bankAccount.qrisUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center text-xs font-bold text-primary hover:underline"
+                          >
+                            <ExternalLink className="h-3.5 w-3.5 mr-1" /> Buka / Unduh Barcode QRIS
+                          </a>
+                        </div>
+                      </div>
+                    )}
                     
                     {order.sellerStoreId?.bankAccount?.bankAccountNumber ? (
                       <div className="bg-surface p-4 border border-border rounded-xl shadow-sm">
+                        {order.sellerStoreId?.bankAccount?.qrisUrl && (
+                          <p className="text-xs font-bold text-text-muted uppercase tracking-wider mb-3">Atau Transfer Manual Rekening Bank:</p>
+                        )}
                         <p className="text-xs font-bold text-text-muted uppercase tracking-wider mb-1">Bank</p>
                         <p className="font-bold text-base mb-3">{order.sellerStoreId.bankAccount.bankName}</p>
                         
@@ -388,16 +420,33 @@ export default async function DashboardPembelianDetailPage({ params }: { params:
                         )}
                       </div>
                     ) : (
-                      <div className="bg-warning/10 border border-warning/20 p-4 rounded-xl text-sm text-warning-dark">
-                        <p className="font-bold mb-1">Rekening belum diatur</p>
-                        <p className="text-xs">Hubungi penjual via WhatsApp untuk meminta nomor rekening BUMDes.</p>
-                      </div>
+                      !order.sellerStoreId?.bankAccount?.qrisUrl && (
+                        <div className="bg-warning/10 border border-warning/20 p-4 rounded-xl text-sm text-warning-dark">
+                          <p className="font-bold mb-1">Rekening belum diatur</p>
+                          <p className="text-xs">Hubungi penjual via WhatsApp untuk meminta nomor rekening BUMDes.</p>
+                        </div>
+                      )
                     )}
                   </div>
 
                   <div className="pt-2">
-                    <p className="text-sm font-bold text-text-main mb-3">Sudah transfer? Konfirmasi di sini</p>
+                    <p className="text-sm font-bold text-text-main mb-3">Sudah melakukan pembayaran? Konfirmasi di sini</p>
                     <UploadPaymentForm orderId={order._id.toString()} />
+
+                    {storeWa && (
+                      <div className="mt-4 pt-4 border-t border-border/70">
+                        <p className="text-xs text-text-muted mb-2 font-medium">Atau konfirmasi instan langsung ke WhatsApp pengelola BUMDes:</p>
+                        <a
+                          href={`https://wa.me/${storeWa.replace(/\D/g, '').replace(/^0/, '62')}?text=${encodeURIComponent(`Halo BUMDes ${order.sellerStoreId?.name || ''}, saya sudah melakukan pembayaran untuk Pesanan #${order._id.toString().slice(-6).toUpperCase()} sebesar ${formatCurrency(order.total)}. Mohon dicek ya. Terima kasih!`)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Button variant="outline" className="w-full border-emerald-500/30 text-emerald-700 hover:bg-emerald-50 h-11 text-xs font-bold rounded-xl flex items-center justify-center gap-2">
+                            <Phone className="h-4 w-4 text-[#25D366]" /> Kirim Bukti via WhatsApp BUMDes
+                          </Button>
+                        </a>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}

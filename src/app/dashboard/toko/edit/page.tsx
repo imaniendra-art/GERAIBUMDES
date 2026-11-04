@@ -59,6 +59,7 @@ export default async function EditTokoServerPage() {
       bankAccountNumber: store.bankAccount?.bankAccountNumber || "",
       bankAccountHolderName: store.bankAccount?.bankAccountHolderName || "",
       paymentNote: store.bankAccount?.paymentNote || "",
+      qrisUrl: store.bankAccount?.qrisUrl || "",
     }
   };
 

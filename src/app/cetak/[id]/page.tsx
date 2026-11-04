@@ -94,6 +94,12 @@ export default async function CetakInvoicePage({ params }: { params: Promise<{ i
                   A/N: {order.sellerStoreId.bankAccount.bankAccountHolderName}
                 </p>
               )}
+              {order.sellerStoreId?.bankAccount?.qrisUrl && (
+                <div className="mt-2 flex items-center gap-2">
+                  <img src={order.sellerStoreId.bankAccount.qrisUrl} alt="QRIS" className="w-16 h-16 object-contain border p-0.5 rounded" />
+                  <span className="text-[10px] text-gray-500 font-medium leading-tight">Scan QRIS untuk pembayaran</span>
+                </div>
+              )}
             </div>
           </div>
         )}

@@ -30,7 +30,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   }
 
   return (
-    <div className="flex h-[calc(100vh-64px)] md:h-[calc(100vh-85px)] overflow-hidden bg-surface-bg p-0 md:p-3.5 md:gap-3.5">
+    <div className="flex h-[calc(100vh-64px)] md:h-[calc(100vh-85px)] overflow-hidden bg-surface-bg p-0 md:p-4 md:gap-4">
       {/* Floating Modern Rounded Sidebar (Desktop) */}
       <aside className="w-64 bg-primary-dark text-surface hidden md:flex flex-col h-full shrink-0 select-none overflow-hidden justify-between rounded-2xl shadow-xl shadow-emerald-950/20 border border-white/10 ring-1 ring-black/5">
         {/* Header Profil Administrator Aktif */}
@@ -85,7 +85,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       </aside>
 
       {/* Bagian Kanan (Isian Konten) dengan padding bottom ekstra di mobile agar tidak tertutup dock bar */}
-      <main className="flex-1 min-w-0 h-full overflow-y-auto p-4 sm:p-6 md:p-6 pb-20 md:pb-6">
+      <main className="flex-1 min-w-0 h-full overflow-y-auto p-4 sm:p-6 md:p-6 pb-20 md:pb-8">
         {children}
       </main>
 

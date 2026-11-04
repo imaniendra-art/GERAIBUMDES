@@ -122,30 +122,7 @@ export default async function MarketplacePage({
 
   return (
     <div className="bg-surface-bg min-h-screen">
-      {/* Left-Aligned Slim Hero */}
-      <div className="bg-primary text-surface py-5 md:py-8 border-b border-primary-dark">
-        <div className="w-full px-4 sm:px-8 lg:px-24 flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6">
-          <div>
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-1.5 md:mb-2">Marketplace Antar-BUMDes</h1>
-            <p className="text-surface/80 text-sm md:text-base max-w-xl">
-              Eksplorasi komoditas dan pasokan unggulan dari berbagai desa.
-            </p>
-          </div>
-          
-          <div className="flex-shrink-0">
-            <Link href="/bumdes">
-              <Button variant="outline" className="h-10 px-6 border-surface text-surface bg-surface/10 hover:bg-surface/20 hover:text-white font-semibold w-full md:w-auto">
-                Cari BUMDes
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      <div className="w-full px-4 sm:px-8 lg:px-24 py-4 md:py-8">
-        <div className="flex items-center text-text-main font-semibold mb-4 md:mb-6 text-sm md:text-base">
-          {availableProducts.length} Produk Ditemukan
-        </div>
+      <div className="w-full px-4 sm:px-8 lg:px-24 py-6 md:py-8">
 
         <div className="flex flex-col md:flex-row gap-8">
           {/* Sidebar Filters */}

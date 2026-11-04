@@ -28,7 +28,7 @@ export interface ImageUploaderProps {
   maxFiles?: number;
 
   // General settings
-  folder?: "products" | "logos" | "banners" | "payments";
+  folder?: "products" | "logos" | "banners" | "payments" | "qris";
   label?: string;
   helperText?: string;
   aspectRatio?: "square" | "video" | "wide";

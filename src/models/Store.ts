@@ -31,6 +31,7 @@ export interface IStore extends Document {
     bankAccountNumber?: string;
     bankAccountHolderName?: string;
     paymentNote?: string;
+    qrisUrl?: string;
   };
   status: "PENDING" | "ACTIVE" | "INACTIVE" | "SUSPENDED";
   createdAt: Date;
@@ -69,6 +70,7 @@ const StoreSchema: Schema = new Schema(
       bankAccountNumber: { type: String },
       bankAccountHolderName: { type: String },
       paymentNote: { type: String },
+      qrisUrl: { type: String },
     },
     status: {
       type: String,

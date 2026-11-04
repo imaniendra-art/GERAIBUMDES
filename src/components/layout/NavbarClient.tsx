@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ShoppingCart, Menu, Search, User, X, LayoutDashboard, Bell } from "lucide-react";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 interface NavbarClientProps {
   session: {
@@ -20,6 +20,11 @@ export default function NavbarClient({ session, unreadCount = 0, storeSlug }: Na
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
+  const pathname = usePathname();
+
+  const isProdukActive = pathname === "/produk" || pathname.startsWith("/produk/");
+  const isBumdesActive = pathname === "/bumdes" || pathname.startsWith("/bumdes/");
+  const isTentangActive = pathname === "/tentang-kami" || pathname.startsWith("/tentang-kami/");
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -64,18 +69,36 @@ export default function NavbarClient({ session, unreadCount = 0, storeSlug }: Na
               </button>
             </form>
             
-            <div className="flex items-center gap-1 flex-shrink-0">
+            <div className="flex items-center gap-1.5 flex-shrink-0">
               <Link 
                 href="/produk" 
-                className="h-11 px-4 rounded-xl flex items-center justify-center hover:bg-surface-bg transition-colors text-sm font-medium whitespace-nowrap text-text-main"
+                className={`h-11 px-4 rounded-xl flex items-center justify-center transition-all text-sm whitespace-nowrap ${
+                  isProdukActive 
+                    ? "text-cta font-bold bg-cta/10" 
+                    : "text-text-main font-medium hover:bg-surface-bg hover:text-primary"
+                }`}
               >
                 Produk
               </Link>
               <Link 
                 href="/bumdes" 
-                className="h-11 px-4 rounded-xl flex items-center justify-center hover:bg-surface-bg transition-colors text-sm font-medium whitespace-nowrap text-text-main"
+                className={`h-11 px-4 rounded-xl flex items-center justify-center transition-all text-sm whitespace-nowrap ${
+                  isBumdesActive 
+                    ? "text-cta font-bold bg-cta/10" 
+                    : "text-text-main font-medium hover:bg-surface-bg hover:text-primary"
+                }`}
               >
                 BUMDes
+              </Link>
+              <Link 
+                href="/tentang-kami" 
+                className={`h-11 px-4 rounded-xl flex items-center justify-center transition-all text-sm whitespace-nowrap ${
+                  isTentangActive 
+                    ? "text-cta font-bold bg-cta/10" 
+                    : "text-text-main font-medium hover:bg-surface-bg hover:text-primary"
+                }`}
+              >
+                Tentang Kami
               </Link>
             </div>
           </div>
@@ -192,16 +215,55 @@ export default function NavbarClient({ session, unreadCount = 0, storeSlug }: Na
       {isMobileMenuOpen && (
         <div className="md:hidden bg-surface border-t border-border shadow-md absolute w-full left-0 z-40">
           <div className="px-4 pt-2 pb-4 space-y-1">
-            <Link href="/" className="block px-3 py-2.5 rounded-xl text-base font-medium text-text-main hover:bg-surface-bg hover:text-primary" onClick={toggleMobileMenu}>
+            <Link 
+              href="/" 
+              className={`block px-3 py-2.5 rounded-xl text-base transition-colors ${
+                pathname === "/" 
+                  ? "text-cta font-bold bg-cta/10" 
+                  : "font-medium text-text-main hover:bg-surface-bg hover:text-primary"
+              }`} 
+              onClick={toggleMobileMenu}
+            >
               Beranda
             </Link>
-            <Link href="/produk" className="block px-3 py-2.5 rounded-xl text-base font-medium text-text-main hover:bg-surface-bg hover:text-primary" onClick={toggleMobileMenu}>
+            <Link 
+              href="/produk" 
+              className={`block px-3 py-2.5 rounded-xl text-base transition-colors ${
+                isProdukActive 
+                  ? "text-cta font-bold bg-cta/10" 
+                  : "font-medium text-text-main hover:bg-surface-bg hover:text-primary"
+              }`} 
+              onClick={toggleMobileMenu}
+            >
               Produk
             </Link>
-            <Link href="/bumdes" className="block px-3 py-2.5 rounded-xl text-base font-medium text-text-main hover:bg-surface-bg hover:text-primary" onClick={toggleMobileMenu}>
+            <Link 
+              href="/bumdes" 
+              className={`block px-3 py-2.5 rounded-xl text-base transition-colors ${
+                isBumdesActive 
+                  ? "text-cta font-bold bg-cta/10" 
+                  : "font-medium text-text-main hover:bg-surface-bg hover:text-primary"
+              }`} 
+              onClick={toggleMobileMenu}
+            >
               BUMDes
             </Link>
-            <Link href="/#cara-kerja" className="block px-3 py-2.5 rounded-xl text-base font-medium text-text-main hover:bg-surface-bg hover:text-primary" onClick={toggleMobileMenu}>
+            <Link 
+              href="/tentang-kami" 
+              className={`block px-3 py-2.5 rounded-xl text-base transition-colors ${
+                isTentangActive 
+                  ? "text-cta font-bold bg-cta/10" 
+                  : "font-medium text-text-main hover:bg-surface-bg hover:text-primary"
+              }`} 
+              onClick={toggleMobileMenu}
+            >
+              Tentang Kami
+            </Link>
+            <Link 
+              href="/#cara-kerja" 
+              className="block px-3 py-2.5 rounded-xl text-base font-medium text-text-main hover:bg-surface-bg hover:text-primary" 
+              onClick={toggleMobileMenu}
+            >
               Cara Kerja
             </Link>
             

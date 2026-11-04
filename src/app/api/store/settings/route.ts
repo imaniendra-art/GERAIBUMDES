@@ -79,6 +79,7 @@ export async function PUT(req: NextRequest) {
         bankAccountNumber: body.bankAccount.bankAccountNumber,
         bankAccountHolderName: body.bankAccount.bankAccountHolderName,
         paymentNote: body.bankAccount.paymentNote,
+        qrisUrl: body.bankAccount.qrisUrl,
       };
     }
 
