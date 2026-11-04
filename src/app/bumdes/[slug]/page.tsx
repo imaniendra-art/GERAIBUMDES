@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/Card";
 import Link from "next/link";
 import { Package, Store as StoreIcon, MapPin, Search, Phone, Clock, FileCheck, ShieldCheck, Target, Globe } from "lucide-react";
 import { ProductCard } from "@/components/ui/ProductCard";
+import { getSession } from "@/lib/auth";
 
 const formatWhatsAppNumber = (phone: string) => {
   if (!phone) return "";
@@ -29,7 +30,15 @@ export default async function StoreProfilePage({
   const resolvedSearchParams = await searchParams;
   await dbConnect();
 
-  const store = await Store.findOne({ slug: resolvedParams.slug, status: "ACTIVE" })
+  const session = await getSession();
+  const isAdmin = session?.role === "SUPER_ADMIN" || session?.role === "PLATFORM_ADMIN";
+
+  const storeQuery: any = { slug: resolvedParams.slug };
+  if (!isAdmin) {
+    storeQuery.status = "ACTIVE";
+  }
+
+  const store = await Store.findOne(storeQuery)
     .populate({ path: "bumdesId", model: BumdesProfile, select: "village district regency province description businessType" })
     .lean();
 
@@ -50,6 +59,17 @@ export default async function StoreProfilePage({
   return (
     <div className="bg-surface-bg min-h-screen py-8 px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {store.status !== "ACTIVE" && (
+          <div className="mb-6 p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-sm flex items-center gap-3">
+            <ShieldCheck className="h-5 w-5 text-amber-600 flex-shrink-0" />
+            <div>
+              <p className="font-semibold">Pratinjau Khusus Administrator</p>
+              <p className="text-xs text-amber-800">
+                Toko BUMDes ini berstatus <strong>{store.status}</strong> dan saat ini belum dapat dilihat oleh publik umum di marketplace.
+              </p>
+            </div>
+          </div>
+        )}
         
         {/* Store Profile Header */}
         <div className="bg-surface rounded-2xl border border-border overflow-hidden mb-10 shadow-natural">

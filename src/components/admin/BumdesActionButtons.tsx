@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
-import { Pencil, Trash2, AlertTriangle, Info, PauseCircle, PlayCircle, KeyRound, Check } from "lucide-react";
+import { Pencil, Trash2, AlertTriangle, Info, PauseCircle, PlayCircle, KeyRound, Check, ExternalLink } from "lucide-react";
 import { deleteBumdesProfile, suspendBumdes, unsuspendBumdes, resetBumdesPassword } from "@/app/admin/bumdes/actions";
 
 interface BumdesActionButtonsProps {
@@ -12,6 +12,7 @@ interface BumdesActionButtonsProps {
   bumdesName: string;
   status?: string;
   suspensionReason?: string;
+  storeSlug?: string;
 }
 
 export function BumdesActionButtons({
@@ -19,6 +20,7 @@ export function BumdesActionButtons({
   bumdesName,
   status = "VERIFIED",
   suspensionReason = "",
+  storeSlug,
 }: BumdesActionButtonsProps) {
   const router = useRouter();
   
@@ -44,6 +46,13 @@ export function BumdesActionButtons({
   const [newPasswordInput, setNewPasswordInput] = useState("12345678");
   const [isResettingPassword, setIsResettingPassword] = useState(false);
   const [resetPasswordFeedback, setResetPasswordFeedback] = useState<{ success?: boolean; message?: string }>({});
+
+  const resolvedStoreSlug =
+    storeSlug ||
+    bumdesName
+      ?.toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
 
   // Handlers for Delete
   const openDeleteModal = async () => {
@@ -149,6 +158,25 @@ export function BumdesActionButtons({
             Detail
           </Button>
         </Link>
+
+        {/* Tombol Lihat Tampilan Publik BUMDes */}
+        {resolvedStoreSlug && (
+          <Link
+            href={`/bumdes/${resolvedStoreSlug}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 px-2.5 text-xs font-medium border-primary/30 text-primary hover:bg-primary/10 gap-1.5 inline-flex items-center"
+              title="Lihat Tampilan Publik BUMDes (Buka di tab baru)"
+            >
+              <ExternalLink className="h-3.5 w-3.5" />
+              <span>Lihat Toko</span>
+            </Button>
+          </Link>
+        )}
 
         {/* Edit Button */}
         <Link href={`/admin/bumdes/edit/${bumdesId}`}>

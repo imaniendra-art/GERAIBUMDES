@@ -4,6 +4,7 @@ import Link from "next/link";
 import dbConnect from "@/lib/db";
 import BumdesProfile from "@/models/BumdesProfile";
 import "@/models/User";
+import "@/models/Store";
 import { Badge } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { formatDate } from "@/lib/utils/formatters";
@@ -137,6 +138,20 @@ export default async function AdminBumdesList({
     {
       $unwind: {
         path: "$userData",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "stores",
+        localField: "_id",
+        foreignField: "bumdesId",
+        as: "storeData",
+      },
+    },
+    {
+      $unwind: {
+        path: "$storeData",
         preserveNullAndEmptyArrays: true,
       },
     },
@@ -445,6 +460,7 @@ export default async function AdminBumdesList({
                         bumdesName={profile.name}
                         status={profile.verificationStatus}
                         suspensionReason={profile.suspensionReason}
+                        storeSlug={profile.storeData?.slug}
                       />
                     </td>
                   </tr>
@@ -528,7 +544,8 @@ export default async function AdminBumdesList({
                   bumdesName={profile.name}
                   status={profile.verificationStatus}
                   suspensionReason={profile.suspensionReason}
-                />
+                        storeSlug={profile.storeData?.slug}
+                      />
               </div>
             </div>
           );

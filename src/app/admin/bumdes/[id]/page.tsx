@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import dbConnect from "@/lib/db";
 import BumdesProfile from "@/models/BumdesProfile";
+import Store from "@/models/Store";
 import User from "@/models/User";
 import { CheckCircle, Clock, PauseCircle, AlertTriangle } from "lucide-react";
 import { BumdesVerificationActions } from "@/components/admin/BumdesVerificationActions";
@@ -17,6 +18,8 @@ export default async function AdminBumdesDetail({ params }: { params: Promise<{ 
   if (!profile) {
     return <div>BUMDes tidak ditemukan.</div>;
   }
+
+  const store = await Store.findOne({ bumdesId: profile._id }).select("slug").lean();
 
   const locationString = `${profile.village}, ${profile.district}, ${profile.regency}, ${profile.province}`;
   
@@ -33,6 +36,7 @@ export default async function AdminBumdesDetail({ params }: { params: Promise<{ 
             bumdesName={profile.name as string}
             status={profile.verificationStatus}
             suspensionReason={profile.suspensionReason}
+            storeSlug={store?.slug}
           />
           <Link href="/admin/bumdes">
             <Button variant="outline">Kembali</Button>
