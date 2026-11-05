@@ -3,6 +3,20 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "minio-console.stimiyapmim.ac.id",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "**.stimiyapmim.ac.id",
+        pathname: "/**",
+      },
+    ],
+  },
   async headers() {
     return [
       {

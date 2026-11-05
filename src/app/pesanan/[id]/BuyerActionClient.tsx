@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
+import { ImageUploader } from "@/components/ui/ImageUploader";
 import { Loader2, CheckCircle } from "lucide-react";
 
 export function CompleteOrderForm({ orderId, status }: { orderId: string, status: string }) {
@@ -23,7 +24,7 @@ export function CompleteOrderForm({ orderId, status }: { orderId: string, status
   const handleComplete = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!url.trim()) {
-      setError("Mohon unggah / masukkan URL foto bukti penerimaan barang.");
+      setError("Mohon unggah foto bukti penerimaan barang terlebih dahulu.");
       return;
     }
     setError("");
@@ -62,22 +63,24 @@ export function CompleteOrderForm({ orderId, status }: { orderId: string, status
 
       {error && <div className="text-sm text-danger mb-4 bg-danger/10 p-2 rounded">{error}</div>}
 
-      <div className="text-left mb-6 px-4">
-        <label className="block text-xs font-semibold text-text-muted mb-2 uppercase text-center">URL Foto Bukti Barang Diterima (Wajib)</label>
-        <input
-          type="url"
-          required
+      <div className="text-left mb-6 px-4 max-w-md mx-auto">
+        <ImageUploader
+          label="Foto Bukti Barang Diterima (Wajib)"
           value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          placeholder="https://..."
-          className="w-full bg-surface border border-border text-text-main rounded-md px-4 py-2 text-sm focus:ring-success focus:border-success"
+          onChange={(uploadedUrl) => {
+            setUrl(uploadedUrl);
+            if (uploadedUrl) setError("");
+          }}
+          folder="receipts"
+          aspectRatio="square"
+          maxDimension={1200}
+          helperText="Unggah foto barang yang telah diterima untuk perlindungan keamanan bersama."
         />
-        <p className="text-[10px] text-text-muted mt-1 text-center">Masukkan tautan foto barang (Google Drive / Link Foto) untuk perlindungan keamanan bersama.</p>
       </div>
 
       <Button 
         type="submit"
-        disabled={loading} 
+        disabled={loading || !url.trim()} 
         className="w-full sm:w-auto bg-success hover:bg-success-dark text-white font-bold h-auto py-3.5 px-8 rounded-lg shadow-md hover:shadow-lg transition-all text-base"
       >
         {loading ? <Loader2 className="animate-spin h-5 w-5 mr-2" /> : <CheckCircle className="h-5 w-5 mr-2" />}

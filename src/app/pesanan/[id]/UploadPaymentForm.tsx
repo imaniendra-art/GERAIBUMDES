@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
+import { ImageUploader } from "@/components/ui/ImageUploader";
 import { Loader2, UploadCloud } from "lucide-react";
 
 export default function UploadPaymentForm({ orderId }: { orderId: string }) {
@@ -17,7 +18,7 @@ export default function UploadPaymentForm({ orderId }: { orderId: string }) {
     setError("");
 
     if (!url.trim()) {
-      setError("Masukkan URL bukti pembayaran.");
+      setError("Silakan unggah foto bukti pembayaran terlebih dahulu.");
       setLoading(false);
       return;
     }
@@ -48,18 +49,29 @@ export default function UploadPaymentForm({ orderId }: { orderId: string }) {
     <form onSubmit={handleSubmit} className="space-y-4">
       {error && <div className="text-sm text-danger">{error}</div>}
       <div>
-        <label className="block text-xs font-semibold text-text-muted mb-2 uppercase">URL Bukti Pembayaran (Google Drive / Link Gambar)</label>
-        <input
-          type="url"
-          required
+        <ImageUploader
+          label="Foto Bukti Pembayaran / Struk Transfer"
           value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          placeholder="https://..."
-          className="w-full bg-surface border border-border text-text-main rounded-md px-4 py-2 text-sm focus:ring-primary focus:border-primary"
+          onChange={(uploadedUrl) => {
+            setUrl(uploadedUrl);
+            if (uploadedUrl) setError("");
+          }}
+          folder="payments"
+          aspectRatio="square"
+          maxDimension={1200}
+          helperText="Unggah foto/screenshot bukti transfer atau QRIS. File disimpan otomatis di MinIO."
         />
       </div>
-      <Button type="submit" disabled={loading} className="w-full text-sm h-12 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold transition-all shadow-md">
-        {loading ? <Loader2 className="h-5 w-5 mr-2 animate-spin" /> : <UploadCloud className="h-5 w-5 mr-2" />} 
+      <Button
+        type="submit"
+        disabled={loading || !url.trim()}
+        className="w-full text-sm h-12 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold transition-all shadow-md"
+      >
+        {loading ? (
+          <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+        ) : (
+          <UploadCloud className="h-5 w-5 mr-2" />
+        )}
         Saya Sudah Transfer
       </Button>
     </form>

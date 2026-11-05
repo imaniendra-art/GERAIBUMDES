@@ -26,6 +26,7 @@
     "jose": "^6.2.3",
     "lottie-react": "^2.4.1",
     "lucide-react": "^1.17.0",
+    "minio": "^8.0.7",
     "mongoose": "^9.6.3",
     "next": "^16.2.7",
     "react": "^18",

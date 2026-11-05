@@ -28,7 +28,15 @@ export interface ImageUploaderProps {
   maxFiles?: number;
 
   // General settings
-  folder?: "products" | "logos" | "banners" | "payments" | "qris";
+  folder?:
+    | "products"
+    | "logos"
+    | "banners"
+    | "payments"
+    | "qris"
+    | "shipments"
+    | "receipts"
+    | "documents";
   label?: string;
   helperText?: string;
   aspectRatio?: "square" | "video" | "wide";
@@ -102,7 +110,7 @@ export function ImageUploader({
       format: "image/webp",
     });
 
-    setUploadStatus(`Menyimpan ke server lokal${stepLabel}...`);
+    setUploadStatus(`Mengunggah ke MinIO storage${stepLabel}...`);
 
     const formData = new FormData();
     formData.append("file", compressed.file);

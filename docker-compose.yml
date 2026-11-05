@@ -1,18 +1,22 @@
-version: '3.8'
-
 services:
   web:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: geraibumdes-web
+    command: ["npx", "next", "start", "-p", "3000"]
     ports:
       # Mapping port lokal 3041 ke port 3000 di dalam container
       - "3041:3000"
-    # Membaca variabel environment dari .env.local untuk koneksi MongoDB
+    # Membaca variabel environment dari .env dan .env.local
     env_file:
+      - .env
       - .env.local
     environment:
       - NODE_ENV=production
       - PORT=3000
+      - MINIO_ENDPOINT=https://minio-console.stimiyapmim.ac.id
+      - MINIO_ACCESS_KEY=admin_pusdatin
+      - MINIO_SECRET_KEY=admin_pusdatin123
+      - MINIO_BUCKET=gerai-bumdes
     restart: unless-stopped

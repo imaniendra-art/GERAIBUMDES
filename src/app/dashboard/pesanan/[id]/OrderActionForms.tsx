@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
+import { ImageUploader } from "@/components/ui/ImageUploader";
 import { Loader2, Truck, CheckCircle, XCircle, PackageCheck, LucideIcon } from "lucide-react";
 import * as Icons from "lucide-react";
 
@@ -253,13 +254,14 @@ export function ShipManualForm({ orderId }: { orderId: string }) {
       </div>
       
       <div>
-        <label className="block text-xs font-medium text-text-muted mb-1">URL Bukti Pengiriman / Resi (Opsional)</label>
-        <input 
-          type="text" 
-          value={formData.shippingProofUrl} 
-          onChange={(e) => setFormData({...formData, shippingProofUrl: e.target.value})}
-          className="w-full bg-surface border border-border rounded-md px-3 py-2 focus:ring-primary text-text-main text-sm"
-          placeholder="https://..."
+        <ImageUploader
+          label="Foto Bukti Pengiriman / Resi (Opsional)"
+          value={formData.shippingProofUrl}
+          onChange={(url) => setFormData({ ...formData, shippingProofUrl: url })}
+          folder="shipments"
+          aspectRatio="square"
+          maxDimension={1200}
+          helperText="Unggah foto resi atau bukti barang dikirim."
         />
       </div>
 
