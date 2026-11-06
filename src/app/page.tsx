@@ -127,17 +127,29 @@ export default async function Home() {
             </p>
             <div className="flex flex-col sm:flex-row flex-wrap gap-3 md:gap-4">
               <Link href="/produk" className="w-full sm:w-auto">
-                <Button variant="primary" size="lg" className="w-full font-bold px-10 h-11 md:h-12">
+                <Button variant="primary" className="w-full sm:w-auto font-bold px-8 h-12 text-sm md:text-base shadow-sm">
                   Jelajahi Produk
                 </Button>
               </Link>
-              {!session && (
+              {!session ? (
                 <Link href="/register" className="w-full sm:w-auto">
-                  <Button variant="outline" size="lg" className="w-full px-8 h-11 md:h-14 md:text-lg">
+                  <Button variant="outline" className="w-full sm:w-auto font-semibold px-7 h-12 text-sm md:text-base shadow-sm">
                     Daftarkan BUMDes
                   </Button>
                 </Link>
+              ) : (
+                <Link href="/bumdes" className="w-full sm:w-auto">
+                  <Button variant="outline" className="w-full sm:w-auto font-semibold px-7 h-12 text-sm md:text-base shadow-sm">
+                    Direktori BUMDes
+                  </Button>
+                </Link>
               )}
+              <Link href="/kabar-bumdes" className="w-full sm:w-auto">
+                <Button variant="outline" className="w-full sm:w-auto font-semibold px-7 h-12 text-sm md:text-base shadow-sm flex items-center justify-center gap-2">
+                  <Newspaper className="w-4 h-4 text-primary" />
+                  <span>Kabar BUMDes</span>
+                </Button>
+              </Link>
             </div>
             {/* Quick Popular Commodity Chips */}
             <div className="mt-5 md:mt-8 flex flex-wrap items-center gap-2">
@@ -564,10 +576,7 @@ export default async function Home() {
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 md:mb-12 gap-4">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary font-bold text-xs uppercase tracking-wider mb-2">
-                <Newspaper className="w-3.5 h-3.5" />
-                <span>Warta & Cerita Desa</span>
-              </div>
+              
               <h2 className="text-2xl md:text-4xl font-bold text-text-main">
                 Kabar BUMDes Terkini
               </h2>

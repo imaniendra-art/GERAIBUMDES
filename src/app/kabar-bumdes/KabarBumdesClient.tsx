@@ -77,10 +77,7 @@ export default function KabarBumdesClient({ articles }: KabarBumdesClientProps) 
         <div className="absolute inset-0 bg-gradient-to-b from-primary/[0.03] to-transparent pointer-events-none" />
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/10 text-primary font-bold text-xs md:text-sm tracking-wide uppercase mb-4">
-            <Newspaper className="w-4 h-4" />
-            <span>Warta & Cerita Desa</span>
-          </div>
+          
 
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-text-main tracking-tight mb-4">
             Kabar & Inspirasi <span className="text-primary">BUMDes Nusantara</span>
