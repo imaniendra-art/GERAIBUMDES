@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowDown, ShoppingBag, Store, TrendingUp, CheckCircle, Search, ShieldCheck, MapPin, ArrowRightCircle, PackageOpen, Users, Truck, Leaf, Star, Box, HeartHandshake, Layers, Globe, Network, Handshake } from "lucide-react";
+import { ArrowRight, ArrowDown, ShoppingBag, Store, TrendingUp, CheckCircle, Search, ShieldCheck, MapPin, ArrowRightCircle, PackageOpen, Users, Truck, Leaf, Star, Box, HeartHandshake, Layers, Globe, Network, Handshake, Newspaper, Calendar } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
@@ -7,6 +7,7 @@ import ProductModel from "@/models/Product";
 import StoreModel from "@/models/Store";
 import Category from "@/models/Category";
 import BumdesProfile from "@/models/BumdesProfile";
+import ArticleModel from "@/models/Article";
 import { ProductCard } from "@/components/ui/ProductCard";
 import { StoreCard } from "@/components/ui/StoreCard";
 import { getSession } from "@/lib/auth";
@@ -30,6 +31,13 @@ export default async function Home() {
     
   // Duplicate stores for seamless marquee if there are any
   const marqueeStores = [...stores, ...stores, ...stores];
+
+  // Get 3 latest published articles for Kabar BUMDes section
+  const latestArticles = await ArticleModel.find({ status: "PUBLISHED" })
+    .populate({ path: "bumdesId", model: BumdesProfile, select: "name" })
+    .sort({ publishedAt: -1, createdAt: -1 })
+    .limit(3)
+    .lean();
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -505,6 +513,17 @@ export default async function Home() {
             </div>
             
           </div>
+
+          {/* Tombol Panduan Lengkap */}
+          <div className="mt-8 md:mt-12 text-center">
+            <Link
+              href="/cara-kerja"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-surface hover:bg-surface-bg border border-border text-primary font-bold rounded-xl shadow-sm hover:shadow transition-all group text-sm md:text-base"
+            >
+              <span>Pelajari Panduan & Cara Kerja Lengkap</span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -537,6 +556,94 @@ export default async function Home() {
           <Link href="/bumdes">
             <Button variant="outline" size="lg" className="px-8">Lihat Direktori BUMDes</Button>
           </Link>
+        </div>
+      </section>
+
+      {/* Kabar BUMDes Terkini */}
+      <section className="py-12 md:py-24 bg-surface border-t border-border">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 md:mb-12 gap-4">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary font-bold text-xs uppercase tracking-wider mb-2">
+                <Newspaper className="w-3.5 h-3.5" />
+                <span>Warta & Cerita Desa</span>
+              </div>
+              <h2 className="text-2xl md:text-4xl font-bold text-text-main">
+                Kabar BUMDes Terkini
+              </h2>
+              <p className="text-sm md:text-base text-text-muted mt-1 max-w-xl">
+                Ikuti perkembangan kegiatan, kisah panen raya, inovasi produk, dan kabar resmi dari desa-desa di seluruh Nusantara.
+              </p>
+            </div>
+            <Link
+              href="/kabar-bumdes"
+              className="inline-flex items-center gap-2 text-sm font-bold text-primary hover:underline group"
+            >
+              <span>Lihat Semua Kabar</span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
+
+          {latestArticles.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {latestArticles.map((art: any) => {
+                const dateStr = new Date(art.publishedAt || art.createdAt).toLocaleDateString("id-ID", {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric",
+                });
+                const author = art.authorType === "SUPER_ADMIN" ? "Admin Platform" : art.bumdesId?.name || "Mitra BUMDes";
+
+                return (
+                  <Link
+                    key={art._id.toString()}
+                    href={`/kabar-bumdes/${art.slug}`}
+                    className="group bg-surface-bg border border-border rounded-3xl overflow-hidden shadow-sm hover:shadow-hover-lift transition-all flex flex-col"
+                  >
+                    <div className="relative aspect-[16/10] w-full bg-surface overflow-hidden">
+                      <img
+                        src={art.coverImage}
+                        alt={art.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute top-3 left-3">
+                        <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-black/60 backdrop-blur-md text-white">
+                          {art.category}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="p-6 flex-1 flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-center gap-1.5 text-xs text-text-muted mb-2">
+                          <Calendar className="w-3.5 h-3.5" />
+                          <span>{dateStr}</span>
+                          <span>•</span>
+                          <span className="font-semibold text-primary truncate max-w-[150px]">{author}</span>
+                        </div>
+                        <h3 className="font-bold text-base sm:text-lg text-text-main line-clamp-2 group-hover:text-primary transition-colors leading-snug mb-2">
+                          {art.title}
+                        </h3>
+                        <p className="text-xs sm:text-sm text-text-muted line-clamp-2 leading-relaxed">
+                          {art.excerpt}
+                        </p>
+                      </div>
+                      <div className="pt-4 border-t border-border/80 flex items-center justify-between text-xs mt-4">
+                        <span className="font-bold text-primary group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+                          <span>Baca Berita</span>
+                          <ArrowRight className="w-3 h-3" />
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="bg-surface-bg border border-dashed border-border rounded-3xl p-10 text-center text-text-muted">
+              <Newspaper className="w-12 h-12 mx-auto mb-2 opacity-30 text-primary" />
+              <p className="text-sm font-medium">Belum ada kabar terbaru yang diterbitkan.</p>
+            </div>
+          )}
         </div>
       </section>
 

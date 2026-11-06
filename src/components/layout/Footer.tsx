@@ -30,7 +30,8 @@ export default function Footer() {
             <h4 className="text-[15px] md:text-lg font-semibold text-text-main mb-2 md:mb-6">Tentang</h4>
             <ul className="space-y-1.5 md:space-y-3 text-sm md:text-base">
               <li><Link href="/tentang-kami" className="text-text-muted hover:text-primary transition-colors">Tentang Kami</Link></li>
-              <li><Link href="/#cara-kerja" className="text-text-muted hover:text-primary transition-colors">Cara Kerja</Link></li>
+              <li><Link href="/kabar-bumdes" className="text-text-muted hover:text-primary transition-colors font-medium">Kabar BUMDes</Link></li>
+              <li><Link href="/cara-kerja" className="text-text-muted hover:text-primary transition-colors">Cara Kerja</Link></li>
               <li><Link href="#" className="text-text-muted hover:text-primary transition-colors">Karir</Link></li>
               <li><Link href="#" className="text-text-muted hover:text-primary transition-colors">Syarat & Ketentuan</Link></li>
             </ul>

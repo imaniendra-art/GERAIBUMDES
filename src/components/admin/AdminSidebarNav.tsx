@@ -14,6 +14,7 @@ import {
   FolderTree,
   Briefcase,
   MapPin,
+  Newspaper,
 } from "lucide-react";
 
 export function AdminSidebarNav() {
@@ -96,6 +97,12 @@ export function AdminSidebarNav() {
               {counts.productCount}
             </span>
           )}
+        </Link>
+
+        <Link href="/admin/kabar-bumdes" className={getLinkClasses("/admin/kabar-bumdes")}>
+          <div className="flex items-center">
+            <Newspaper className="h-[18px] w-[18px] mr-2.5 shrink-0" /> Kabar BUMDes
+          </div>
         </Link>
       </div>
 

@@ -18,7 +18,9 @@ import {
   Truck, 
   Info, 
   Phone, 
-  Receipt 
+  Receipt,
+  QrCode,
+  ExternalLink 
 } from "lucide-react";
 import UploadPaymentForm from "@/app/pesanan/[id]/UploadPaymentForm";
 import { CompleteOrderForm } from "@/app/pesanan/[id]/BuyerActionClient";

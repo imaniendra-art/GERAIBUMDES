@@ -12,6 +12,7 @@ import {
   Store,
   Globe,
   ExternalLink,
+  Newspaper,
 } from "lucide-react";
 
 interface BumdesSidebarNavProps {
@@ -70,6 +71,11 @@ export function BumdesSidebarNav({ storeSlug, pendingOrdersCount = 0 }: BumdesSi
         <Link href="/dashboard/produk" className={getLinkClasses("/dashboard/produk")}>
           <div className="flex items-center">
             <Package className={getIconClasses(pathname.startsWith("/dashboard/produk"))} /> Produk Saya
+          </div>
+        </Link>
+        <Link href="/dashboard/kabar-bumdes" className={getLinkClasses("/dashboard/kabar-bumdes")}>
+          <div className="flex items-center">
+            <Newspaper className={getIconClasses(pathname.startsWith("/dashboard/kabar-bumdes"))} /> Kabar BUMDes
           </div>
         </Link>
         <Link href="/dashboard/laporan/penjualan" className={getLinkClasses("/dashboard/laporan/penjualan")}>
