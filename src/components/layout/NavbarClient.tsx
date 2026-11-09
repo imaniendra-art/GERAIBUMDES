@@ -24,7 +24,6 @@ export default function NavbarClient({ session, unreadCount = 0, storeSlug }: Na
 
   const isProdukActive = pathname === "/produk" || pathname.startsWith("/produk/");
   const isBumdesActive = pathname === "/bumdes" || pathname.startsWith("/bumdes/");
-  const isTentangActive = pathname === "/tentang-kami" || pathname.startsWith("/tentang-kami/");
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -89,16 +88,6 @@ export default function NavbarClient({ session, unreadCount = 0, storeSlug }: Na
                 }`}
               >
                 BUMDes
-              </Link>
-              <Link 
-                href="/tentang-kami" 
-                className={`h-11 px-4 rounded-xl flex items-center justify-center transition-all text-sm whitespace-nowrap ${
-                  isTentangActive 
-                    ? "text-cta font-bold bg-cta/10" 
-                    : "text-text-main font-medium hover:bg-surface-bg hover:text-primary"
-                }`}
-              >
-                Tentang Kami
               </Link>
             </div>
           </div>
@@ -247,24 +236,6 @@ export default function NavbarClient({ session, unreadCount = 0, storeSlug }: Na
               onClick={toggleMobileMenu}
             >
               BUMDes
-            </Link>
-            <Link 
-              href="/tentang-kami" 
-              className={`block px-3 py-2.5 rounded-xl text-base transition-colors ${
-                isTentangActive 
-                  ? "text-cta font-bold bg-cta/10" 
-                  : "font-medium text-text-main hover:bg-surface-bg hover:text-primary"
-              }`} 
-              onClick={toggleMobileMenu}
-            >
-              Tentang Kami
-            </Link>
-            <Link 
-              href="/#cara-kerja" 
-              className="block px-3 py-2.5 rounded-xl text-base font-medium text-text-main hover:bg-surface-bg hover:text-primary" 
-              onClick={toggleMobileMenu}
-            >
-              Cara Kerja
             </Link>
             
             <div className="border-t border-border mt-4 pt-4">

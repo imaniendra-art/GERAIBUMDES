@@ -36,6 +36,7 @@ export interface ImageUploaderProps {
     | "qris"
     | "shipments"
     | "receipts"
+    | "articles"
     | "documents";
   label?: string;
   helperText?: string;

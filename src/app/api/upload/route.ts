@@ -10,6 +10,7 @@ const ALLOWED_FOLDERS = [
   "qris",
   "shipments",
   "receipts",
+  "articles",
   "documents",
 ] as const;
 type AllowedFolder = (typeof ALLOWED_FOLDERS)[number];
@@ -45,37 +46,47 @@ export async function POST(req: Request) {
       );
     }
 
-    // Validasi tipe file (mendukung gambar & dokumen PDF)
+    const isPdf =
+      file.type === "application/pdf" ||
+      file.name.toLowerCase().endsWith(".pdf");
     const isImage = file.type.startsWith("image/");
-    const isPdf = file.type === "application/pdf";
+
+    // Validasi tipe file (mendukung gambar & dokumen PDF)
     if (!isImage && !isPdf) {
       return NextResponse.json(
-        { error: "File yang diunggah harus berupa gambar (JPG, PNG, WebP, dll) atau PDF." },
+        { error: "File yang diunggah harus berupa gambar (JPG, PNG, WebP, dll) atau dokumen PDF." },
         { status: 400 }
       );
     }
 
-    // Validasi batas ukuran maksimum (15MB untuk toleransi sebelum kompresi)
-    const MAX_SIZE = 15 * 1024 * 1024;
+    // Validasi batas ukuran maksimum (20MB)
+    const MAX_SIZE = 20 * 1024 * 1024;
     if (file.size > MAX_SIZE) {
       return NextResponse.json(
-        { error: "Ukuran file terlalu besar. Maksimal 15MB." },
+        { error: "Ukuran file terlalu besar. Maksimal 20MB." },
         { status: 400 }
       );
     }
 
     // Tentukan folder tujuan yang diizinkan
+    let defaultFolder: AllowedFolder = "products";
+    if (isPdf) {
+      defaultFolder = "documents";
+    } else if (requestedFolder === "articles") {
+      defaultFolder = "articles";
+    }
+
     const folder: AllowedFolder = (
       requestedFolder && ALLOWED_FOLDERS.includes(requestedFolder as AllowedFolder)
         ? requestedFolder
-        : "products"
+        : defaultFolder
     ) as AllowedFolder;
 
     // Tentukan ekstensi file
     let ext = MIME_EXTENSIONS[file.type.toLowerCase()];
     if (!ext) {
       const match = file.name.match(/\.[^.]+$/);
-      ext = match ? match[0].toLowerCase() : ".webp";
+      ext = match ? match[0].toLowerCase() : isPdf ? ".pdf" : ".webp";
     }
 
     // Sanitasi dan generate nama file unik
@@ -87,7 +98,7 @@ export async function POST(req: Request) {
     // Konversi arrayBuffer ke Buffer dan unggah ke MinIO
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
-    const contentType = file.type || "image/webp";
+    const contentType = file.type || (isPdf ? "application/pdf" : "image/webp");
 
     const uploaded = await uploadToMinio(buffer, objectKey, contentType);
 
@@ -95,10 +106,12 @@ export async function POST(req: Request) {
       success: true,
       url: uploaded.url,
       filename: safeFilename,
+      originalName: file.name,
       objectName: uploaded.objectName,
       bucket: uploaded.bucket,
       size: buffer.length,
       folder,
+      isPdf,
     });
   } catch (error: any) {
     console.error("[MINIO_UPLOAD_ERROR]", error);
