@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { ShoppingCart, Menu, Search, User, X, LayoutDashboard, Bell } from "lucide-react";
+import { ShoppingCart, Menu, Search, User, X, LayoutDashboard, Bell, LogOut, ShoppingBag } from "lucide-react";
 import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 
@@ -113,19 +113,43 @@ export default function NavbarClient({ session, unreadCount = 0, storeSlug }: Na
 
                 <div className="flex items-center space-x-3 ml-2 border-l border-border pl-4">
                   <Link 
-                    href={session.role === "SUPER_ADMIN" ? "/admin" : "/dashboard"} 
+                    href={
+                      session.role === "SUPER_ADMIN" || session.role === "PLATFORM_ADMIN"
+                        ? "/admin"
+                        : session.role === "BUMDES_ADMIN"
+                        ? "/dashboard"
+                        : "/pesanan"
+                    } 
                     className="p-2 text-text-muted hover:text-primary transition-colors relative group"
-                    aria-label="Dashboard"
+                    aria-label={session.role === "CUSTOMER" ? "Pesanan Saya" : "Dashboard"}
                   >
-                    <LayoutDashboard className="h-6 w-6" />
-                    <span className="absolute top-10 right-0 w-max bg-text-main text-white text-xs font-bold px-2 py-1 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
-                      Dashboard
+                    {session.role === "CUSTOMER" ? (
+                      <ShoppingBag className="h-6 w-6" />
+                    ) : (
+                      <LayoutDashboard className="h-6 w-6" />
+                    )}
+                    <span className="absolute top-10 right-0 w-max bg-text-main text-white text-xs font-bold px-2 py-1 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-50">
+                      {session.role === "CUSTOMER" ? "Pesanan Saya" : "Dashboard"}
                     </span>
                   </Link>
                   <Link 
-                    href={session.role === "SUPER_ADMIN" ? "/admin/akun" : (storeSlug ? `/bumdes/${storeSlug}` : "/dashboard")} 
+                    href={
+                      session.role === "SUPER_ADMIN" || session.role === "PLATFORM_ADMIN"
+                        ? "/admin/akun"
+                        : session.role === "BUMDES_ADMIN"
+                        ? storeSlug
+                          ? `/bumdes/${storeSlug}`
+                          : "/dashboard"
+                        : "/pesanan"
+                    } 
                     className="h-9 w-9 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold hover:scale-105 transition-transform group relative"
-                    aria-label={session.role === "SUPER_ADMIN" ? "Manajemen Akun" : "Profil Publik BUMDes"}
+                    aria-label={
+                      session.role === "SUPER_ADMIN"
+                        ? "Manajemen Akun"
+                        : session.role === "BUMDES_ADMIN"
+                        ? "Profil Publik BUMDes"
+                        : "Akun Pembeli"
+                    }
                   >
                     <User className="h-5 w-5" />
                     {session.role === "BUMDES_ADMIN" && storeSlug && (
@@ -133,7 +157,28 @@ export default function NavbarClient({ session, unreadCount = 0, storeSlug }: Na
                         Lihat Profil Publik
                       </span>
                     )}
+                    {session.role === "CUSTOMER" && (
+                      <span className="absolute top-10 right-0 w-max bg-text-main text-white text-xs font-bold px-2 py-1 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-50">
+                        {session.email}
+                      </span>
+                    )}
                   </Link>
+                  <form action="/api/auth/logout" method="POST">
+                    <button
+                      type="submit"
+                      className="p-2 text-text-muted hover:text-danger hover:bg-danger/10 rounded-xl transition-colors relative group flex items-center gap-1.5"
+                      aria-label="Keluar"
+                      title="Keluar"
+                    >
+                      <LogOut className="h-5 w-5 text-danger" />
+                      {session.role === "CUSTOMER" && (
+                        <span className="text-xs font-bold text-danger pr-1">Keluar</span>
+                      )}
+                      <span className="absolute top-10 right-0 w-max bg-text-main text-white text-xs font-bold px-2 py-1 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-50">
+                        Keluar Akun
+                      </span>
+                    </button>
+                  </form>
                 </div>
               </>
             ) : (
@@ -240,9 +285,30 @@ export default function NavbarClient({ session, unreadCount = 0, storeSlug }: Na
             
             <div className="border-t border-border mt-4 pt-4">
               {session ? (
-                <Link href={session.role === "SUPER_ADMIN" ? "/admin" : "/dashboard"} className="block px-3 py-2.5 rounded-xl text-base font-bold text-primary hover:bg-surface-bg" onClick={toggleMobileMenu}>
-                  Dashboard Akun
-                </Link>
+                <div className="space-y-1">
+                  <Link
+                    href={
+                      session.role === "SUPER_ADMIN" || session.role === "PLATFORM_ADMIN"
+                        ? "/admin"
+                        : session.role === "BUMDES_ADMIN"
+                        ? "/dashboard"
+                        : "/pesanan"
+                    }
+                    className="block px-3 py-2.5 rounded-xl text-base font-bold text-primary hover:bg-surface-bg"
+                    onClick={toggleMobileMenu}
+                  >
+                    {session.role === "CUSTOMER" ? "Pesanan Saya" : "Dashboard Akun"}
+                  </Link>
+                  <form action="/api/auth/logout" method="POST">
+                    <button
+                      type="submit"
+                      className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-base font-bold text-danger hover:bg-danger/10 transition-colors text-left"
+                    >
+                      <LogOut className="h-5 w-5" />
+                      Keluar
+                    </button>
+                  </form>
+                </div>
               ) : (
                 <div className="flex flex-col space-y-3 mt-2">
                   <Link href="/login" className="block px-3 py-2.5 rounded-xl text-base font-medium text-text-main hover:bg-surface-bg text-center border border-border" onClick={toggleMobileMenu}>

@@ -15,7 +15,8 @@ import {
   Search, 
   Filter, 
   Calendar, 
-  FileText 
+  FileText,
+  LogOut
 } from "lucide-react";
 
 export default async function PesananSayaPage() {
@@ -55,12 +56,24 @@ export default async function PesananSayaPage() {
             <h1 className="text-3xl font-bold text-text-main">Pembelian Saya</h1>
             <p className="text-text-muted mt-2">Kelola seluruh transaksi pembelian produk Anda di GeraiBUMDes.</p>
           </div>
-          <Link href="/pesanan/laporan">
-            <Button className="flex items-center h-11 px-6 rounded-xl font-semibold shadow-sm hover:shadow-md transition-all duration-200">
-              <FileText className="h-4 w-4 mr-2" />
-              Laporan Pembelian
-            </Button>
-          </Link>
+          <div className="flex flex-wrap items-center gap-3">
+            <Link href="/pesanan/laporan">
+              <Button className="flex items-center h-11 px-6 rounded-xl font-semibold shadow-sm hover:shadow-md transition-all duration-200">
+                <FileText className="h-4 w-4 mr-2" />
+                Laporan Pembelian
+              </Button>
+            </Link>
+            <form action="/api/auth/logout" method="POST">
+              <Button
+                type="submit"
+                variant="outline"
+                className="flex items-center h-11 px-5 rounded-xl font-semibold border-danger/30 text-danger hover:bg-danger/10 transition-all duration-200"
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Keluar
+              </Button>
+            </form>
+          </div>
         </div>
 
         {/* Toolbar Pencarian & Filter */}
